@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-purple: oklch(45% 0.25 290);
+  --color-brand-fuchsia: oklch(60% 0.25 330);
+  --color-brand-dark: oklch(15% 0.05 260);
+  --color-brand-light: oklch(79% 0.14 330);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --container-vsl: 896px;
+  --animate-cta-enter: cta-enter 1200ms ease-out both;
+  --animate-float: float-slow 6s ease-in-out infinite;
+  @keyframes cta-enter {
+    from { opacity: 0; transform: translateY(2rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+}
+
+@utility glass-panel {
+  background-color: rgb(255 255 255 / 0.03);
+  backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-top-color: rgb(255 255 255 / 0.2);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5), inset 0 1px 0 rgb(255 255 255 / 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgb(255 255 255 / 0.05);
+    border-color: rgb(217 70 239 / 0.3);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.1), 0 0 20px rgb(217 70 239 / 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+@utility beam-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(217, 70, 239, 0.45) 50%, transparent 100%);
+}
+
+@utility browser-mockup {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgb(10 15 29 / 0.95);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 60px -15px rgba(217, 70, 239, 0.25);
+  overflow: hidden;
+}
+
+@layer base {
+  html { color-scheme: dark; scroll-behavior: smooth; }
+  body { margin: 0; min-width: 320px; }
+  :focus-visible { outline: 3px solid var(--color-brand-light); outline-offset: 6px; }
+  button, summary { cursor: pointer; }
+  ::selection { background: var(--color-brand-purple); color: #f8fafc; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+}
