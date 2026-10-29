@@ -1,7 +1,6 @@
-import { useId, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { 
-  ArrowUpRight, 
   Check, 
   ChevronDown, 
   Cloud, 
@@ -25,10 +24,7 @@ import { PeruCheckoutButton } from './components/PeruCheckoutButton';
 import { vslConfig } from './vslConfig';
 
 // A/B Testing & Conversión Multi-Oferta
-import { type VariantId, VARIANTS, resolveVariantFromPath } from './data/variants';
-import { AbTestingBar } from './components/AbTestingBar';
-import { ComparisonTable } from './components/ComparisonTable';
-import { AntiTrapSection } from './components/AntiTrapSection';
+import { VARIANTS } from './data/variants';
 
 
 const fadeInUp: Variants = {
@@ -61,7 +57,7 @@ const methodPhases = [
     title: 'Publicar Gratis en Servidores Globales',
     duration: '35 min',
     desc: 'Conectas a la nube de grado empresarial (Cloudflare Pages / Vercel). Tu web queda en vivo para el mundo con certificado SSL en 1 clic.',
-    bullets: ['Alojamiento 100% gratuito de por vida ($0/mes)', 'Certificado de seguridad HTTPS automático', 'Tu enlace listo para compartir en WhatsApp y redes']
+    bullets: ['Hosting gratuito para proyectos compatibles con el plan', 'Certificado de seguridad HTTPS automático', 'Tu enlace listo para compartir en WhatsApp y redes']
   }
 ];
 
@@ -87,8 +83,8 @@ const inclusions = [
     desc: 'Asegura que tu web se vea perfecta en cualquier teléfono o pantalla antes de compartirla.'
   },
   {
-    title: 'Grabación completa y acceso ilimitado de por vida',
-    desc: 'Repasa a tu ritmo tantas veces como necesites para futuras páginas o herramientas.'
+    title: 'Grabación para repasar el entrenamiento',
+    desc: 'Revisa el material una vez que esté disponible para los inscritos.'
   },
 ];
 
@@ -113,34 +109,10 @@ function StickyMobileCta({ price = 9 }: { showCta?: boolean; price?: number }) {
 }
 
 export default function App() {
-  // Inicialización de la variante según la URL (/webcero, /bycoding, /agencia) o param ?v=
-  const [currentVariant, setCurrentVariant] = useState<VariantId>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return resolveVariantFromPath(window.location.pathname, params.get('v'));
-    }
-    return 'creadores';
-  });
+  // Primer test: una sola oferta (creadores). Otras propuestas quedan en data/variants.ts.
+  const activeVariant = VARIANTS.creadores;
 
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      setCurrentVariant(resolveVariantFromPath(window.location.pathname, params.get('v')));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const handleSelectVariant = (id: VariantId) => {
-    const targetPath = VARIANTS[id].path;
-    window.history.pushState({}, '', targetPath);
-    setCurrentVariant(id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const activeVariant = VARIANTS[currentVariant];
-
-  const [video, setVideo] = useState<HTMLVideoElement | null>(null);
+  const [, setVideo] = useState<HTMLVideoElement | null>(null);
   const [videoError, setVideoError] = useState(false);
   const [selectedShowcase, setSelectedShowcase] = useState<string>('consultoria');
   const checkoutTotal = 9;
@@ -154,7 +126,7 @@ export default function App() {
       <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-slate-900 focus:p-4">Saltar al contenido</a>
 
       {/* ── 0. BARRA DE CONTROL DE PRUEBAS A/B (Para el Estratega & Campañas) ── */}
-      <AbTestingBar currentVariant={currentVariant} onSelectVariant={handleSelectVariant} />
+      {/* Se oculta el selector interno A/B para no confundir a los visitantes. */}
 
       {/* ── 1. HEADER / BARRA DE URGENCIA & CONTEXTO ── */}
       <header className="border-b border-white/5 bg-slate-950/80 px-4 py-3 backdrop-blur-md sticky top-0 sm:top-0 z-40">
@@ -168,7 +140,7 @@ export default function App() {
           <div className="flex items-center gap-4 text-slate-400">
             <span className="hidden sm:inline">105 min en vivo + 45 min Q&A</span>
             <span className="rounded-full bg-brand-purple/30 px-2.5 py-0.5 font-medium text-brand-light border border-brand-purple/40">
-              Inscripciones abiertas
+              Inscripciones próximamente
             </span>
           </div>
         </div>
@@ -263,8 +235,8 @@ export default function App() {
                       <span className="flex size-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_0_35px_rgba(217,70,239,0.35)] transition-transform hover:scale-105 sm:size-16">
                         <Play aria-hidden="true" className="size-6 text-slate-50 sm:size-7" />
                       </span>
-                      <p className="text-sm font-semibold text-slate-100 sm:text-base">Haz clic para ver la presentación</p>
-                      <p className="text-[11px] text-slate-300 sm:text-xs">Aprende la metodología paso a paso</p>
+                      <p className="text-sm font-semibold text-slate-100 sm:text-base">Una muestra de las experiencias que podemos crear</p>
+                      <p className="text-[11px] text-slate-300 sm:text-xs">Explora los ejemplos y el temario a continuación</p>
                     </div>
                   </>
                 )}
@@ -281,7 +253,7 @@ export default function App() {
             ) : (
               <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400 sm:text-sm">
                 <Play aria-hidden="true" className="size-3 sm:size-3.5 text-brand-fuchsia" />
-                El botón de inscripción se habilita al completar la presentación.
+                Inscripción disponible al abrir la página.
               </p>
             )}
           </div>
@@ -505,12 +477,12 @@ export default function App() {
       <div className="beam-divider" />
 
       {/* ── 6. TABLA COMPARATIVA DE DEMOLICIÓN ECONÓMICA (Agencia vs WP vs Fénix) ── */}
-      <ComparisonTable />
+      {/* Comparaciones comerciales sin evidencia retiradas de la primera prueba. */}
 
       <div className="beam-divider" />
 
       {/* ── 7. SECCIÓN DE TRANSPARENCIA TÉCNICA (Demoliendo la trampa del hosting gratis) ── */}
-      <AntiTrapSection />
+      {/* La explicación detallada del hosting volverá después de validarse. */}
 
       <div className="beam-divider" />
 
@@ -633,7 +605,7 @@ export default function App() {
             </div>
 
             <h3 className="text-center font-display text-2xl font-bold text-slate-50 mb-6 sm:text-3xl sm:mb-8">
-              Todo lo que consigues hoy por solo US$9
+              Tu entrenamiento práctico por US$9
             </h3>
 
             {/* Desglose de Valor Percibido */}
@@ -658,7 +630,7 @@ export default function App() {
 
             <div className="border-t border-white/10 pt-4 mb-6 flex justify-between items-center text-base font-semibold sm:pt-5 sm:mb-8 sm:text-lg">
               <span className="text-slate-300">Valor real acumulado:</span>
-              <span className="text-slate-400 line-through font-mono text-base sm:text-xl">$190 USD</span>
+              <span className="text-slate-400 font-mono text-base sm:text-xl">Entrenamiento + recursos</span>
             </div>
 
             {/* 8D. SIMULADOR DE ORDER BUMPS (Incrementador de AOV) */}
@@ -669,16 +641,6 @@ export default function App() {
               <p className="text-xs font-semibold tracking-widest text-brand-light uppercase mb-2.5 sm:text-sm">
                 Edición fundadora · Inscripciones abiertas
               </p>
-              <div className="mx-auto max-w-xs mb-5 sm:mb-6">
-                <div className="flex justify-between text-xs font-medium text-slate-400 mb-1.5">
-                  <span>Plazas reservadas</span>
-                  <span className="text-brand-fuchsia font-bold">Sin cupo declarado</span>
-                </div>
-                <div className="h-2.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia w-[Sin cupo declarado] rounded-full shadow-[0_0_12px_rgba(217,70,239,0.6)]"></div>
-                </div>
-              </div>
-
               {/* Precio anclado */}
               <p className="font-display text-5xl font-bold text-slate-50 mb-1 sm:text-6xl">
                 ${checkoutTotal} <span className="text-xl font-normal text-slate-400 sm:text-2xl">USD</span>
@@ -691,9 +653,9 @@ export default function App() {
               <div className="mb-6 flex items-start gap-3 rounded-xl bg-brand-purple/15 p-4 border border-brand-purple/30 text-left sm:mb-8 sm:gap-4 sm:rounded-2xl sm:p-5">
                 <ShieldCheck className="size-8 text-emerald-400 shrink-0 mt-0.5 sm:size-10" />
                 <div>
-                  <p className="font-bold text-slate-50 text-sm sm:text-base">Garantía incondicional de 7 días</p>
+                  <p className="font-bold text-slate-50 text-sm sm:text-base">Política de reembolso de 7 días</p>
                   <p className="mt-1 text-xs/5 text-slate-300 sm:text-sm/6">
-                    Asiste al taller, usa los materiales y si sientes que no fue para ti, me escribes y te devuelvo el 100% de tu dinero al instante. Sin preguntas. Y los bonos te los quedas como agradecimiento.
+                    Solicita un reembolso dentro de los 7 días posteriores a tu compra. Las condiciones y el canal de atención se informarán al activar el checkout.
                   </p>
                 </div>
               </div>
@@ -704,7 +666,7 @@ export default function App() {
                   <PurchaseCta customText={activeVariant.ctaText} totalPrice={checkoutTotal} selectedBumps={activeBumps} />
                 ) : (
                   <p className="text-xs text-slate-500 sm:text-sm">
-                    El botón se habilita al completar la presentación.
+                    Inscripción disponible sin video obligatorio.
                   </p>
                 )}
               </div>
@@ -835,7 +797,7 @@ export default function App() {
             Tu URL puede estar en vivo esta misma semana.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base/7 text-slate-400 sm:mt-5 sm:text-lg/8">
-            En 105 minutos. Sin programar a mano. Sin depender de nadie.
+            105 minutos de práctica guiada, con herramientas de IA.
           </p>
           <div className="mt-7 min-h-24" aria-live="polite">
             {showCta ? (
@@ -850,9 +812,9 @@ export default function App() {
 
         {/* Trust bar mínima */}
         <div className="mx-auto mt-12 flex max-w-lg flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500 sm:mt-16">
-          <span>🔒 Pago 100% seguro</span>
+          <span>🔒 Pago procesado por Mercado Pago</span>
           <span>·</span>
-          <span>Garantía incondicional 7 días</span>
+          <span>Política de reembolso de 7 días</span>
           <span>·</span>
           <span>Pago único sin suscripciones</span>
         </div>
