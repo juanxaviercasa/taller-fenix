@@ -76,7 +76,7 @@ const inclusions = [
   },
   {
     title: 'Biblioteca de prompts y comandos en español',
-    desc: 'Instrucciones precisas para guiar a la IA sin errores técnicos ni frustraciones.'
+    desc: 'Instrucciones claras para generar resultados, detectar errores y corregirlos.'
   },
   {
     title: 'Checklist de revisión móvil y despliegue',
@@ -138,7 +138,7 @@ export default function App() {
             </span>
           </div>
           <div className="flex items-center gap-4 text-slate-400">
-            <span className="hidden sm:inline">105 min en vivo + 45 min Q&A</span>
+            <span className="hidden sm:inline">Taller práctico · 105 min + preguntas</span>
             <span className="rounded-full bg-brand-purple/30 px-2.5 py-0.5 font-medium text-brand-light border border-brand-purple/40">
               Inscripciones próximamente
             </span>
@@ -227,13 +227,13 @@ export default function App() {
                   <>
                     <img 
                       src={activeVariant.vslPoster} 
-                      alt={`Presentación de ${activeVariant.name}`} 
+                      alt={`Vista ilustrativa de ${activeVariant.name}`} 
                       className="h-full w-full object-cover opacity-90 transition-transform duration-300 hover:scale-[1.01]" 
                       fetchPriority="high" 
                     />
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-slate-950/40 px-4">
                       <span className="flex size-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_0_35px_rgba(217,70,239,0.35)] transition-transform hover:scale-105 sm:size-16">
-                        <Play aria-hidden="true" className="size-6 text-slate-50 sm:size-7" />
+                        <Sparkles aria-hidden="true" className="size-6 text-slate-50 sm:size-7" />
                       </span>
                       <p className="text-sm font-semibold text-slate-100 sm:text-base">Una muestra de las experiencias que podemos crear</p>
                       <p className="text-[11px] text-slate-300 sm:text-xs">Explora los ejemplos y el temario a continuación</p>
@@ -265,7 +265,7 @@ export default function App() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm font-medium text-slate-300">
               <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-brand-fuchsia/40 transition-colors">
-                <Sparkles className="size-3.5 text-brand-fuchsia" /> Claude 3.7 & ChatGPT
+                <Sparkles className="size-3.5 text-brand-fuchsia" /> Asistentes de IA
               </span>
               <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-brand-purple/40 transition-colors">
                 <Code2 className="size-3.5 text-purple-300" /> Cursor & Vibe Coding
@@ -612,9 +612,9 @@ export default function App() {
             <ul className="space-y-3.5 mb-6 sm:space-y-4 sm:mb-8">
               <li className="flex justify-between items-center text-sm sm:text-base border-b border-white/5 pb-2.5">
                 <span className="flex items-center gap-2 sm:gap-3 text-slate-200">
-                  <Check className="size-5 text-emerald-400 shrink-0" /> Taller en Vivo (105 min práctica + 45 min Q&A)
+                  <Check className="size-5 text-emerald-400 shrink-0" /> Entrenamiento práctico (105 min + preguntas)
                 </span>
-                <span className="text-slate-500 line-through text-xs sm:text-sm">$97 USD</span>
+                <span className="text-slate-500 text-xs sm:text-sm">Incluido</span>
               </li>
               {activeVariant.bonuses.map((b) => (
                 <li key={b.num} className="flex justify-between items-center text-sm sm:text-base border-b border-white/5 pb-2.5">
@@ -622,14 +622,14 @@ export default function App() {
                     <Check className="size-5 text-emerald-400 shrink-0" /> Bono {b.num}: {b.title}
                   </span>
                   <span className="text-slate-500 line-through text-xs sm:text-sm">
-                    {b.badge.replace(/^.*?Valor\s*/, '')}
+                    Incluido
                   </span>
                 </li>
               ))}
             </ul>
 
             <div className="border-t border-white/10 pt-4 mb-6 flex justify-between items-center text-base font-semibold sm:pt-5 sm:mb-8 sm:text-lg">
-              <span className="text-slate-300">Valor real acumulado:</span>
+              <span className="text-slate-300">Tu inscripción incluye:</span>
               <span className="text-slate-400 font-mono text-base sm:text-xl">Entrenamiento + recursos</span>
             </div>
 
