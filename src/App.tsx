@@ -21,7 +21,7 @@ import mentorPortraitVisual from './assets/mentor_portrait_1790998415489.jpg';
 import workshopStudentVisual from './assets/workshop_student_1790998472338.jpg';
 import imgMasterBundle from './assets/master_bundle_hero.jpg';
 
-import { useDelayedCta } from './hooks/useDelayedCta';
+import { PeruCheckoutButton } from './components/PeruCheckoutButton';
 import { vslConfig } from './vslConfig';
 
 // A/B Testing & Conversión Multi-Oferta
@@ -29,7 +29,7 @@ import { type VariantId, VARIANTS, resolveVariantFromPath } from './data/variant
 import { AbTestingBar } from './components/AbTestingBar';
 import { ComparisonTable } from './components/ComparisonTable';
 import { AntiTrapSection } from './components/AntiTrapSection';
-import { OrderBumpsSection } from './components/OrderBumpsSection';
+
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -100,61 +100,16 @@ interface PurchaseCtaProps {
   selectedBumps?: string[];
 }
 
-function PurchaseCta({ customText, totalPrice = 19, selectedBumps = [] }: PurchaseCtaProps) {
-  const placeholderId = useId();
-  
-  let targetUrl = vslConfig.checkoutUrl;
-  if (targetUrl) {
-    const urlObj = new URL(targetUrl, window.location.origin);
-    urlObj.searchParams.set('total', String(totalPrice));
-    if (selectedBumps.length > 0) {
-      urlObj.searchParams.set('bumps', selectedBumps.join(','));
-    }
-    targetUrl = urlObj.toString();
-  }
-
-  const label = customText || `Asegurar mi plaza de fundador · $${totalPrice} USD`;
-
-  return (
-    <div className="animate-cta-enter motion-reduce:animate-none">
-      {targetUrl ? (
-        <a href={targetUrl} className={ctaClass}>
-          {label} <ArrowUpRight aria-hidden="true" className="size-6" />
-        </a>
-      ) : (
-        <button type="button" disabled className={`${ctaClass} cursor-not-allowed`} aria-describedby={placeholderId}>
-          {label} <ArrowUpRight aria-hidden="true" className="size-6" />
-        </button>
-      )}
-      <p id={!targetUrl ? placeholderId : undefined} className="mt-4 flex items-center justify-center gap-2 text-sm/6 text-slate-400">
-        <ShieldCheck aria-hidden="true" className="size-4 text-emerald-400" />
-        {targetUrl ? 'Garantía incondicional de 7 días · Acceso inmediato a materiales' : 'Inscripciones próximamente abiertas'}
-      </p>
-    </div>
-  );
+function PurchaseCta({ customText }: PurchaseCtaProps) {
+  return <PeruCheckoutButton label={customText || 'Inscribirme por US$9'} className={ctaClass} />;
 }
-
-function StickyMobileCta({ showCta, price = 19 }: { showCta: boolean; price?: number }) {
-  if (!showCta) return null;
-  return (
-    <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, ease: "easeOut" }} className="fixed bottom-0 inset-x-0 z-50 bg-slate-950/90 backdrop-blur-lg border-t border-white/10 p-4 sm:hidden">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-bold text-slate-50">${price} USD</p>
-          <p className="text-xs text-brand-light">82% plazas ocupadas</p>
-        </div>
-        {vslConfig.checkoutUrl ? (
-          <a href={vslConfig.checkoutUrl} className="inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(217,70,239,0.3)]">
-            Asegurar plaza
-          </a>
-        ) : (
-          <button type="button" disabled className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 py-3 text-sm font-bold text-slate-500 cursor-not-allowed">
-            Próximamente
-          </button>
-        )}
-      </div>
-    </motion.div>
-  );
+function StickyMobileCta({ price = 9 }: { showCta?: boolean; price?: number }) {
+  return <div className="fixed bottom-0 inset-x-0 z-50 border-t border-white/10 bg-slate-950/95 p-2 sm:hidden">
+    <div className="mx-auto flex max-w-lg items-center justify-between gap-2">
+      <span className="font-bold text-white">US${price} · Lanzamiento</span>
+      <PeruCheckoutButton label="Inscribirme" className="rounded-lg bg-fuchsia-600 px-4 py-3 text-sm font-bold text-white disabled:opacity-60" />
+    </div>
+  </div>;
 }
 
 export default function App() {
@@ -188,9 +143,9 @@ export default function App() {
   const [video, setVideo] = useState<HTMLVideoElement | null>(null);
   const [videoError, setVideoError] = useState(false);
   const [selectedShowcase, setSelectedShowcase] = useState<string>('consultoria');
-  const [checkoutTotal, setCheckoutTotal] = useState<number>(19);
-  const [activeBumps, setActiveBumps] = useState<string[]>([]);
-  const { showCta } = useDelayedCta(video, vslConfig.pitchSeconds, `fenix:vsl:${vslConfig.storageVersion}:${vslConfig.videoUrl}:${vslConfig.pitchSeconds}:unlocked`);
+  const checkoutTotal = 9;
+  const activeBumps: string[] = [];
+  const showCta = true; // Sin bloqueo de VSL en la TSL inicial
 
   const activeProject = activeVariant.showcaseProjects.find(p => p.id === selectedShowcase) || activeVariant.showcaseProjects[0];
 
@@ -213,7 +168,7 @@ export default function App() {
           <div className="flex items-center gap-4 text-slate-400">
             <span className="hidden sm:inline">105 min en vivo + 45 min Q&A</span>
             <span className="rounded-full bg-brand-purple/30 px-2.5 py-0.5 font-medium text-brand-light border border-brand-purple/40">
-              Solo 50 plazas
+              Inscripciones abiertas
             </span>
           </div>
         </div>
@@ -678,7 +633,7 @@ export default function App() {
             </div>
 
             <h3 className="text-center font-display text-2xl font-bold text-slate-50 mb-6 sm:text-3xl sm:mb-8">
-              Todo lo que consigues hoy por solo $19 USD
+              Todo lo que consigues hoy por solo US$9
             </h3>
 
             {/* Desglose de Valor Percibido */}
@@ -707,26 +662,20 @@ export default function App() {
             </div>
 
             {/* 8D. SIMULADOR DE ORDER BUMPS (Incrementador de AOV) */}
-            <OrderBumpsSection
-              basePrice={19}
-              onTotalChange={(newTotal, bumps) => {
-                setCheckoutTotal(newTotal);
-                setActiveBumps(bumps);
-              }}
-            />
+            {/* Complementos ocultos durante la validación del producto principal. */}
 
             <div className="text-center mt-8">
               {/* Escasez */}
               <p className="text-xs font-semibold tracking-widest text-brand-light uppercase mb-2.5 sm:text-sm">
-                Edición fundadora · Solo 50 plazas
+                Edición fundadora · Inscripciones abiertas
               </p>
               <div className="mx-auto max-w-xs mb-5 sm:mb-6">
                 <div className="flex justify-between text-xs font-medium text-slate-400 mb-1.5">
                   <span>Plazas reservadas</span>
-                  <span className="text-brand-fuchsia font-bold">82%</span>
+                  <span className="text-brand-fuchsia font-bold">Sin cupo declarado</span>
                 </div>
                 <div className="h-2.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia w-[82%] rounded-full shadow-[0_0_12px_rgba(217,70,239,0.6)]"></div>
+                  <div className="h-full bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia w-[Sin cupo declarado] rounded-full shadow-[0_0_12px_rgba(217,70,239,0.6)]"></div>
                 </div>
               </div>
 
@@ -880,7 +829,7 @@ export default function App() {
       <footer className="px-5 pt-16 pb-24 text-center sm:px-6 sm:pt-20 sm:pb-12 md:pt-24 bg-slate-950">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }}>
           <p className="mb-3 text-xs font-semibold tracking-widest text-brand-fuchsia uppercase sm:text-sm">
-            Última oportunidad al precio de fundador
+            Precio de lanzamiento
           </p>
           <h2 className="font-display text-3xl font-bold text-slate-50 sm:text-4xl md:text-5xl/14">
             Tu URL puede estar en vivo esta misma semana.
