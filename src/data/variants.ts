@@ -322,7 +322,7 @@ export const VARIANTS: Record<VariantId, VariantData> = {
     headlineMain: 'Aprende a crear y publicar una herramienta web con IA.',
     headlineHighlight: 'Un proyecto práctico, paso a paso.',
     subheadline: 'En una sesión de 105 minutos verás cómo planificar, construir, probar y publicar una pequeña aplicación web con inteligencia artificial. No necesitas dominar código para empezar.',
-    vslUrlBadge: 'fenix-ia.com/metodo-creadores-ia',
+    vslUrlBadge: 'fenix.cabellosalirrosas.com/bycoding',
     ctaText: 'Quiero mi entrenamiento · US$9',
     ctaSubtext: 'Entrenamiento US$9 · Pago en soles para Perú una vez habilitado',
 
