@@ -6,7 +6,7 @@ export function ComparisonTable() {
       feature: 'Costo Inicial de Implementación',
       agency: '$500 a $2,500 USD',
       wordpress: '$50 a $150 USD (Curso + Plantilla)',
-      fenix: '$19 USD (Pago Único)',
+      fenix: 'US$9 (Pago único)',
       highlight: true
     },
     {
