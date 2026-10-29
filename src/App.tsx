@@ -49,15 +49,15 @@ const methodPhases = [
     step: 'Paso 02',
     title: 'Construir con Asistentes de IA (Vibe Coding)',
     duration: '45 min',
-    desc: 'Alimentas a la IA con los prompts exactos en español. La IA redacta, diseña y genera el código mientras tú diriges el resultado.',
+    desc: 'Alimentas a la IA con los prompts exactos en español. La IA ayuda a redactar, diseñar y generar código. Tú revisas el resultado.',
     bullets: ['Prompts probados para titulares y layouts', 'Ajuste visual responsivo para móviles', 'Interacción en tiempo real y corrección fluida']
   },
   {
     step: 'Paso 03',
     title: 'Publicar Gratis en Servidores Globales',
     duration: '35 min',
-    desc: 'Conectas a la nube de grado empresarial (Cloudflare Pages / Vercel). Tu web queda en vivo para el mundo con certificado SSL en 1 clic.',
-    bullets: ['Hosting gratuito para proyectos compatibles con el plan', 'Certificado de seguridad HTTPS automático', 'Tu enlace listo para compartir en WhatsApp y redes']
+    desc: 'Aprendes a publicar en Cloudflare Pages y revisar los ajustes de acceso y HTTPS según el proveedor.',
+    bullets: ['Hosting gratuito para proyectos compatibles con el plan', 'HTTPS al configurar correctamente el despliegue', 'Tu enlace listo para compartir en WhatsApp y redes']
   }
 ];
 
@@ -114,7 +114,7 @@ export default function App() {
 
   const [, setVideo] = useState<HTMLVideoElement | null>(null);
   const [videoError, setVideoError] = useState(false);
-  const [selectedShowcase, setSelectedShowcase] = useState<string>('consultoria');
+  const [selectedShowcase, setSelectedShowcase] = useState<string>('calculadora');
   const checkoutTotal = 9;
   const activeBumps: string[] = [];
   const showCta = true; // Sin bloqueo de VSL en la TSL inicial
@@ -343,7 +343,7 @@ export default function App() {
               El Método Fénix: 3 pasos hacia tu libertad digital
             </h2>
             <p className="mt-4 text-base/7 text-slate-400 max-w-2xl mx-auto sm:text-lg/8">
-              Una estructura diseñada para eliminar la fricción técnica y garantizar que termines el taller con una página real en vivo.
+              Una estructura práctica para crear, comprobar y publicar un proyecto introductorio, según tu ritmo y las herramientas disponibles.
             </p>
           </motion.div>
 
@@ -430,7 +430,7 @@ export default function App() {
                   <span className="size-2.5 rounded-full bg-emerald-500/70 inline-block" />
                 </div>
                 <span className="text-[11px] font-mono text-slate-400 bg-black/40 px-3 py-0.5 rounded border border-white/5">
-                  https://{activeProject.url}
+                  Ejemplo ilustrativo · sin sitio publicado
                 </span>
                 <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
@@ -536,7 +536,7 @@ export default function App() {
                 Herramientas que aceleran tu resultado
               </h3>
               <p className="mt-3 text-base text-slate-400 max-w-xl mx-auto">
-                Acceso gratuito e ilimitado al asegurar tu plaza durante esta edición fundadora.
+                Recursos de apoyo incluidos en el precio de esta edición, sujetos a la descripción del entrenamiento.
               </p>
             </motion.div>
 
@@ -599,7 +599,7 @@ export default function App() {
               />
               <div className="p-3 bg-slate-900/90 border-t border-white/10 text-center">
                 <span className="font-mono text-xs font-bold text-brand-light uppercase tracking-wider">
-                  ★ Paquete Completo de Fundador · Taller en Vivo + 3 Bonos + Grabación de por vida
+                  Entrenamiento de entrada · Taller práctico + recursos complementarios
                 </span>
               </div>
             </div>
@@ -639,7 +639,7 @@ export default function App() {
             <div className="text-center mt-8">
               {/* Escasez */}
               <p className="text-xs font-semibold tracking-widest text-brand-light uppercase mb-2.5 sm:text-sm">
-                Edición fundadora · Inscripciones abiertas
+                Edición fundadora · Pagos pendientes de habilitación
               </p>
               {/* Precio anclado */}
               <p className="font-display text-5xl font-bold text-slate-50 mb-1 sm:text-6xl">
@@ -794,7 +794,7 @@ export default function App() {
             Precio de lanzamiento
           </p>
           <h2 className="font-display text-3xl font-bold text-slate-50 sm:text-4xl md:text-5xl/14">
-            Tu URL puede estar en vivo esta misma semana.
+            Tu primera web interactiva comienza con un proyecto práctico.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base/7 text-slate-400 sm:mt-5 sm:text-lg/8">
             105 minutos de práctica guiada, con herramientas de IA.
@@ -812,14 +812,14 @@ export default function App() {
 
         {/* Trust bar mínima */}
         <div className="mx-auto mt-12 flex max-w-lg flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500 sm:mt-16">
-          <span>🔒 Pago procesado por Mercado Pago</span>
+          <span>🔒 Mercado Pago al activar el checkout</span>
           <span>·</span>
           <span>Política de reembolso de 7 días</span>
           <span>·</span>
           <span>Pago único sin suscripciones</span>
         </div>
         <div className="mx-auto mt-8 flex max-w-5xl flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-6 text-xs/6 text-slate-600">
-          <span>© 2026 Fénix · Taller Web con Inteligencia Artificial</span>
+          <span>© 2026 Fénix · Entrenamiento de Vibe Coding con IA</span>
           <span>
             Desarrollado por{' '}
             <a
