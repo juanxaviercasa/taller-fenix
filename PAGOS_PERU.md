@@ -11,7 +11,7 @@
 ## Elegir dominio
 Recomendación para la oferta: `vibecoding.sistemazenit.com` (solo si el dominio te pertenece y está configurado en Cloudflare).
 Mantener `fenix.cabellosalirrosas.com` intacto durante el experimento.
-Para un primer despliegue en vista previa, usar la URL que Cloudflare asigne a la rama; el alias de rama es `feat-checkout-mercadopago-yape-peru.<nombre-del-proyecto>.pages.dev` según el nombre real del proyecto. No inventar un dominio `pages.dev`.
+Para el despliegue ya configurado por el propietario en bycoding.systems.mx.com, comprobar si apunta a la rama y mantener main intacta; también es válido usar la URL de vista previa que Cloudflare asigne; el alias de rama es `feat-checkout-mercadopago-yape-peru.<nombre-del-proyecto>.pages.dev` según el nombre real del proyecto. No inventar un dominio `pages.dev`.
 Para subdominio personalizado de rama, Cloudflare Pages admite enlazar un CNAME proxied hacia el alias de rama después de crear y desplegar la rama:
 https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/
 
@@ -62,3 +62,6 @@ El webhook `POST /api/mercadopago-webhook` autentica `x-signature`, consulta a M
 
 ## Nota de tests
 El código se revisó mediante lectura del repositorio. El build `npm run build` debe ejecutarse en el entorno de desarrollo/CI antes de publicar.
+
+## Revisión comercial (octubre de 2026)
+La landing se rediseñó como TSL independiente de una VSL. Incluye demo interactiva propia, seis capturas reales copiadas del portafolio del mismo propietario y links de los proyectos, una oferta única de US$9, FAQ transparente y espacio sin foto sintética del instructor. Ver `docs/MARKETING_REFERENCIAS.md` y `docs/FOTOGRAFIA_INSTRUCTOR.md`.
