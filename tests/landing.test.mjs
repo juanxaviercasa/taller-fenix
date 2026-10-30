@@ -9,18 +9,29 @@ test('la landing se orienta a matemáticas y un precio de entrada',()=>{
   assert.match(app,/US\$9/);
   assert.match(app,/id="inscripcion"/);
   assert.match(app,/Docentes de secundaria, academia y universidad/);
-  assert.match(app,/experiencias que despiertan la curiosidad/);
+  assert.match(app,/Menos tiempo preparando gráficos/);
+  assert.match(app,/Más tiempo guiando el aprendizaje/);
   assert.match(app,/id="caso-real"/);
   assert.doesNotMatch(app,/82% plazas ocupadas|Solo 50 plazas|AbTestingBar/);
 });
 test('caso docente real: Transformaciones Geométricas y sus beneficios para el aula',()=>{
   assert.match(app,/Enseñar transformaciones geométricas/);
-  assert.match(app,/redibujar todo a mano/);
+  assert.match(app,/sin empezar cada gráfico desde cero/);
   assert.match(app,/ruta de aprendizaje/);
   assert.match(app,/materiales imprimibles/);
   assert.match(app,/transformacionesgeometricas\.sistemazenit\.com/);
   assert.match(app,/id="caso-real"/);
   assert.doesNotMatch(app,/garantiza mayor retención|retención garantizada|100% de atención/);
+});
+test('Sólidos Geométricos acompaña una secuencia didáctica verificada',()=>{
+  assert.match(app,/id="caso-solidos"/);
+  assert.match(app,/Sólidos Geométricos/);
+  assert.match(app,/secuencia didáctica/);
+  assert.match(app,/caras, vértices y aristas/);
+  assert.match(app,/red plana/);
+  assert.match(app,/resolver|Resuelve retos/);
+  assert.match(app,/solidosgeometricos\.sistemazenit\.com/);
+  assert.ok(existsSync(new URL('../public/projects/captures/solidos-geometricos.webp',import.meta.url)));
 });
 test('el escaparate presenta tres niveles matemáticos y visualización real',()=>{
   const studio=readFileSync(new URL('../src/components/MathStudio.tsx',import.meta.url),'utf8');
@@ -32,8 +43,8 @@ test('el escaparate presenta tres niveles matemáticos y visualización real',()
   assert.match(studio,/calculusFacts/);
   assert.match(studio,/trigFacts/);
 });
-test('los 6 proyectos remiten a capturas documentadas locales',()=>{
-  for(const name of ['todo-lima','herramientas-pymes','mundos-simulados','funciones-lab','transformaciones-geometricas','rale-test-vocacional']){
+test('los 7 proyectos remiten a capturas documentadas locales',()=>{
+  for(const name of ['todo-lima','herramientas-pymes','mundos-simulados','funciones-lab','transformaciones-geometricas','rale-test-vocacional','solidos-geometricos']){
     assert.match(app,new RegExp(name+'\\.webp'));
     assert.ok(existsSync(new URL('../public/projects/captures/'+name+'.webp',import.meta.url)));
   }
