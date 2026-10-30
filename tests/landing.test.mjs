@@ -8,7 +8,7 @@ const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 test('la landing se orienta a matemáticas y un precio de entrada',()=>{
   assert.match(app,/US\$9/);
   assert.match(app,/id="inscripcion"/);
-  assert.match(app,/docentes de matemáticas/);
+  assert.match(app,/Docentes de secundaria, academia y universidad/);
   assert.match(app,/experiencias que se pueden explorar/);
   assert.doesNotMatch(app,/82% plazas ocupadas|Solo 50 plazas|AbTestingBar/);
 });
