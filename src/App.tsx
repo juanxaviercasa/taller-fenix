@@ -174,7 +174,7 @@ function ProjectCard({ project }: { project: Project }) {
         <p className="mt-1 text-xs text-slate-300">Proyecto documentado</p>
       </div>
       <img
-        src={'https://xavier.cabellosalirrosas.com/projects/captures/' + project.image}
+        src={'/projects/captures/' + project.image}
         alt={'Captura documentada de ' + project.title}
         loading="lazy"
         decoding="async"
@@ -324,7 +324,7 @@ export default function App() {
             {shownProjects.map(project => <ProjectCard key={project.title} project={project}/>)}
           </div>
           <div className="mt-8 text-center">
-            <p className="mb-4 text-xs text-slate-400">Capturas de proyectos documentadas en el portafolio el 23 de octubre de 2026; la disponibilidad externa puede variar.</p>
+            <p className="mb-4 text-xs text-slate-400">Capturas reales archivadas el 23 de octubre de 2026. Los enlaces externos pueden cambiar.</p>
             <a href="https://xavier.cabellosalirrosas.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-fuchsia-300/35 px-5 py-3 text-sm font-semibold text-fuchsia-200 hover:bg-fuchsia-400/10">
               Explorar el portafolio completo <ExternalLink className="size-4"/>
             </a>
