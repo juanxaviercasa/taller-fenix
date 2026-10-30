@@ -9,14 +9,18 @@ test('la landing se orienta a matemáticas y un precio de entrada',()=>{
   assert.match(app,/US\$9/);
   assert.match(app,/id="inscripcion"/);
   assert.match(app,/docentes de matemáticas/);
-  assert.match(app,/simulacro autocorregible/);
+  assert.match(app,/experiencias que se pueden explorar/);
   assert.doesNotMatch(app,/82% plazas ocupadas|Solo 50 plazas|AbTestingBar/);
 });
-test('el simulacro didáctico incluye error lógico y solución correcta',()=>{
-  assert.match(app,/function QuizDemo/);
-  assert.match(app,/const correctAnswer=3/);
-  assert.match(app,/const bugAnswer=4/);
-  assert.match(app,/setCorrected/);
+test('el escaparate presenta tres niveles matemáticos y visualización real',()=>{
+  const studio=readFileSync(new URL('../src/components/MathStudio.tsx',import.meta.url),'utf8');
+  assert.match(app,/MathStudio/);
+  assert.doesNotMatch(app,/QuizDemo|3\(2x \+ 1\)/);
+  for(const level of ['secundaria','preuni','universidad']) assert.match(studio,new RegExp(level));
+  assert.match(studio,/function MathGraph/);
+  assert.match(studio,/quadraticFacts/);
+  assert.match(studio,/calculusFacts/);
+  assert.match(studio,/trigFacts/);
 });
 test('los 6 proyectos remiten a capturas documentadas locales',()=>{
   for(const name of ['todo-lima','herramientas-pymes','mundos-simulados','funciones-lab','transformaciones-geometricas','rale-test-vocacional']){
