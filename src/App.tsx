@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
   ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronDown,
-  Clock3, ExternalLink, GraduationCap, Lightbulb, MonitorPlay, ShieldCheck,
-  Sparkles, Wrench, Zap
+  ExternalLink, GraduationCap, Lightbulb, MonitorPlay, ShieldCheck,
+  Sparkles, Wrench
 } from 'lucide-react';
 import { PeruCheckoutButton } from './components/PeruCheckoutButton';
 import { WaitlistForm } from './components/WaitlistForm';
