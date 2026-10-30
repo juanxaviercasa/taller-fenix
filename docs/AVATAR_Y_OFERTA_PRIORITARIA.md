@@ -62,3 +62,24 @@ La landing presenta este proyecto real como evidencia de enfoque y experiencia. 
 «Convierte tus clases de matemáticas en experiencias que despiertan la curiosidad. Aprende a crear aplicaciones interactivas para que tus estudiantes exploren, participen y profundicen en conceptos difíciles».
 
 El criterio principal de adquisición no es «quiero aprender a programar», sino «quiero enseñar un tema complicado con más recursos didácticos y visuales».
+
+## Incorporación del caso Sólidos Geométricos (29-oct-2026)
+
+El instructor afirma que usa **Sólidos Geométricos** dentro de su propia **sesión de aprendizaje**, como parte de la ruta de enseñanza, no como un accesorio visual.
+
+### Capacidades comprobadas en código/documentación
+- Visor 3D de poliedros, prismas y cuerpos redondos.
+- Visualización de desarrollos planos, teoría y fórmulas.
+- Ruta sugerida en la interfaz: explorar la forma, contar caras/vértices/aristas, abrir la red plana y resolver un reto.
+- Actividades y opciones de exportación/impresión. Las plantillas de construcción física necesitan validación adicional, según README.
+- App publicada: https://solidosgeometricos.sistemazenit.com/
+- Captura auténtica del portafolio copiada a `public/projects/captures/solidos-geometricos.webp`.
+
+### Nuevo mecanismo comercial
+El dolor no es solo «no sé crear una app». Es **tener que gastar energía de la sesión dibujando representaciones y repitiendo ejemplos**, cuando el profesor preferiría visualizar el fenómeno, guiar preguntas, acompañar ejercicios y comprobar comprensión.
+
+Por ello, vender el producto como una **habilidad para crear recursos alineados con la secuencia didáctica**, utilizando IA, no solo una capacitación de software.
+
+Mensaje principal: «Menos tiempo preparando gráficos. Más tiempo guiando el aprendizaje».
+
+No prometer ahorros medidos, incremento de retención de contenidos o mejoras de notas; aún no se dispone de esas mediciones. Los proyectos existentes no están íntegramente incluidos en el taller US$9.
