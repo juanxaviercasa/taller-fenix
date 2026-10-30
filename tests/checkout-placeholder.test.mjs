@@ -43,7 +43,7 @@ test('no se publican credenciales en el repositorio', () => {
 
 test('la primera prueba usa el precio comercial US$9', () => {
   const app = load('src/App.tsx');
-  assert.match(app, /const checkoutTotal = 9/);
-  assert.match(app, /VARIANTS\.creadores/);
+  assert.match(app, /US\$9/);
+  assert.match(app, /id="inscripcion"/);
   assert.doesNotMatch(app, /<AbTestingBar/);
 });
