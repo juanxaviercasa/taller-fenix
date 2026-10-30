@@ -2,6 +2,6 @@
 MP_CHECKOUT_ENABLED="false"
 MP_ENVIRONMENT="test"
 MP_PRICE_PEN="34"
-SITE_URL="https://vibecoding.sistemazenit.com"
+SITE_URL="https://bycoding.systems.mx.com"
 MP_ACCESS_TOKEN=""
 MP_WEBHOOK_SECRET=""
