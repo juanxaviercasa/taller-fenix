@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowUpRight, LoaderCircle, ShieldCheck } from 'lucide-react';
 
 type CheckoutStatus = { ready: boolean; amount: number | null; currency: 'PEN'; offerUsd: number };
-const defaultClass = 'inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-5 text-lg font-bold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
+const defaultClass = 'inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#6D32DA] to-[#D846A3] px-6 py-5 text-lg font-bold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto';
 
 export function PeruCheckoutButton({ label = 'Inscribirme por US$9', className = '' }: { label?: string; className?: string }) {
   const [status, setStatus] = useState<CheckoutStatus | null>(null);
@@ -41,11 +41,11 @@ export function PeruCheckoutButton({ label = 'Inscribirme por US$9', className =
       {busy ? <LoaderCircle className="size-5 animate-spin" /> : <ArrowUpRight className="size-5" />}
       {busy ? 'Conectando con Mercado Pago…' : enabled ? label : 'Pago en preparación · US$9'}
     </button>
-    <p className="mt-2 text-xs text-slate-400">
+    <p className="mt-2 text-xs text-[#66577B]">
       <ShieldCheck className="mr-1 inline size-4" />
       {enabled ? `El cobro para Perú será de S/${status?.amount} · Yape solo si está disponible en tu checkout` :
         'Integración de Mercado Pago pendiente de activación. No se realizará ningún cargo.'}
     </p>
-    {error && <p role="alert" className="mt-2 text-sm text-rose-300">{error}</p>}
+    {error && <p role="alert" className="mt-2 text-sm text-[#9F2140]">{error}</p>}
   </div>;
 }
