@@ -45,3 +45,20 @@ Realizar el primer taller con el amigo que solicitó aprender, junto a 2–5 col
 - «El taller incluye los seis proyectos del portafolio».
 
 La página actual usa una campaña descriptiva y tipográfica «Matemáticas × IA», **no implica que se haya registrado o elegido una marca corporativa definitiva**.
+
+## Enfoque de copy validado por experiencia propia
+
+El instructor declara que **utiliza sus propias aplicaciones web durante sus clases de matemáticas**, no solo que las desarrolla. Esto es una señal cualitativa de aplicación pedagógica, **no evidencia cuantitativa de mejoras de aprendizaje**.
+
+### Caso destacado: Transformaciones Geométricas
+- **Dolor docente:** enseñar transformaciones exige dibujar numerosas representaciones y puede distraer del razonamiento matemático.
+- **Solución usada en clase:** un visor interactivo para enseñar visualmente, una ruta de aprendizaje y actividades de práctica.
+- **Extensión fuera de pantalla:** materiales imprimibles obtenidos desde el visor.
+- **Resultado que comunica la marca:** clases más participativas y con oportunidades de exploración; **no** garantizar retención ni mejoras de notas sin medición.
+
+La landing presenta este proyecto real como evidencia de enfoque y experiencia. El taller de US$9 enseña un primer módulo interactivo de alcance limitado, no replica toda la aplicación de Transformaciones Geométricas.
+
+### Mensaje central
+«Convierte tus clases de matemáticas en experiencias que despiertan la curiosidad. Aprende a crear aplicaciones interactivas para que tus estudiantes exploren, participen y profundicen en conceptos difíciles».
+
+El criterio principal de adquisición no es «quiero aprender a programar», sino «quiero enseñar un tema complicado con más recursos didácticos y visuales».
