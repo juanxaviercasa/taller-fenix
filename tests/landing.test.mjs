@@ -55,7 +55,7 @@ test('fotografía auténtica del instructor pendiente',()=>{
 });
 test('SEO corresponde a la campaña educativa y su dominio',()=>{
   assert.match(html,/bycoding\.systems\.mx\.com/);
-  assert.match(html,/apps interactivas para tus clases de matemáticas/);
+  assert.match(html,/Menos tiempo dibujando, más tiempo enseñando matemáticas/);
 });
 test('el registro de interesados no está activo sin D1 y consentimiento',()=>{
   const api=readFileSync(new URL('../functions/api/waitlist.ts',import.meta.url),'utf8');
