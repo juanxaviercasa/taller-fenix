@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from 'react';
-import { ArrowUpRight, ChartNoAxesCombined, CircleDot, Compass, GraduationCap, SlidersHorizontal } from 'lucide-react';
+import { ArrowUpRight, ChartNoAxesCombined, CircleDot, Compass, SlidersHorizontal } from 'lucide-react';
 
 type Level = 'secundaria' | 'preuni' | 'universidad';
 type Interval = { min: number; max: number };
