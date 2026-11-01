@@ -548,19 +548,142 @@ const LABEL_HALO = {
   strokeLinejoin: 'round' as const,
 };
 
-function labelPosition(px: number, py: number, placement: PointMarker['labelPlacement'] = 'right') {
-  switch (placement) {
-    case 'left':
-      return { x: px - 10, y: py + 4, anchor: 'end' as const };
-    case 'above':
-      return { x: px, y: py - 12, anchor: 'middle' as const };
-    case 'below':
-      return { x: px, y: py + 19, anchor: 'middle' as const };
-    case 'below-left':
-      return { x: px - 9, y: py + 17, anchor: 'end' as const };
-    default:
-      return { x: px + 10, y: py + 4, anchor: 'start' as const };
+type CalloutBox = { x: number; y: number; w: number; h: number };
+
+function estimatePillWidth(text: string, fontSize = 10.5) {
+  return Math.max(36, Math.round(text.length * (fontSize * 0.61) + 14));
+}
+
+function rectDistToPoint(r: CalloutBox, px: number, py: number) {
+  const dx = Math.max(r.x - px, 0, px - (r.x + r.w));
+  const dy = Math.max(r.y - py, 0, py - (r.y + r.h));
+  return Math.hypot(dx, dy);
+}
+
+function rectsOverlap(a: CalloutBox, b: CalloutBox, pad = 4) {
+  return !(
+    a.x + a.w + pad <= b.x ||
+    b.x + b.w + pad <= a.x ||
+    a.y + a.h + pad <= b.y ||
+    b.y + b.h + pad <= a.y
+  );
+}
+
+/**
+ * Chooses the cleanest callout pill box around (px, py) that avoids curves, step segments,
+ * marker circles, axes, and previously placed callout boxes.
+ */
+export function placeGraphCallout(
+  px: number,
+  py: number,
+  label: string,
+  bounds: { left: number; right: number; top: number; bottom: number },
+  obstaclePoints: [number, number][],
+  circlePoints: [number, number][],
+  placedRects: CalloutBox[],
+  axes: { xZero?: number; yZero?: number },
+  preferred?: PointMarker['labelPlacement']
+): CalloutBox {
+  const w = estimatePillWidth(label, 10.5);
+  const h = 20;
+  const { left, right, top, bottom } = bounds;
+
+  const dirs: {
+    id: NonNullable<PointMarker['labelPlacement']> | 'above-left' | 'above-right' | 'below-right';
+    cx: number;
+    cy: number;
+  }[] = [
+    { id: 'above', cx: px, cy: py - 21 },
+    { id: 'below', cx: px, cy: py + 21 },
+    { id: 'left', cx: px - w / 2 - 14, cy: py },
+    { id: 'right', cx: px + w / 2 + 14, cy: py },
+    { id: 'above-left', cx: px - w / 2 - 10, cy: py - 17 },
+    { id: 'above-right', cx: px + w / 2 + 10, cy: py - 17 },
+    { id: 'below-left', cx: px - w / 2 - 10, cy: py + 17 },
+    { id: 'below-right', cx: px + w / 2 + 10, cy: py + 17 },
+    // Farther ring for dense intersections
+    { id: 'above', cx: px, cy: py - 32 },
+    { id: 'below', cx: px, cy: py + 32 },
+    { id: 'above-left', cx: px - w / 2 - 18, cy: py - 26 },
+    { id: 'above-right', cx: px + w / 2 + 18, cy: py - 26 },
+    { id: 'below-left', cx: px - w / 2 - 18, cy: py + 26 },
+    { id: 'below-right', cx: px + w / 2 + 18, cy: py + 26 },
+  ];
+
+  let bestBox: CalloutBox = {
+    x: Math.min(Math.max(px + 10, left + 5), right - w - 5),
+    y: Math.min(Math.max(py - h / 2, top + 5), bottom - h - 5),
+    w,
+    h,
+  };
+  let bestScore = -Infinity;
+
+  for (const cand of dirs) {
+    const rawX = cand.cx - w / 2;
+    const rawY = cand.cy - h / 2;
+    const x = Math.min(Math.max(rawX, left + 5), right - w - 5);
+    const y = Math.min(Math.max(rawY, top + 5), bottom - h - 5);
+    const box: CalloutBox = { x, y, w, h };
+
+    let score = 0;
+    // Penalty if clamping shifted the box significantly
+    score -= Math.hypot(x - rawX, y - rawY) * 3;
+
+    // Never cover the anchor point itself
+    if (rectDistToPoint(box, px, py) < 6) {
+      score -= 12000;
+    }
+
+    // Avoid previously placed callouts
+    for (const pr of placedRects) {
+      if (rectsOverlap(box, pr, 4)) {
+        score -= 10000;
+      }
+    }
+
+    // Avoid all marker / root / step endpoint circles
+    for (const [mx, my] of circlePoints) {
+      const d = rectDistToPoint(box, mx, my);
+      if (d < 6) score -= 6500 - d * 500;
+    }
+
+    // Avoid sampled curves and step segments
+    let minCurveDist = 40;
+    for (const [ox, oy] of obstaclePoints) {
+      // Ignore curve samples right at the anchor point itself
+      if (Math.hypot(ox - px, oy - py) < 7) continue;
+      const d = rectDistToPoint(box, ox, oy);
+      if (d < minCurveDist) minCurveDist = d;
+      if (d < 2) score -= 520;
+      else if (d < 8) score -= (8 - d) * 38;
+    }
+    score += Math.min(minCurveDist, 24) * 4;
+
+    // Slight penalty for straddling coordinate axes
+    if (axes.xZero !== undefined && box.x < axes.xZero && box.x + box.w > axes.xZero) {
+      score -= 45;
+    }
+    if (axes.yZero !== undefined && box.y < axes.yZero && box.y + box.h > axes.yZero) {
+      score -= 45;
+    }
+
+    // Prefer compact distance to anchor point
+    const centerDist = Math.hypot(box.x + w / 2 - px, box.y + h / 2 - py);
+    score -= centerDist * 0.45;
+
+    // Respect caller hint when clearances are comparable
+    if (preferred && cand.id === preferred) {
+      score += 32;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestBox = box;
+    }
   }
+
+  placedRects.push(bestBox);
+  return bestBox;
 }
 
 function Range({
@@ -734,6 +857,229 @@ function MathGraph({
     return pretty(v, 1);
   };
 
+  // ── Smart Collision-Free Layout Engine for All SVG Labels ──
+  const bounds = { left, right, top, bottom };
+  const axes = {
+    xZero: x.min <= 0 && x.max >= 0 ? sx(0) : undefined,
+    yZero: y.min <= 0 && y.max >= 0 ? sy(0) : undefined,
+  };
+  const obstaclePoints: [number, number][] = [];
+  const sampleFn = (fn?: (x: number) => number) => {
+    if (!fn) return;
+    const n = 96;
+    for (let i = 0; i <= n; i++) {
+      const vx = x.min + ((x.max - x.min) * i) / n;
+      const vy = fn(vx);
+      if (Number.isFinite(vy) && vy >= y.min - 1 && vy <= y.max + 1) {
+        obstaclePoints.push([sx(vx), sy(vy)]);
+      }
+    }
+  };
+  sampleFn(plot);
+  sampleFn(aux);
+  sampleFn(secondaryAux);
+  sampleFn(tangent);
+  sampleFn(secant);
+
+  if (stepSegments) {
+    for (const seg of stepSegments) {
+      const py = sy(seg.y);
+      for (let k = 0; k <= 8; k++) {
+        const vx = seg.x1 + ((seg.x2 - seg.x1) * k) / 8;
+        obstaclePoints.push([sx(vx), py]);
+      }
+    }
+  }
+
+  if (diffTriangle) {
+    const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
+    for (let k = 0; k <= 6; k++) {
+      const t = k / 6;
+      obstaclePoints.push([sx(tx0 + (tx1 - tx0) * t), sy(ty0)]);
+      obstaclePoints.push([sx(tx1), sy(ty0 + (ty1 - ty0) * t)]);
+      if (slope !== undefined) {
+        const dyVal = slope * (tx1 - tx0);
+        obstaclePoints.push([sx(tx1) + 7, sy(ty0 + dyVal * t)]);
+      }
+    }
+  }
+
+  const visibleExtras =
+    extraMarkers?.filter((m) => m.x >= x.min && m.x <= x.max && m.y >= y.min && m.y <= y.max) ?? [];
+  const visibleRoots = roots?.filter((v) => v >= x.min && v <= x.max) ?? [];
+
+  const circlePoints: [number, number][] = [];
+  if (marker && Number.isFinite(marker.y)) circlePoints.push([sx(marker.x), sy(marker.y)]);
+  if (secondaryMarker && Number.isFinite(secondaryMarker.y)) {
+    circlePoints.push([sx(secondaryMarker.x), sy(secondaryMarker.y)]);
+  }
+  for (const m of visibleExtras) circlePoints.push([sx(m.x), sy(m.y)]);
+  for (const r of visibleRoots) circlePoints.push([sx(r), sy(0)]);
+  if (stepSegments) {
+    for (const seg of stepSegments) {
+      circlePoints.push([sx(seg.x1), sy(seg.y)], [sx(seg.x2), sy(seg.y)]);
+    }
+  }
+
+  const placedRects: CalloutBox[] = [];
+  if (axes.yZero !== undefined) {
+    placedRects.push({ x: right - 22, y: axes.yZero - 22, w: 22, h: 18 });
+  }
+  if (axes.xZero !== undefined) {
+    placedRects.push({ x: axes.xZero + 4, y: top, w: 22, h: 18 });
+  }
+
+  // Reserve space for the differential triangle corner readout card first
+  const diffReadout = (() => {
+    if (!diffTriangle) return undefined;
+    const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
+    const deltaX = tx1 - tx0;
+    const deltaY = ty1 - ty0;
+    const dy = slope !== undefined ? slope * deltaX : undefined;
+    const boxW = 204;
+    const boxH = dy !== undefined ? 62 : 36;
+    const corners = [
+      { bx: left + 8, by: top + 8 },
+      { bx: right - boxW - 8, by: top + 8 },
+      { bx: left + 8, by: bottom - boxH - 8 },
+      { bx: right - boxW - 8, by: bottom - boxH - 8 },
+    ];
+    const keyPoints = [
+      [sx(tx0), sy(ty0)],
+      [sx(tx1), sy(ty1)],
+      [sx(tx1), sy(ty0)],
+      ...(dy !== undefined ? [[sx(tx1) + 7, sy(ty0 + dy)]] : []),
+    ].map(([kx, ky]) => [
+      Math.min(Math.max(kx, left), right),
+      Math.min(Math.max(ky, top), bottom),
+    ]);
+    const clearance = (c: { bx: number; by: number }) =>
+      Math.min(
+        ...keyPoints.map(([kx, ky]) => {
+          const ddx = Math.max(c.bx - kx, 0, kx - (c.bx + boxW));
+          const ddy = Math.max(c.by - ky, 0, ky - (c.by + boxH));
+          return Math.hypot(ddx, ddy);
+        })
+      );
+    const best = corners.reduce((acc, c) => (clearance(c) > clearance(acc) ? c : acc));
+    placedRects.push({ x: best.bx, y: best.by, w: boxW, h: boxH });
+    return { bx: best.bx, by: best.by, boxW, boxH, deltaX, deltaY, dy };
+  })();
+
+  // Compute collision-free callout boxes for primary, secondary, and extra markers
+  const markerCallout =
+    marker && Number.isFinite(marker.y) && marker.label
+      ? placeGraphCallout(
+          sx(marker.x),
+          sy(marker.y),
+          marker.label,
+          bounds,
+          obstaclePoints,
+          circlePoints,
+          placedRects,
+          axes,
+          marker.labelPlacement
+        )
+      : undefined;
+
+  const secondaryMarkerCallout =
+    secondaryMarker && Number.isFinite(secondaryMarker.y) && secondaryMarker.label
+      ? placeGraphCallout(
+          sx(secondaryMarker.x),
+          sy(secondaryMarker.y),
+          secondaryMarker.label,
+          bounds,
+          obstaclePoints,
+          circlePoints,
+          placedRects,
+          axes,
+          secondaryMarker.labelPlacement
+        )
+      : undefined;
+
+  const extraMarkerCallouts = visibleExtras.map((m) =>
+    m.label
+      ? placeGraphCallout(
+          sx(m.x),
+          sy(m.y),
+          m.label,
+          bounds,
+          obstaclePoints,
+          circlePoints,
+          placedRects,
+          axes,
+          m.labelPlacement
+        )
+      : undefined
+  );
+
+  // Vertical asymptote pill badges (limit to 2 closest to origin when periodic to avoid clutter)
+  const visibleVAsymptotes = vAsymptotes?.filter((va) => va >= x.min && va <= x.max) ?? [];
+  const badgedVAsymptotes =
+    visibleVAsymptotes.length <= 2
+      ? visibleVAsymptotes
+      : [...visibleVAsymptotes].sort((a, b) => Math.abs(a) - Math.abs(b)).slice(0, 2);
+
+  const vAsymptoteBadges = badgedVAsymptotes.map((va) => {
+    const text = `x = ${pretty(va, 2)}`;
+    const w = estimatePillWidth(text, 9.5);
+    const h = 18;
+    const xLine = sx(va);
+    const candidates: CalloutBox[] = [
+      { x: Math.min(xLine + 6, right - w - 5), y: top + 7, w, h },
+      { x: Math.max(xLine - w - 6, left + 5), y: top + 7, w, h },
+      { x: Math.min(xLine + 6, right - w - 5), y: bottom - h - 7, w, h },
+      { x: Math.max(xLine - w - 6, left + 5), y: bottom - h - 7, w, h },
+    ];
+    let best = candidates[0];
+    let bestScore = -Infinity;
+    for (const c of candidates) {
+      let s = 0;
+      for (const pr of placedRects) if (rectsOverlap(c, pr, 4)) s -= 8000;
+      for (const [ox, oy] of obstaclePoints) {
+        const d = rectDistToPoint(c, ox, oy);
+        if (d < 4) s -= 250;
+      }
+      if (s > bestScore) {
+        bestScore = s;
+        best = c;
+      }
+    }
+    placedRects.push(best);
+    return { va, text, box: best };
+  });
+
+  // Horizontal asymptote pill badges
+  const visibleHAsymptotes = hAsymptotes?.filter((ha) => ha >= y.min && ha <= y.max) ?? [];
+  const hAsymptoteBadges = visibleHAsymptotes.map((ha) => {
+    const text = `y = ${pretty(ha, 2)}`;
+    const w = estimatePillWidth(text, 9.5);
+    const h = 18;
+    const yLine = sy(ha);
+    const candidates: CalloutBox[] = [
+      { x: left + 8, y: Math.max(yLine - h - 5, top + 6), w, h },
+      { x: right - w - 8, y: Math.max(yLine - h - 5, top + 6), w, h },
+      { x: left + 8, y: Math.min(yLine + 5, bottom - h - 6), w, h },
+      { x: right - w - 8, y: Math.min(yLine + 5, bottom - h - 6), w, h },
+    ];
+    let best = candidates[0];
+    let bestScore = -Infinity;
+    for (const c of candidates) {
+      let s = 0;
+      for (const pr of placedRects) if (rectsOverlap(c, pr, 4)) s -= 8000;
+      for (const [ox, oy] of obstaclePoints) {
+        const d = rectDistToPoint(c, ox, oy);
+        if (d < 4) s -= 250;
+      }
+      if (s > bestScore) {
+        bestScore = s;
+        best = c;
+      }
+    }
+    placedRects.push(best);
+    return { ha, text, box: best };
+  });
+
   return (
     <div className="overflow-hidden rounded-[22px] border border-[#E6DDEC] bg-white">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F0E7F6] px-4 py-3">
@@ -814,57 +1160,33 @@ function MathGraph({
             );
           })}
 
-          {/* Vertical asymptotes */}
-          {vAsymptotes
-            ?.filter((va) => va >= x.min && va <= x.max)
-            .map((va, idx) => (
-              <g key={'va-' + idx}>
-                <line
-                  x1={sx(va)}
-                  x2={sx(va)}
-                  y1={top}
-                  y2={bottom}
-                  stroke="#D9468F"
-                  strokeWidth="1.5"
-                  strokeDasharray="5 5"
-                />
-                <text
-                  x={sx(va) + 5}
-                  y={top + 16}
-                  fill="#C4367B"
-                  fontSize="10"
-                  fontWeight="bold"
-                >
-                  x = {pretty(va, 2)}
-                </text>
-              </g>
-            ))}
+          {/* Vertical asymptote lines */}
+          {visibleVAsymptotes.map((va, idx) => (
+            <line
+              key={'va-' + idx}
+              x1={sx(va)}
+              x2={sx(va)}
+              y1={top}
+              y2={bottom}
+              stroke="#D9468F"
+              strokeWidth="1.5"
+              strokeDasharray="5 5"
+            />
+          ))}
 
-          {/* Horizontal asymptotes */}
-          {hAsymptotes
-            ?.filter((ha) => ha >= y.min && ha <= y.max)
-            .map((ha, idx) => (
-              <g key={'ha-' + idx}>
-                <line
-                  x1={left}
-                  x2={right}
-                  y1={sy(ha)}
-                  y2={sy(ha)}
-                  stroke="#0EA5E9"
-                  strokeWidth="1.5"
-                  strokeDasharray="5 5"
-                />
-                <text
-                  x={left + 8}
-                  y={sy(ha) - 6}
-                  fill="#0284C7"
-                  fontSize="10"
-                  fontWeight="bold"
-                >
-                  y = {pretty(ha, 2)}
-                </text>
-              </g>
-            ))}
+          {/* Horizontal asymptote lines */}
+          {visibleHAsymptotes.map((ha, idx) => (
+            <line
+              key={'ha-' + idx}
+              x1={left}
+              x2={right}
+              y1={sy(ha)}
+              y2={sy(ha)}
+              stroke="#0EA5E9"
+              strokeWidth="1.5"
+              strokeDasharray="5 5"
+            />
+          ))}
 
           {/* Auxiliary reference curves */}
           {aux && (
@@ -1002,85 +1324,88 @@ function MathGraph({
           )}
 
           {/* Real roots on X axis */}
-          {roots
-            ?.filter((v) => v >= x.min && v <= x.max)
-            .map((v, i) => (
-              <circle
-                key={'root' + i}
-                cx={sx(v)}
-                cy={sy(0)}
-                r="5.5"
-                stroke="#7742DB"
-                strokeWidth="2.5"
-                fill="white"
-              />
-            ))}
+          {visibleRoots.map((v, i) => (
+            <circle
+              key={'root' + i}
+              cx={sx(v)}
+              cy={sy(0)}
+              r="5.5"
+              stroke="#7742DB"
+              strokeWidth="2.5"
+              fill="white"
+            />
+          ))}
 
-          {/* Extra markers (domain endpoints, critical points, inflection points) */}
-          {extraMarkers
-            ?.filter((m) => m.x >= x.min && m.x <= x.max && m.y >= y.min && m.y <= y.max)
-            .map((m, i) => (
-              <g key={'extra-m-' + i}>
-                <circle
-                  cx={sx(m.x)}
-                  cy={sy(m.y)}
-                  r="5"
-                  stroke={m.color ?? '#6733C7'}
-                  strokeWidth="2.2"
-                  fill={m.hollow ? 'white' : m.color ?? '#6733C7'}
-                />
-                {m.label && (
-                  <text
-                    x={sx(m.x) + 7}
-                    y={sy(m.y) - 6}
-                    fill="#4A3267"
-                    fontSize="10"
-                    fontWeight="bold"
-                    {...LABEL_HALO}
-                  >
-                    {m.label}
-                  </text>
-                )}
-              </g>
-            ))}
-
-          {/* Secondary marker (e.g. Q(x0+h, f(x0+h))) */}
-          {secondaryMarker && Number.isFinite(secondaryMarker.y) && (() => {
-            const pos = labelPosition(
-              sx(secondaryMarker.x),
-              sy(secondaryMarker.y),
-              secondaryMarker.labelPlacement ?? 'right'
-            );
+          {/* Leader lines from markers to their callout pills (drawn beneath circles & pills) */}
+          {visibleExtras.map((m, i) => {
+            const box = extraMarkerCallouts[i];
+            if (!box) return null;
             return (
-              <g>
-                <circle
-                  cx={sx(secondaryMarker.x)}
-                  cy={sy(secondaryMarker.y)}
-                  r="5.5"
-                  stroke="white"
-                  strokeWidth="2"
-                  fill={secondaryMarker.color ?? '#10B981'}
-                />
-                {secondaryMarker.label && (
-                  <text
-                    x={pos.x}
-                    y={pos.y}
-                    textAnchor={pos.anchor}
-                    fill="#0F766E"
-                    fontSize="10.5"
-                    fontWeight="bold"
-                    {...LABEL_HALO}
-                  >
-                    {secondaryMarker.label}
-                  </text>
-                )}
-              </g>
+              <line
+                key={'extra-leader-' + i}
+                x1={sx(m.x)}
+                y1={sy(m.y)}
+                x2={box.x + box.w / 2}
+                y2={box.y + box.h / 2}
+                stroke={m.color ?? '#6733C7'}
+                strokeWidth="1.15"
+                strokeDasharray="2 2"
+                opacity="0.7"
+              />
             );
-          })()}
+          })}
+          {secondaryMarker && Number.isFinite(secondaryMarker.y) && secondaryMarkerCallout && (
+            <line
+              x1={sx(secondaryMarker.x)}
+              y1={sy(secondaryMarker.y)}
+              x2={secondaryMarkerCallout.x + secondaryMarkerCallout.w / 2}
+              y2={secondaryMarkerCallout.y + secondaryMarkerCallout.h / 2}
+              stroke={secondaryMarker.color ?? '#10B981'}
+              strokeWidth="1.2"
+              strokeDasharray="2 2"
+              opacity="0.75"
+            />
+          )}
+          {marker && Number.isFinite(marker.y) && markerCallout && (
+            <line
+              x1={sx(marker.x)}
+              y1={sy(marker.y)}
+              x2={markerCallout.x + markerCallout.w / 2}
+              y2={markerCallout.y + markerCallout.h / 2}
+              stroke={marker.color ?? '#F07856'}
+              strokeWidth="1.2"
+              strokeDasharray="2 2"
+              opacity="0.75"
+            />
+          )}
 
-          {/* Primary marker (Vertex, Tangency Point, Center) */}
+          {/* Extra marker circles */}
+          {visibleExtras.map((m, i) => (
+            <circle
+              key={'extra-m-' + i}
+              cx={sx(m.x)}
+              cy={sy(m.y)}
+              r="5"
+              stroke={m.color ?? '#6733C7'}
+              strokeWidth="2.2"
+              fill={m.hollow ? 'white' : m.color ?? '#6733C7'}
+            />
+          ))}
+
+          {/* Secondary marker circle */}
+          {secondaryMarker && Number.isFinite(secondaryMarker.y) && (
+            <circle
+              cx={sx(secondaryMarker.x)}
+              cy={sy(secondaryMarker.y)}
+              r="5.5"
+              stroke="white"
+              strokeWidth="2"
+              fill={secondaryMarker.color ?? '#10B981'}
+            />
+          )}
+
+          {/* Primary marker projection & circle */}
           {marker && Number.isFinite(marker.y) && (() => {
-            const pos = labelPosition(sx(marker.x), sy(marker.y), marker.labelPlacement ?? 'right');
             const baseY = sy(Math.min(Math.max(0, y.min), y.max));
             return (
               <g>
@@ -1100,24 +1425,11 @@ function MathGraph({
                   strokeWidth="2.5"
                   fill={marker.color ?? '#F07856'}
                 />
-                {marker.label && (
-                  <text
-                    x={pos.x}
-                    y={pos.y}
-                    textAnchor={pos.anchor}
-                    fill="#C2410C"
-                    fontSize="10.5"
-                    fontWeight="bold"
-                    {...LABEL_HALO}
-                  >
-                    {marker.label}
-                  </text>
-                )}
               </g>
             );
           })()}
 
-          {/* Short in-place labels for the differential triangle */}
+          {/* Short in-place labels for the differential triangle (only when legs are spacious) */}
           {diffTriangle && (() => {
             const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
             const px0 = sx(tx0);
@@ -1128,17 +1440,17 @@ function MathGraph({
             const riseUp = pyQ < pyBase;
             return (
               <g fontSize="10.5" fontWeight="bold" {...LABEL_HALO}>
-                {px1 - px0 > 22 && (
+                {px1 - px0 > 34 && (
                   <text x={(px0 + px1) / 2} y={riseUp ? pyBase + 15 : pyBase - 7} textAnchor="middle" fill="#0F766E">
                     Δx
                   </text>
                 )}
-                {Math.abs(pyQ - pyBase) > 16 && (
-                  <text x={px1 - 5} y={(pyBase + pyQ) / 2 + 4} textAnchor="end" fill="#0F766E">
+                {Math.abs(pyQ - pyBase) > 26 && (
+                  <text x={px1 - 6} y={(pyBase + pyQ) / 2 + 4} textAnchor="end" fill="#0F766E">
                     Δy
                   </text>
                 )}
-                {pyTan !== undefined && Math.abs(pyTan - pyBase) > 16 && (
+                {pyTan !== undefined && Math.abs(pyTan - pyBase) > 26 && (
                   <text x={px1 + 14} y={(pyBase + pyTan) / 2 + 4} textAnchor="start" fill="#C2410C">
                     dy
                   </text>
@@ -1146,71 +1458,168 @@ function MathGraph({
               </g>
             );
           })()}
+
+          {/* ── Top Callout Pill Layer (Guaranteed on top of all curves and lines) ── */}
+          {vAsymptoteBadges.map(({ text, box }, idx) => (
+            <g key={'va-pill-' + idx}>
+              <rect
+                x={box.x}
+                y={box.y}
+                width={box.w}
+                height={box.h}
+                rx="5"
+                fill="rgba(255,255,255,0.94)"
+                stroke="#F0B8D4"
+                strokeWidth="1"
+              />
+              <text
+                x={box.x + box.w / 2}
+                y={box.y + 12.5}
+                textAnchor="middle"
+                fill="#C4367B"
+                fontSize="9.5"
+                fontWeight="bold"
+              >
+                {text}
+              </text>
+            </g>
+          ))}
+
+          {hAsymptoteBadges.map(({ text, box }, idx) => (
+            <g key={'ha-pill-' + idx}>
+              <rect
+                x={box.x}
+                y={box.y}
+                width={box.w}
+                height={box.h}
+                rx="5"
+                fill="rgba(255,255,255,0.94)"
+                stroke="#BAE6FD"
+                strokeWidth="1"
+              />
+              <text
+                x={box.x + box.w / 2}
+                y={box.y + 12.5}
+                textAnchor="middle"
+                fill="#0284C7"
+                fontSize="9.5"
+                fontWeight="bold"
+              >
+                {text}
+              </text>
+            </g>
+          ))}
+
+          {visibleExtras.map((m, i) => {
+            const box = extraMarkerCallouts[i];
+            if (!box || !m.label) return null;
+            return (
+              <g key={'extra-pill-' + i}>
+                <rect
+                  x={box.x}
+                  y={box.y}
+                  width={box.w}
+                  height={box.h}
+                  rx="6"
+                  fill="rgba(255,255,255,0.95)"
+                  stroke="#D8C8EC"
+                  strokeWidth="1.15"
+                />
+                <text
+                  x={box.x + box.w / 2}
+                  y={box.y + 13.5}
+                  textAnchor="middle"
+                  fill="#4A3267"
+                  fontSize="10"
+                  fontWeight="bold"
+                >
+                  {m.label}
+                </text>
+              </g>
+            );
+          })}
+
+          {secondaryMarker && Number.isFinite(secondaryMarker.y) && secondaryMarker.label && secondaryMarkerCallout && (
+            <g>
+              <rect
+                x={secondaryMarkerCallout.x}
+                y={secondaryMarkerCallout.y}
+                width={secondaryMarkerCallout.w}
+                height={secondaryMarkerCallout.h}
+                rx="6"
+                fill="rgba(255,255,255,0.96)"
+                stroke="#A7F3D0"
+                strokeWidth="1.2"
+              />
+              <text
+                x={secondaryMarkerCallout.x + secondaryMarkerCallout.w / 2}
+                y={secondaryMarkerCallout.y + 13.5}
+                textAnchor="middle"
+                fill="#0F766E"
+                fontSize="10.5"
+                fontWeight="bold"
+              >
+                {secondaryMarker.label}
+              </text>
+            </g>
+          )}
+
+          {marker && Number.isFinite(marker.y) && marker.label && markerCallout && (
+            <g>
+              <rect
+                x={markerCallout.x}
+                y={markerCallout.y}
+                width={markerCallout.w}
+                height={markerCallout.h}
+                rx="6"
+                fill="rgba(255,255,255,0.96)"
+                stroke="#FED7AA"
+                strokeWidth="1.2"
+              />
+              <text
+                x={markerCallout.x + markerCallout.w / 2}
+                y={markerCallout.y + 13.5}
+                textAnchor="middle"
+                fill="#C2410C"
+                fontSize="10.5"
+                fontWeight="bold"
+              >
+                {marker.label}
+              </text>
+            </g>
+          )}
         </g>
 
-        {/* Differential-triangle readout box, anchored in the plot corner farthest from P */}
-        {diffTriangle && (() => {
-          const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
-          const deltaX = tx1 - tx0;
-          const deltaY = ty1 - ty0;
-          const dy = slope !== undefined ? slope * deltaX : undefined;
-          const boxW = 204;
-          const boxH = dy !== undefined ? 62 : 36;
-          const corners = [
-            { bx: left + 8, by: top + 8 },
-            { bx: right - boxW - 8, by: top + 8 },
-            { bx: left + 8, by: bottom - boxH - 8 },
-            { bx: right - boxW - 8, by: bottom - boxH - 8 },
-          ];
-          // Key geometry that must stay uncovered: P, Q, foot of Δy and tip of dy.
-          const keyPoints = [
-            [sx(tx0), sy(ty0)],
-            [sx(tx1), sy(ty1)],
-            [sx(tx1), sy(ty0)],
-            ...(dy !== undefined ? [[sx(tx1) + 7, sy(ty0 + dy)]] : []),
-          ].map(([kx, ky]) => [
-            Math.min(Math.max(kx, left), right),
-            Math.min(Math.max(ky, top), bottom),
-          ]);
-          const clearance = (c: { bx: number; by: number }) =>
-            Math.min(
-              ...keyPoints.map(([kx, ky]) => {
-                const ddx = Math.max(c.bx - kx, 0, kx - (c.bx + boxW));
-                const ddy = Math.max(c.by - ky, 0, ky - (c.by + boxH));
-                return Math.hypot(ddx, ddy);
-              })
-            );
-          const best = corners.reduce((acc, c) => (clearance(c) > clearance(acc) ? c : acc));
-          return (
-            <g fontSize="10.5" fontWeight="bold">
-              <rect
-                x={best.bx}
-                y={best.by}
-                width={boxW}
-                height={boxH}
-                rx="9"
-                fill="rgba(255,255,255,0.94)"
-                stroke="#E3D6F0"
-              />
-              <text x={best.bx + 10} y={best.by + 15} fill="#0F766E">
-                Δx = h = {pretty(deltaX, 2)}
-              </text>
-              <text x={best.bx + 10} y={best.by + 29} fill="#0F766E">
-                Δy = f(x₀+h) − f(x₀) = {pretty(deltaY, 3)}
-              </text>
-              {dy !== undefined && (
-                <>
-                  <text x={best.bx + 10} y={best.by + 43} fill="#C2410C">
-                    dy = f′(x₀)·Δx = {pretty(dy, 3)}
-                  </text>
-                  <text x={best.bx + 10} y={best.by + 57} fill="#7C3AED">
-                    ε = Δy − dy = {pretty(deltaY - dy, 3)}
-                  </text>
-                </>
-              )}
-            </g>
-          );
-        })()}
+        {/* Differential-triangle readout box, anchored in the plot corner with maximum clearance */}
+        {diffReadout && (
+          <g fontSize="10.5" fontWeight="bold">
+            <rect
+              x={diffReadout.bx}
+              y={diffReadout.by}
+              width={diffReadout.boxW}
+              height={diffReadout.boxH}
+              rx="9"
+              fill="rgba(255,255,255,0.95)"
+              stroke="#E3D6F0"
+            />
+            <text x={diffReadout.bx + 10} y={diffReadout.by + 15} fill="#0F766E">
+              Δx = h = {pretty(diffReadout.deltaX, 2)}
+            </text>
+            <text x={diffReadout.bx + 10} y={diffReadout.by + 29} fill="#0F766E">
+              Δy = f(x₀+h) − f(x₀) = {pretty(diffReadout.deltaY, 3)}
+            </text>
+            {diffReadout.dy !== undefined && (
+              <>
+                <text x={diffReadout.bx + 10} y={diffReadout.by + 43} fill="#C2410C">
+                  dy = f′(x₀)·Δx = {pretty(diffReadout.dy, 3)}
+                </text>
+                <text x={diffReadout.bx + 10} y={diffReadout.by + 57} fill="#7C3AED">
+                  ε = Δy − dy = {pretty(diffReadout.deltaY - diffReadout.dy, 3)}
+                </text>
+              </>
+            )}
+          </g>
+        )}
 
         {y.min <= 0 && y.max >= 0 && (
           <text x={right - 4} y={sy(0) - 9} fill="#9482A7" fontSize="11" textAnchor="end">
@@ -1298,6 +1707,7 @@ export default function MathStudio() {
   const [kShift, setKShift] = useState(-2);
   const [radSign, setRadSign] = useState<1 | -1>(1);
   const [expBase, setExpBase] = useState(2);
+  const [stepFreq, setStepFreq] = useState(1);
 
   // ── 2. Estado Nivel Preuniversitario (Trigonometría Directa e Inversa) ──
   const [trigCategory, setTrigCategory] = useState<TrigCategory>('directas');
@@ -1352,6 +1762,7 @@ export default function MathStudio() {
     setKShift(-2);
     setRadSign(1);
     setExpBase(2);
+    setStepFreq(1);
     setAmplitude(1.5);
     setFrequency(2);
     setPhase(0);
@@ -1583,7 +1994,7 @@ export default function MathStudio() {
     }
 
     // escalon: f(x) = a * floor(b * (x - h)) + k
-    const scaleB = Math.max(0.5, Math.abs(b) < 0.5 ? 1 : Math.abs(b));
+    const scaleB = Math.max(0.5, stepFreq);
     const stepLen = 1 / scaleB;
     const segments: StepSegment[] = [];
     for (let n = -12; n <= 12; n++) {
@@ -1600,7 +2011,12 @@ export default function MathStudio() {
       vAsymptotes: [] as number[],
       hAsymptotes: [] as number[],
       roots: [] as number[],
-      marker: { x: hShift, y: kShift, label: `(${pretty(hShift, 1)}; ${pretty(kShift, 1)})` },
+      marker: {
+        x: hShift,
+        y: kShift,
+        label: `P₀(${pretty(hShift, 1)}; ${pretty(kShift, 1)})`,
+        labelPlacement: 'above' as const,
+      },
       extraMarkers: [],
       stepSegments: segments,
       equation: `f(x) = ${pretty(nonZeroA)}⌊${pretty(scaleB)}(x${signedTerm(-hShift)})⌋${signedTerm(kShift)}`,
@@ -1609,7 +2025,7 @@ export default function MathStudio() {
       line1: `Longitud de cada peldaño: L = 1/${pretty(scaleB)} = ${pretty(stepLen)} · Salto vertical: Δy = ${pretty(Math.abs(nonZeroA))}`,
       line2: `Discontinuidades de salto finito en x = ${pretty(hShift)} + n·(${pretty(stepLen)}) con n ∈ ℤ.`,
     };
-  }, [familyId, a, b, c, hShift, kShift, radSign, expBase, quad]);
+  }, [familyId, a, b, c, hShift, kShift, radSign, expBase, stepFreq, quad]);
 
   // ── Construcción del Modelo Visual de Trigonometría (Directas e Inversas) ──
   const preuniView = useMemo(() => {
@@ -2371,8 +2787,8 @@ export default function MathStudio() {
                   min={0.5}
                   max={2}
                   step={0.5}
-                  value={b < 0.5 ? 1 : b}
-                  onChange={setB}
+                  value={stepFreq}
+                  onChange={setStepFreq}
                 />
                 <Range
                   caption="Desfase horizontal"

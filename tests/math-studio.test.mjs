@@ -29,7 +29,49 @@ const {
   CALCULUS_FUNCTIONS,
   niceTicks,
   fitYRange,
+  placeGraphCallout,
 } = context.exports;
+
+test('placeGraphCallout evita superponerse con peldaños horizontales, curvas y otras etiquetas', () => {
+  const bounds = { left: 52, right: 650, top: 22, bottom: 307 };
+  // Peldaño horizontal desde (380, 200) hacia la derecha hasta (460, 200)
+  const stepObstacles = Array.from({ length: 9 }, (_, k) => [380 + k * 10, 200]);
+  const circles = [[380, 200], [460, 200]];
+  const placed = [];
+  const box1 = placeGraphCallout(
+    380,
+    200,
+    'P₀(1; −2)',
+    bounds,
+    stepObstacles,
+    circles,
+    placed,
+    { xZero: 351, yZero: 164 },
+    'above'
+  );
+  // La caja no debe tapar el punto (380, 200) ni la línea del peldaño y = 200
+  assert.ok(box1.y + box1.h < 196 || box1.y > 204);
+  assert.equal(placed.length, 1);
+
+  // Una segunda etiqueta en el mismo punto se coloca sin solaparse con la primera
+  const box2 = placeGraphCallout(
+    380,
+    200,
+    'Q(1,5; −2)',
+    bounds,
+    stepObstacles,
+    circles,
+    placed,
+    { xZero: 351, yZero: 164 }
+  );
+  const overlap = !(
+    box1.x + box1.w <= box2.x ||
+    box2.x + box2.w <= box1.x ||
+    box1.y + box1.h <= box2.y ||
+    box2.y + box2.h <= box1.y
+  );
+  assert.equal(overlap, false);
+});
 
 test('ejes adaptativos: niceTicks genera pasos 1-2-5 legibles para vistas ampliadas', () => {
   const global = niceTicks(-2.6, 2.6, 6);
