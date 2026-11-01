@@ -39,6 +39,17 @@ type PointMarker = {
   label?: string;
   color?: string;
   hollow?: boolean;
+  /** Placement of the label relative to the point (avoids collisions between P and Q). */
+  labelPlacement?: 'right' | 'left' | 'above' | 'below' | 'below-left';
+};
+
+type DiffTriangle = {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  /** Slope of the tangent at x0 — used to draw the differential dy = f′(x0)·Δx. */
+  slope?: number;
 };
 
 type StepSegment = {
@@ -488,6 +499,70 @@ function signedTerm(v: number, suffix = '', showFirstPlus = false) {
   return `${sign}${pretty(Math.abs(v))}${suffix}`;
 }
 
+/** "Nice" axis ticks (steps 1·10ⁿ, 2·10ⁿ, 5·10ⁿ) for any interval — used by zoomed/auto-fit views. */
+export function niceTicks(min: number, max: number, target = 6) {
+  const span = max - min;
+  if (!(span > 0) || !Number.isFinite(span)) return { ticks: [] as number[], step: 1 };
+  const raw = span / target;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  const ticks: number[] = [];
+  for (let k = Math.ceil(min / step); k * step <= max + 1e-9; k++) {
+    ticks.push(Number((k * step).toFixed(10)));
+  }
+  return { ticks, step };
+}
+
+/** Vertical range that fits the sampled functions, padded and clamped, always showing y = 0. */
+export function fitYRange(
+  fns: ((x: number) => number)[],
+  xMin: number,
+  xMax: number,
+  clamp = 7.5
+): Interval {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (let i = 0; i <= 160; i++) {
+    const vx = xMin + ((xMax - xMin) * i) / 160;
+    for (const fn of fns) {
+      const vy = fn(vx);
+      if (!Number.isFinite(vy)) continue;
+      lo = Math.min(lo, vy);
+      hi = Math.max(hi, vy);
+    }
+  }
+  if (!Number.isFinite(lo) || !Number.isFinite(hi)) return { min: -clamp, max: clamp };
+  const pad = Math.max(0.4, (hi - lo) * 0.12);
+  return {
+    min: Math.max(-clamp, Math.min(lo - pad, -0.6)),
+    max: Math.min(clamp, Math.max(hi + pad, 0.6)),
+  };
+}
+
+/** Text halo so labels stay legible on top of curves and grid lines. */
+const LABEL_HALO = {
+  paintOrder: 'stroke' as const,
+  stroke: '#FEFCFF',
+  strokeWidth: 4,
+  strokeLinejoin: 'round' as const,
+};
+
+function labelPosition(px: number, py: number, placement: PointMarker['labelPlacement'] = 'right') {
+  switch (placement) {
+    case 'left':
+      return { x: px - 10, y: py + 4, anchor: 'end' as const };
+    case 'above':
+      return { x: px, y: py - 12, anchor: 'middle' as const };
+    case 'below':
+      return { x: px, y: py + 19, anchor: 'middle' as const };
+    case 'below-left':
+      return { x: px - 9, y: py + 17, anchor: 'end' as const };
+    default:
+      return { x: px + 10, y: py + 4, anchor: 'start' as const };
+  }
+}
+
 function Range({
   symbol,
   caption,
@@ -566,7 +641,7 @@ function MathGraph({
   hAsymptotes?: number[];
   stepSegments?: StepSegment[];
   riemannRects?: RiemannRect[];
-  diffTriangle?: { x0: number; y0: number; x1: number; y1: number };
+  diffTriangle?: DiffTriangle;
   yPiTicks?: boolean;
   ariaDescription?: string;
 }) {
@@ -616,19 +691,30 @@ function MathGraph({
   };
 
   const isTrigRadianX = level === 'preuni' && x.max > 5;
-  const xTicks = isTrigRadianX
-    ? [-2 * Math.PI, -Math.PI, 0, Math.PI, 2 * Math.PI]
-    : [-4, -3, -2, -1, 0, 1, 2, 3, 4].filter((v) => v >= x.min && v <= x.max);
+  // University views are auto-fitted / zoomable, so they use adaptive "nice" ticks on both axes.
+  const adaptive = level === 'universidad';
+  const xNice = niceTicks(x.min, x.max, 6);
+  const yNice = niceTicks(y.min, y.max, 6);
+  const tickDecimals = (step: number) => (step >= 1 ? 0 : step >= 0.1 ? 1 : 2);
 
-  const yTicks = yPiTicks
-    ? [-Math.PI, -Math.PI / 2, 0, Math.PI / 2, Math.PI].filter((v) => v >= y.min - 0.1 && v <= y.max + 0.1)
-    : level === 'preuni'
-      ? [-3, -2, -1, 0, 1, 2, 3].filter((v) => v >= y.min && v <= y.max)
-      : [-8, -6, -4, -3, -2, 0, 2, 3, 4, 6, 8].filter(
-          (v) => v >= y.min && v <= y.max && (y.max - y.min > 12 ? v % 3 === 0 : v % 2 === 0)
-        );
+  const xTicks = adaptive
+    ? xNice.ticks
+    : isTrigRadianX
+      ? [-2 * Math.PI, -Math.PI, 0, Math.PI, 2 * Math.PI]
+      : [-4, -3, -2, -1, 0, 1, 2, 3, 4].filter((v) => v >= x.min && v <= x.max);
+
+  const yTicks = adaptive
+    ? yNice.ticks
+    : yPiTicks
+      ? [-Math.PI, -Math.PI / 2, 0, Math.PI / 2, Math.PI].filter((v) => v >= y.min - 0.1 && v <= y.max + 0.1)
+      : level === 'preuni'
+        ? [-3, -2, -1, 0, 1, 2, 3].filter((v) => v >= y.min && v <= y.max)
+        : [-8, -6, -4, -3, -2, 0, 2, 3, 4, 6, 8].filter(
+            (v) => v >= y.min && v <= y.max && (y.max - y.min > 12 ? v % 3 === 0 : v % 2 === 0)
+          );
 
   const xLabel = (v: number) => {
+    if (adaptive) return pretty(v, tickDecimals(xNice.step));
     if (!isTrigRadianX) return String(v);
     if (v === 0) return '0';
     if (Math.abs(v - Math.PI) < 1e-4) return 'π';
@@ -638,6 +724,7 @@ function MathGraph({
   };
 
   const yLabel = (v: number) => {
+    if (adaptive) return pretty(v, tickDecimals(yNice.step));
     if (!yPiTicks) return String(v);
     if (Math.abs(v) < 1e-4) return '0';
     if (Math.abs(v - Math.PI / 2) < 1e-4) return 'π/2';
@@ -696,12 +783,13 @@ function MathGraph({
           </g>
         ))}
 
-        {/* Coordinate axes */}
-        <path
-          d={'M' + sx(0) + ',' + top + ' V' + bottom + ' M' + left + ',' + sy(0) + ' H' + right}
-          stroke="#B8A7C9"
-          strokeWidth="1.5"
-        />
+        {/* Coordinate axes (only drawn when visible — zoomed views may exclude x = 0 or y = 0) */}
+        {x.min <= 0 && x.max >= 0 && (
+          <path d={'M' + sx(0) + ',' + top + ' V' + bottom} stroke="#B8A7C9" strokeWidth="1.5" />
+        )}
+        {y.min <= 0 && y.max >= 0 && (
+          <path d={'M' + left + ',' + sy(0) + ' H' + right} stroke="#B8A7C9" strokeWidth="1.5" />
+        )}
 
         <g clipPath={'url(#' + clipId + ')'}>
           {/* Riemann rectangles */}
@@ -841,29 +929,55 @@ function MathGraph({
             </g>
           ))}
 
-          {/* Differential triangle (Δx, Δy) */}
-          {diffTriangle && (
-            <g>
-              <line
-                x1={sx(diffTriangle.x0)}
-                x2={sx(diffTriangle.x1)}
-                y1={sy(diffTriangle.y0)}
-                y2={sy(diffTriangle.y0)}
-                stroke="#10B981"
-                strokeWidth="1.8"
-                strokeDasharray="3 3"
-              />
-              <line
-                x1={sx(diffTriangle.x1)}
-                x2={sx(diffTriangle.x1)}
-                y1={sy(diffTriangle.y0)}
-                y2={sy(diffTriangle.y1)}
-                stroke="#10B981"
-                strokeWidth="1.8"
-                strokeDasharray="3 3"
-              />
-            </g>
-          )}
+          {/* Differential triangle: Δx (horizontal leg), Δy (secant rise) and dy (tangent rise) */}
+          {diffTriangle && (() => {
+            const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
+            const px0 = sx(tx0);
+            const px1 = sx(tx1);
+            const pyBase = sy(ty0);
+            const pyQ = sy(ty1);
+            const dyValue = slope !== undefined ? slope * (tx1 - tx0) : undefined;
+            const pyTan = dyValue !== undefined ? sy(ty0 + dyValue) : undefined;
+            const dyX = px1 + 7; // dy is drawn slightly to the right so it never hides Δy
+            return (
+              <g>
+                <polygon
+                  points={`${px0},${pyBase} ${px1},${pyBase} ${px1},${pyQ}`}
+                  fill="rgba(16, 185, 129, 0.14)"
+                />
+                {pyTan !== undefined && (
+                  <polygon
+                    points={`${px0},${pyBase} ${px1},${pyBase} ${px1},${pyTan}`}
+                    fill="rgba(240, 120, 86, 0.08)"
+                  />
+                )}
+                {/* Δx leg */}
+                <line x1={px0} x2={px1} y1={pyBase} y2={pyBase} stroke="#0F9F6E" strokeWidth="2" />
+                {/* Δy leg */}
+                <line x1={px1} x2={px1} y1={pyBase} y2={pyQ} stroke="#0F9F6E" strokeWidth="2.6" />
+                {/* dy leg with end caps */}
+                {pyTan !== undefined && (
+                  <g stroke="#E8613C" strokeWidth="2.6" strokeLinecap="round">
+                    <line x1={dyX} x2={dyX} y1={pyBase} y2={pyTan} />
+                    <line x1={dyX - 3.5} x2={dyX + 3.5} y1={pyBase} y2={pyBase} />
+                    <line x1={dyX - 3.5} x2={dyX + 3.5} y1={pyTan} y2={pyTan} />
+                  </g>
+                )}
+                {/* Error ε = Δy − dy between the tangent and the curve at x0 + h */}
+                {pyTan !== undefined && (
+                  <line
+                    x1={px1}
+                    x2={px1}
+                    y1={pyTan}
+                    y2={pyQ}
+                    stroke="#8B5CF6"
+                    strokeWidth="1.4"
+                    strokeDasharray="2 3"
+                  />
+                )}
+              </g>
+            );
+          })()}
 
           {/* Secant line */}
           {secant && (
@@ -922,6 +1036,7 @@ function MathGraph({
                     fill="#4A3267"
                     fontSize="10"
                     fontWeight="bold"
+                    {...LABEL_HALO}
                   >
                     {m.label}
                   </text>
@@ -930,70 +1045,183 @@ function MathGraph({
             ))}
 
           {/* Secondary marker (e.g. Q(x0+h, f(x0+h))) */}
-          {secondaryMarker && Number.isFinite(secondaryMarker.y) && (
-            <g>
-              <circle
-                cx={sx(secondaryMarker.x)}
-                cy={sy(secondaryMarker.y)}
-                r="5.5"
-                stroke="white"
-                strokeWidth="2"
-                fill={secondaryMarker.color ?? '#10B981'}
-              />
-              {secondaryMarker.label && (
-                <text
-                  x={sx(secondaryMarker.x) + 8}
-                  y={sy(secondaryMarker.y) - 6}
-                  fill="#0F766E"
-                  fontSize="10"
-                  fontWeight="bold"
-                >
-                  {secondaryMarker.label}
-                </text>
-              )}
-            </g>
-          )}
+          {secondaryMarker && Number.isFinite(secondaryMarker.y) && (() => {
+            const pos = labelPosition(
+              sx(secondaryMarker.x),
+              sy(secondaryMarker.y),
+              secondaryMarker.labelPlacement ?? 'right'
+            );
+            return (
+              <g>
+                <circle
+                  cx={sx(secondaryMarker.x)}
+                  cy={sy(secondaryMarker.y)}
+                  r="5.5"
+                  stroke="white"
+                  strokeWidth="2"
+                  fill={secondaryMarker.color ?? '#10B981'}
+                />
+                {secondaryMarker.label && (
+                  <text
+                    x={pos.x}
+                    y={pos.y}
+                    textAnchor={pos.anchor}
+                    fill="#0F766E"
+                    fontSize="10.5"
+                    fontWeight="bold"
+                    {...LABEL_HALO}
+                  >
+                    {secondaryMarker.label}
+                  </text>
+                )}
+              </g>
+            );
+          })()}
 
           {/* Primary marker (Vertex, Tangency Point, Center) */}
-          {marker && Number.isFinite(marker.y) && (
-            <g>
-              <line
-                x1={sx(marker.x)}
-                x2={sx(marker.x)}
-                y1={sy(0)}
-                y2={sy(marker.y)}
-                stroke="#BFA8E6"
-                strokeDasharray="4 5"
-              />
-              <circle
-                cx={sx(marker.x)}
-                cy={sy(marker.y)}
-                r="6"
-                stroke="white"
-                strokeWidth="2.5"
-                fill={marker.color ?? '#F07856'}
-              />
-              {marker.label && (
-                <text
-                  x={sx(marker.x) + 8}
-                  y={sy(marker.y) + 4}
-                  fill="#C2410C"
-                  fontSize="10"
-                  fontWeight="bold"
-                >
-                  {marker.label}
-                </text>
-              )}
-            </g>
-          )}
+          {marker && Number.isFinite(marker.y) && (() => {
+            const pos = labelPosition(sx(marker.x), sy(marker.y), marker.labelPlacement ?? 'right');
+            const baseY = sy(Math.min(Math.max(0, y.min), y.max));
+            return (
+              <g>
+                <line
+                  x1={sx(marker.x)}
+                  x2={sx(marker.x)}
+                  y1={baseY}
+                  y2={sy(marker.y)}
+                  stroke="#BFA8E6"
+                  strokeDasharray="4 5"
+                />
+                <circle
+                  cx={sx(marker.x)}
+                  cy={sy(marker.y)}
+                  r="6"
+                  stroke="white"
+                  strokeWidth="2.5"
+                  fill={marker.color ?? '#F07856'}
+                />
+                {marker.label && (
+                  <text
+                    x={pos.x}
+                    y={pos.y}
+                    textAnchor={pos.anchor}
+                    fill="#C2410C"
+                    fontSize="10.5"
+                    fontWeight="bold"
+                    {...LABEL_HALO}
+                  >
+                    {marker.label}
+                  </text>
+                )}
+              </g>
+            );
+          })()}
+
+          {/* Short in-place labels for the differential triangle */}
+          {diffTriangle && (() => {
+            const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
+            const px0 = sx(tx0);
+            const px1 = sx(tx1);
+            const pyBase = sy(ty0);
+            const pyQ = sy(ty1);
+            const pyTan = slope !== undefined ? sy(ty0 + slope * (tx1 - tx0)) : undefined;
+            const riseUp = pyQ < pyBase;
+            return (
+              <g fontSize="10.5" fontWeight="bold" {...LABEL_HALO}>
+                {px1 - px0 > 22 && (
+                  <text x={(px0 + px1) / 2} y={riseUp ? pyBase + 15 : pyBase - 7} textAnchor="middle" fill="#0F766E">
+                    Δx
+                  </text>
+                )}
+                {Math.abs(pyQ - pyBase) > 16 && (
+                  <text x={px1 - 5} y={(pyBase + pyQ) / 2 + 4} textAnchor="end" fill="#0F766E">
+                    Δy
+                  </text>
+                )}
+                {pyTan !== undefined && Math.abs(pyTan - pyBase) > 16 && (
+                  <text x={px1 + 14} y={(pyBase + pyTan) / 2 + 4} textAnchor="start" fill="#C2410C">
+                    dy
+                  </text>
+                )}
+              </g>
+            );
+          })()}
         </g>
 
-        <text x={right - 4} y={sy(0) - 9} fill="#9482A7" fontSize="11" textAnchor="end">
-          x
-        </text>
-        <text x={sx(0) + 10} y={top + 12} fill="#9482A7" fontSize="11">
-          y
-        </text>
+        {/* Differential-triangle readout box, anchored in the plot corner farthest from P */}
+        {diffTriangle && (() => {
+          const { x0: tx0, y0: ty0, x1: tx1, y1: ty1, slope } = diffTriangle;
+          const deltaX = tx1 - tx0;
+          const deltaY = ty1 - ty0;
+          const dy = slope !== undefined ? slope * deltaX : undefined;
+          const boxW = 204;
+          const boxH = dy !== undefined ? 62 : 36;
+          const corners = [
+            { bx: left + 8, by: top + 8 },
+            { bx: right - boxW - 8, by: top + 8 },
+            { bx: left + 8, by: bottom - boxH - 8 },
+            { bx: right - boxW - 8, by: bottom - boxH - 8 },
+          ];
+          // Key geometry that must stay uncovered: P, Q, foot of Δy and tip of dy.
+          const keyPoints = [
+            [sx(tx0), sy(ty0)],
+            [sx(tx1), sy(ty1)],
+            [sx(tx1), sy(ty0)],
+            ...(dy !== undefined ? [[sx(tx1) + 7, sy(ty0 + dy)]] : []),
+          ].map(([kx, ky]) => [
+            Math.min(Math.max(kx, left), right),
+            Math.min(Math.max(ky, top), bottom),
+          ]);
+          const clearance = (c: { bx: number; by: number }) =>
+            Math.min(
+              ...keyPoints.map(([kx, ky]) => {
+                const ddx = Math.max(c.bx - kx, 0, kx - (c.bx + boxW));
+                const ddy = Math.max(c.by - ky, 0, ky - (c.by + boxH));
+                return Math.hypot(ddx, ddy);
+              })
+            );
+          const best = corners.reduce((acc, c) => (clearance(c) > clearance(acc) ? c : acc));
+          return (
+            <g fontSize="10.5" fontWeight="bold">
+              <rect
+                x={best.bx}
+                y={best.by}
+                width={boxW}
+                height={boxH}
+                rx="9"
+                fill="rgba(255,255,255,0.94)"
+                stroke="#E3D6F0"
+              />
+              <text x={best.bx + 10} y={best.by + 15} fill="#0F766E">
+                Δx = h = {pretty(deltaX, 2)}
+              </text>
+              <text x={best.bx + 10} y={best.by + 29} fill="#0F766E">
+                Δy = f(x₀+h) − f(x₀) = {pretty(deltaY, 3)}
+              </text>
+              {dy !== undefined && (
+                <>
+                  <text x={best.bx + 10} y={best.by + 43} fill="#C2410C">
+                    dy = f′(x₀)·Δx = {pretty(dy, 3)}
+                  </text>
+                  <text x={best.bx + 10} y={best.by + 57} fill="#7C3AED">
+                    ε = Δy − dy = {pretty(deltaY - dy, 3)}
+                  </text>
+                </>
+              )}
+            </g>
+          );
+        })()}
+
+        {y.min <= 0 && y.max >= 0 && (
+          <text x={right - 4} y={sy(0) - 9} fill="#9482A7" fontSize="11" textAnchor="end">
+            x
+          </text>
+        )}
+        {x.min <= 0 && x.max >= 0 && (
+          <text x={sx(0) + 10} y={top + 12} fill="#9482A7" fontSize="11">
+            y
+          </text>
+        )}
       </svg>
 
       {/* Dynamic Legend */}
@@ -1025,6 +1253,18 @@ function MathGraph({
             <span className="inline-flex items-center gap-1.5">
               <i className="h-0.5 w-4 rounded border-t-2 border-dashed border-[#10B981]" />
               Secante
+            </span>
+          )}
+          {diffTriangle && (
+            <span className="inline-flex items-center gap-1.5 text-[#0F766E]">
+              <i className="h-2.5 w-4 rounded-sm border border-[#0F9F6E] bg-[#10B981]/20" />
+              Triángulo Δx·Δy
+            </span>
+          )}
+          {diffTriangle?.slope !== undefined && (
+            <span className="inline-flex items-center gap-1.5 text-[#C2410C]">
+              <i className="h-3 w-0.5 rounded bg-[#E8613C]" />
+              Diferencial dy
             </span>
           )}
           {vAsymptotes && vAsymptotes.length > 0 && (
@@ -1077,6 +1317,7 @@ export default function MathStudio() {
   const [calcFnId, setCalcFnId] = useState<CalculusFnId>('cubica');
   const [x0, setX0] = useState(0.8);
   const [h, setH] = useState(0.5);
+  const [derivView, setDerivView] = useState<'global' | 'lupa'>('global');
   const [intA, setIntA] = useState(-1.5);
   const [intB, setIntB] = useState(1.5);
   const [riemannN, setRiemannN] = useState(12);
@@ -1121,6 +1362,7 @@ export default function MathStudio() {
     setInvShiftD(0);
     setX0(0.8);
     setH(0.5);
+    setDerivView('global');
     setIntA(-1.5);
     setIntB(1.5);
     setRiemannN(12);
@@ -1514,15 +1756,36 @@ export default function MathStudio() {
 
   // ── Construcción del Modelo Visual de Cálculo Universitario ──
   const universidadView = useMemo(() => {
-    const dom: GraphDomain = { x: { min: -2.6, max: 2.6 }, y: { min: -7.5, max: 7.5 } };
     const fnObj = activeCalcFn;
+    const xGlobal: Interval = { min: -2.6, max: 2.6 };
+    // Auto-fit the vertical window to the curves actually displayed (clamped to ±7.5).
+    const fitted =
+      calcMode === 'curva'
+        ? fitYRange([fnObj.f, fnObj.df, fnObj.d2f], xGlobal.min, xGlobal.max)
+        : fitYRange([fnObj.f], xGlobal.min, xGlobal.max);
+    const dom: GraphDomain = { x: xGlobal, y: fitted };
 
     if (calcMode === 'derivada') {
       const x1 = x0 + h;
       const y0 = calculus.y;
       const y1 = calculus.yNext;
+      const yTan = y0 + calculus.dy;
+      let derivDomain = dom;
+      if (derivView === 'lupa') {
+        // Magnifier centred on the segment PQ: shows local linearity and a readable Δx·Δy·dy triangle.
+        const halfX = Math.max(0.45, h * 0.95);
+        const cx = x0 + h / 2;
+        const lo = Math.min(y0, y1, yTan);
+        const hi = Math.max(y0, y1, yTan);
+        const halfY = Math.max(0.6 * (hi - lo) + 0.15, halfX * 0.55);
+        const cy = (lo + hi) / 2;
+        derivDomain = {
+          x: { min: cx - halfX, max: cx + halfX },
+          y: { min: cy - halfY, max: cy + halfY },
+        };
+      }
       return {
-        domain: dom,
+        domain: derivDomain,
         plot: fnObj.f,
         aux: undefined,
         auxLabel: undefined,
@@ -1530,11 +1793,24 @@ export default function MathStudio() {
         secondaryAuxLabel: undefined,
         tangent: (x: number) => y0 + calculus.exact * (x - x0),
         secant: (x: number) => y0 + calculus.approximate * (x - x0),
-        marker: { x: x0, y: y0, label: `P(${pretty(x0, 1)}; ${pretty(y0, 1)})`, color: '#F07856' },
-        secondaryMarker: { x: x1, y: y1, label: `Q(x₀+h)`, color: '#10B981' },
+        marker: {
+          x: x0,
+          y: y0,
+          label: `P(${pretty(x0, 2)}; ${pretty(y0, 2)})`,
+          color: '#F07856',
+          labelPlacement: 'left' as const,
+        },
+        secondaryMarker: {
+          x: x1,
+          y: y1,
+          label: `Q(${pretty(x1, 2)}; ${pretty(y1, 2)})`,
+          color: '#10B981',
+          // Rising secant → label above Q; falling secant → below-left, away from the Δy leg.
+          labelPlacement: y1 >= y0 ? ('above' as const) : ('below-left' as const),
+        },
         extraMarkers: [] as PointMarker[],
         riemannRects: undefined,
-        diffTriangle: { x0, y0, x1, y1 },
+        diffTriangle: { x0, y0, x1, y1, slope: calculus.exact },
       };
     }
 
@@ -1582,13 +1858,19 @@ export default function MathStudio() {
       secondaryAuxLabel: '1.ª derivada f′(x)',
       tangent: (x: number) => calculus.y + calculus.exact * (x - x0),
       secant: undefined,
-      marker: { x: x0, y: calculus.y, label: `P(${pretty(x0, 1)})`, color: '#F07856' },
+      marker: {
+        x: x0,
+        y: calculus.y,
+        label: `P(${pretty(x0, 1)})`,
+        color: '#F07856',
+        labelPlacement: 'below' as const,
+      },
       secondaryMarker: undefined,
       extraMarkers: [...critMarkers, ...inflMarkers],
       riemannRects: undefined,
       diffTriangle: undefined,
     };
-  }, [calcMode, activeCalcFn, x0, h, intA, intB, calculus, riemann]);
+  }, [calcMode, activeCalcFn, x0, h, intA, intB, calculus, riemann, derivView]);
 
   return (
     <section
@@ -2215,6 +2497,38 @@ export default function MathStudio() {
                   value={h}
                   onChange={setH}
                 />
+                <div className="rounded-2xl border border-[#E8E1F3] bg-white p-3">
+                  <span className="mb-1.5 block text-[11px] font-semibold text-[#625374]">
+                    Encuadre del plano
+                  </span>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {(
+                      [
+                        ['global', 'Vista global'],
+                        ['lupa', 'Lupa sobre P y Q'],
+                      ] as const
+                    ).map(([vId, vLabel]) => (
+                      <button
+                        key={vId}
+                        type="button"
+                        aria-pressed={derivView === vId}
+                        onClick={() => setDerivView(vId)}
+                        className={
+                          'rounded-lg border px-2 py-1.5 text-[11px] font-bold transition ' +
+                          (derivView === vId
+                            ? 'border-[#7E42DF] bg-[#EFE5FF] text-[#5B26B8]'
+                            : 'border-[#E5DAEF] bg-white text-[#69587A] hover:bg-[#F7F2FC]')
+                        }
+                      >
+                        {vLabel}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-1.5 text-[10px] leading-4 text-[#8A7B97]">
+                    La lupa amplía el entorno de P: al reducir h, la curva se confunde con su recta
+                    tangente (linealidad local).
+                  </p>
+                </div>
               </>
             )}
 
@@ -2363,6 +2677,13 @@ export default function MathStudio() {
                 <p className="mt-1 text-xs leading-5 text-[#574769]">
                   Diferencial dy = {pretty(calculus.dy, 3)} vs. Δy = {pretty(calculus.deltaY, 3)} ·
                   Error |f′ − m_sec| = {pretty(Math.abs(calculus.exact - calculus.approximate), 3)}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#574769]">
+                  Resto ε = Δy − dy = {pretty(calculus.deltaY - calculus.dy, 3)} · ε/h ={' '}
+                  <strong className="text-[#7C3AED]">
+                    {pretty((calculus.deltaY - calculus.dy) / h, 3)}
+                  </strong>{' '}
+                  → 0 cuando h → 0 (f es diferenciable en x₀)
                 </p>
               </>
             )}

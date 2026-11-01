@@ -27,7 +27,41 @@ const {
   INVERSE_TRIG_FNS,
   CALCULUS_MODES,
   CALCULUS_FUNCTIONS,
+  niceTicks,
+  fitYRange,
 } = context.exports;
+
+test('ejes adaptativos: niceTicks genera pasos 1-2-5 legibles para vistas ampliadas', () => {
+  const global = niceTicks(-2.6, 2.6, 6);
+  assert.equal(global.step, 1);
+  assert.deepEqual(Array.from(global.ticks), [-2, -1, 0, 1, 2]);
+
+  const lupa = niceTicks(0.575, 1.525, 6);
+  assert.equal(lupa.step, 0.2);
+  assert.deepEqual(Array.from(lupa.ticks), [0.6, 0.8, 1, 1.2, 1.4]);
+});
+
+test('triángulo diferencial: ε = Δy − dy es de orden h² (ε/h → 0)', () => {
+  const ratios = [0.5, 0.1, 0.01].map((h) => {
+    const r = calculusFacts(0.8, h, 'cubica');
+    assert.ok(Math.abs(r.dy - r.exact * h) < 1e-12);
+    return Math.abs((r.deltaY - r.dy) / h);
+  });
+  assert.ok(ratios[0] > ratios[1] && ratios[1] > ratios[2]);
+  assert.ok(ratios[2] < 0.03);
+});
+
+test('fitYRange ajusta la ventana vertical a la curva e incluye siempre y = 0', () => {
+  const agnesi = CALCULUS_FUNCTIONS.find((f) => f.id === 'agnesi');
+  const r = fitYRange([agnesi.f], -2.6, 2.6);
+  assert.ok(r.min <= -0.6 && r.min > -1.5);
+  assert.ok(r.max >= 4 && r.max < 5);
+
+  const cubic = CALCULUS_FUNCTIONS.find((f) => f.id === 'cubica');
+  const rc = fitYRange([cubic.f], -2.6, 2.6);
+  assert.equal(rc.min, -7.5);
+  assert.equal(rc.max, 7.5);
+});
 
 test('parábola: discriminante, vértice y raíces comprobables (a > 0 y a < 0)', () => {
   const r = quadraticFacts(1, -2, -3);
