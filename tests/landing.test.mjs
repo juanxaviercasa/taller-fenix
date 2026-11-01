@@ -49,13 +49,24 @@ test('los 7 proyectos remiten a capturas documentadas locales',()=>{
     assert.ok(existsSync(new URL('../public/projects/captures/'+name+'.webp',import.meta.url)));
   }
 });
-test('fotografía auténtica del instructor pendiente',()=>{
-  assert.match(app,/function PortraitPlaceholder/);
-  assert.match(app,/Fotografía real del instructor/);
+test('fotografía auténtica del instructor incorporada',()=>{
+  assert.match(app,/InstructorPortrait/);
+  assert.match(app,/xavier-cabello\.webp/);
+  assert.ok(existsSync(new URL('../public/instructor/xavier-cabello.webp',import.meta.url)));
+});
+test('imágenes y mockups de alta conversión integrados',()=>{
+  assert.match(app,/bundle-kit-taller-docente\.webp/);
+  assert.ok(existsSync(new URL('../public/workshop/bundle-kit-taller-docente.webp',import.meta.url)));
+  for(const stage of ['etapa-01-modelo-matematico','etapa-02-interaccion-ia','etapa-03-publicacion-web']){
+    assert.match(app,new RegExp(stage+'\\.webp'));
+    assert.ok(existsSync(new URL('../public/metodo/'+stage+'.webp',import.meta.url)));
+  }
 });
 test('SEO corresponde a la campaña educativa y su dominio',()=>{
-  assert.match(html,/bycoding\.systems\.mx\.com/);
+  assert.match(html,/vibecoding\.sistemazenit\.com/);
+  assert.match(html,/og-matematicas-ia\.png/);
   assert.match(html,/Menos tiempo dibujando, más tiempo enseñando matemáticas/);
+  assert.ok(existsSync(new URL('../public/og-matematicas-ia.png',import.meta.url)));
 });
 test('el registro de interesados no está activo sin D1 y consentimiento',()=>{
   const api=readFileSync(new URL('../functions/api/waitlist.ts',import.meta.url),'utf8');
