@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronDown,
+  ArrowRight, Check, CheckCircle2, ChevronDown,
   ExternalLink, GraduationCap, Lightbulb, MonitorPlay, ShieldCheck,
   Wrench
 } from 'lucide-react';
@@ -19,7 +19,7 @@ const projects:Project[]=[
   {name:'Todo Lima',image:'todo-lima.webp',description:'Directorio digital para explorar negocios y servicios.',skill:'Búsqueda e interfaces web',url:'https://todolima.com/',group:'Otros'}
 ];
 const faq:[string,string][]=[
-  ['¿Este taller es para secundaria, academia o universidad?', 'Está orientado a docentes de secundaria alta, preparadores preuniversitarios y profesores de primeros cursos universitarios. La portada muestra tres ejemplos de nivel, pero el taller enseña a construir un primer módulo guiado, no tres sistemas completos.'],
+  ['¿Este taller es para secundaria, academia o universidad?', 'Está orientado a docentes de secundaria, preparadores preuniversitarios y profesores de primeros cursos universitarios. La portada muestra tres ejemplos de nivel, pero el taller enseña a construir un primer módulo guiado, no tres sistemas completos.'],
   ['¿Una aplicación garantiza mayor atención o retención del aprendizaje?', 'No. La interacción puede favorecer la participación y la comprensión cuando está bien integrada en una clase. El resultado depende de las actividades, las preguntas del docente, el contexto y la práctica del estudiante. Aquí aprenderás a diseñar recursos con esa intención pedagógica.'],
   ['¿Necesito saber programar?', 'No necesitas dominar un lenguaje al comenzar. Sí necesitarás usar una computadora, formular instrucciones y verificar el contenido matemático que genere la IA.'],
   ['¿Qué construiré exactamente por US$9?', 'Un primer módulo de exploración matemática con un gráfico o representación que responde a controles vinculados a sus parámetros. Aprenderás a comprobar fórmulas y corregir errores. El alcance concreto se comunicará antes de abrir pagos.'],
@@ -35,12 +35,6 @@ const steps=[
   {n:'02',time:'55 min',title:'Dar vida a la representación',desc:'Conecta controles a una gráfica o visualización. Examina los cambios y corrige errores de la lógica generada con IA.',outcome:'Un módulo interactivo verificable',icon:Wrench,image:'/metodo/etapa-02-interaccion-ia.webp'},
   {n:'03',time:'30 min',title:'Probar y preparar la publicación',desc:'Ensaya casos límite, mejora la experiencia de uso y prepara el proyecto para compartirlo desde el navegador.',outcome:'Prototipo y ruta de publicación',icon:MonitorPlay,image:'/metodo/etapa-03-publicacion-web.webp'}
 ];
-function Brand(){
-  return <a href="#inicio" className="inline-flex flex-col border-l-[3px] border-[#713BD7] pl-3.5" aria-label="Inicio del laboratorio matemático con IA">
-    <span className="font-display text-[17px] font-extrabold tracking-[-.055em] text-[#27173C] sm:text-lg">MATEMÁTICAS <span className="text-[#7847D6]">× IA</span></span>
-    <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[.13em] text-[#81728B]">Aplicaciones interactivas · Taller 01</span>
-  </a>;
-}
 function Heading({eyebrow,title,body}:{eyebrow:string;title:string;body?:string}){
  return <div className="max-w-3xl">
   <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">{eyebrow}</p>
@@ -67,18 +61,14 @@ export default function App(){
  const [more,setMore]=useState(false);
  return <div id="inicio" className="min-h-screen overflow-x-clip bg-[#FCFAFF] font-sans text-[#2D1A42]">
   <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-4">Saltar al contenido</a>
-  <div className="bg-[#39205C] px-4 py-2.5 text-center text-[11px] font-extrabold uppercase tracking-[.12em] text-white">TALLER 01 · Aplicaciones educativas con IA · Precio de introducción US$9</div>
-  <header className="sticky top-0 z-40 border-b border-[#E2D6EB] bg-white/95 backdrop-blur-xl">
-   <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-7"><Brand/><nav className="hidden items-center gap-6 text-sm font-semibold text-[#685977] lg:flex"><a href="#metodo" className="hover:text-[#6332C6]">Qué aprenderás</a><a href="#proyectos" className="hover:text-[#6332C6]">Aplicaciones</a><a href="#instructor" className="hover:text-[#6332C6]">Instructor</a><a href="#faq" className="hover:text-[#6332C6]">Preguntas</a></nav><a href="#inscripcion" className="shrink-0 rounded-xl bg-[#6432C9] px-4 py-3 text-xs font-extrabold text-white hover:bg-[#5222B6] sm:text-sm">Ver el taller <ArrowUpRight className="inline size-4"/></a></div>
-  </header>
   <main id="contenido">
-   <section className="brand-hero relative px-5 pb-24 pt-14 sm:px-7 sm:pt-20">
+   <section className="brand-hero relative px-5 pb-24 pt-10 sm:px-7 sm:pt-14">
     <div className="relative mx-auto max-w-7xl">
      <div className="mx-auto max-w-5xl text-center">
       <p className="inline-flex items-center gap-2 rounded-full border border-[#D8C4ED] bg-white/75 px-4 py-2 text-xs font-extrabold uppercase tracking-[.1em] text-[#7238BF]"><GraduationCap className="size-4"/> Docentes de secundaria, academia y universidad</p>
-      <h1 className="mt-6 font-display text-[clamp(2.55rem,5.1vw,5.2rem)] font-bold leading-[1.08] tracking-[-.065em] text-[#25173C]">Menos tiempo preparando gráficos. <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">Más tiempo guiando el aprendizaje.</span></h1>
-      <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-[#665674] sm:text-xl">Aprende a crear aplicaciones con IA para utilizarlas durante tus sesiones de matemáticas: visualiza conceptos complejos, manipula figuras y funciones en tiempo real, y guía la exploración y la práctica de tus estudiantes.</p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs font-bold text-[#564667]">{['4.º y 5.º secundaria','Preuniversitario','Universidad','Proyecto guiado'].map(t=><span key={t} className="rounded-full border border-[#E4D7F0] bg-white/90 px-3 py-2"><CheckCircle2 className="mr-1.5 inline size-4 text-[#1D896A]"/>{t}</span>)}</div>
+      <h1 className="mt-6 font-display text-[clamp(2.55rem,5.1vw,5.2rem)] font-bold leading-[1.08] tracking-[-.065em] text-[#25173C]">Menos tiempo escribiendo y dibujando en la pizarra. <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">Más tiempo guiando el aprendizaje.</span></h1>
+      <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-[#665674] sm:text-xl">Aprende a crear aplicaciones con IA para utilizarlas durante tus clases de matemáticas: visualiza conceptos complejos, manipula figuras y funciones en tiempo real, y guía la exploración y la práctica de tus estudiantes.</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs font-bold text-[#564667]">{['Secundaria','Preuniversitario','Universidad','Proyecto guiado'].map(t=><span key={t} className="rounded-full border border-[#E4D7F0] bg-white/90 px-3 py-2"><CheckCircle2 className="mr-1.5 inline size-4 text-[#1D896A]"/>{t}</span>)}</div>
       <a href="#inscripcion" className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-7 py-4 text-base font-extrabold text-white shadow-[0_15px_30px_rgba(101,48,200,.2)] hover:opacity-95 sm:w-auto">Quiero crear recursos para mis clases · US$9 <ArrowRight className="size-5"/></a>
       <p className="mx-auto mt-4 max-w-2xl text-sm font-medium leading-6 text-[#5F4C74]"><span className="font-bold text-[#6532C2]">Así enseño en mis clases:</span> utilizo aplicaciones web para presentar la teoría, mostrar cambios visualmente y conducir una secuencia de aprendizaje con actividades y retos.</p>
       <p className="mt-3 text-xs text-[#806F8B]">Primera edición piloto · fecha y acceso pendientes de confirmación.</p>

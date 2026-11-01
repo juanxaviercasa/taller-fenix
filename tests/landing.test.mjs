@@ -9,7 +9,7 @@ test('la landing se orienta a matemáticas y un precio de entrada',()=>{
   assert.match(app,/US\$9/);
   assert.match(app,/id="inscripcion"/);
   assert.match(app,/Docentes de secundaria, academia y universidad/);
-  assert.match(app,/Menos tiempo preparando gráficos/);
+  assert.match(app,/Menos tiempo escribiendo y dibujando en la pizarra/);
   assert.match(app,/Más tiempo guiando el aprendizaje/);
   assert.match(app,/id="caso-real"/);
   assert.doesNotMatch(app,/82% plazas ocupadas|Solo 50 plazas|AbTestingBar/);

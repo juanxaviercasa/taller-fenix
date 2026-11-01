@@ -68,7 +68,7 @@ type RiemannRect = {
 const LEVELS: { id: Level; stage: string; label: string; badge: string }[] = [
   {
     id: 'secundaria',
-    stage: '4.º–5.º secundaria',
+    stage: 'Secundaria',
     label: 'Familias de Funciones',
     badge: '9 funciones reales',
   },
