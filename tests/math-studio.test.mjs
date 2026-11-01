@@ -218,3 +218,15 @@ test('el laboratorio usa SVG real con corte de discontinuidades, rangos y roles 
   assert.match(source, /crossedAsymptote/);
   assert.doesNotMatch(source, /Math\.random\(/);
 });
+
+test('tipografía matemática KaTeX: plantillas, fórmulas y dominios usan notación LaTeX real', () => {
+  assert.match(source, /import katex from 'katex'/);
+  const expFam = FUNCTION_FAMILIES.find((f) => f.id === 'exponencial');
+  assert.match(expFam.formulaTemplate, /b\^\{.*x - h\}/);
+  const ratFam = FUNCTION_FAMILIES.find((f) => f.id === 'racional');
+  assert.match(ratFam.formulaTemplate, /\\dfrac\{a\}\{x - h\}/);
+  const agnesi = CALCULUS_FUNCTIONS.find((f) => f.id === 'agnesi');
+  assert.match(agnesi.formula, /\\dfrac\{4\}\{x\^2 \+ 1\}/);
+  // Verifica que no queden exponentes planos tipo ^(x en las fórmulas del visualizador
+  assert.doesNotMatch(source, /\^\(x/);
+});

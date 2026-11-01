@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from 'react';
+import katex from 'katex';
 import {
   ArrowUpRight,
   ChartNoAxesCombined,
@@ -81,7 +82,7 @@ const LEVELS: { id: Level; stage: string; label: string; badge: string }[] = [
     id: 'universidad',
     stage: 'Nivel universitario',
     label: 'Cálculo Diferencial e Integral',
-    badge: 'Derivada · Riemann · f″',
+    badge: 'Derivada · Riemann · $f^{\'\'}$',
   },
 ];
 
@@ -96,64 +97,64 @@ export const FUNCTION_FAMILIES: {
     id: 'cuadratica',
     short: 'Cuadrática',
     title: 'Función Cuadrática (Parábola)',
-    formulaTemplate: 'f(x) = ax² + bx + c',
-    note: 'Vértice, eje de simetría, concavidad (a ≠ 0), discriminante Δ y raíces reales.',
+    formulaTemplate: 'f(x) = ax^2 + bx + c',
+    note: 'Vértice, eje de simetría, concavidad ($a \\neq 0$), discriminante $\\Delta = b^2 - 4ac$ y raíces reales.',
   },
   {
     id: 'lineal',
     short: 'Lineal / Afín',
     title: 'Función Lineal y Afín',
     formulaTemplate: 'f(x) = mx + b',
-    note: 'Pendiente m, ángulo de inclinación θ, corte con los ejes y razón de cambio constante.',
+    note: 'Pendiente $m$, ángulo de inclinación $\\theta = \\arctan(m)$, corte con los ejes y razón de cambio constante.',
   },
   {
     id: 'valor_absoluto',
     short: 'Valor Absoluto',
     title: 'Función Valor Absoluto',
-    formulaTemplate: 'f(x) = a|x − h| + k',
-    note: 'Vértice angular V(h; k), simetría axial y definición por tramos.',
+    formulaTemplate: 'f(x) = a|x - h| + k',
+    note: 'Vértice angular $V(h;\\,k)$, eje de simetría $x = h$ y definición por tramos.',
   },
   {
     id: 'raiz',
     short: 'Raíz Cuadrada',
     title: 'Función Raíz Cuadrada (Radical)',
-    formulaTemplate: 'f(x) = a√(s(x − h)) + k',
-    note: 'Punto frontera de inicio (h; k), restricción de dominio y monotonía.',
+    formulaTemplate: 'f(x) = a\\sqrt{\\pm(x - h)} + k',
+    note: 'Punto frontera de inicio $(h;\\,k)$, restricción de dominio y monotonía.',
   },
   {
     id: 'racional',
-    short: 'Racional 1/x',
+    short: 'Racional $1/x$',
     title: 'Función Racional Homográfica (Hipérbola)',
-    formulaTemplate: 'f(x) = a/(x − h) + k',
-    note: 'Asíntota vertical x = h, asíntota horizontal y = k y ramas hiperbólicas.',
+    formulaTemplate: 'f(x) = \\dfrac{a}{x - h} + k',
+    note: 'Asíntota vertical $x = h$, asíntota horizontal $y = k$ y ramas hiperbólicas.',
   },
   {
     id: 'cubica',
     short: 'Cúbica',
     title: 'Función Polinomial Cúbica',
-    formulaTemplate: 'f(x) = a(x − h)³ + b(x − h) + k',
-    note: 'Punto de inflexión I(h; k), cambio de concavidad y extremos relativos.',
+    formulaTemplate: 'f(x) = a(x - h)^3 + b(x - h) + k',
+    note: 'Punto de inflexión $I(h;\\,k)$, cambio de concavidad y extremos relativos.',
   },
   {
     id: 'exponencial',
     short: 'Exponencial',
     title: 'Función Exponencial',
-    formulaTemplate: 'f(x) = a · b^(x − h) + k',
-    note: 'Crecimiento (b > 1) vs. decaimiento (0 < b < 1) y asíntota horizontal y = k.',
+    formulaTemplate: 'f(x) = a \\cdot b^{\\,x - h} + k',
+    note: 'Crecimiento ($b > 1$) vs. decaimiento ($0 < b < 1$) y asíntota horizontal $y = k$.',
   },
   {
     id: 'logaritmica',
     short: 'Logarítmica',
     title: 'Función Logarítmica Natural',
-    formulaTemplate: 'f(x) = a · ln(x − h) + k',
-    note: 'Dominio restringido (h; +∞), asíntota vertical x = h y cero exacto.',
+    formulaTemplate: 'f(x) = a \\cdot \\ln(x - h) + k',
+    note: 'Dominio restringido $(h;\\,+\\infty)$, asíntota vertical $x = h$ y cero exacto.',
   },
   {
     id: 'escalon',
-    short: 'Máx. Entero ⌊x⌋',
+    short: 'Máx. Entero $\\lfloor x\\rfloor$',
     title: 'Función Máximo Entero (Escalón)',
-    formulaTemplate: 'f(x) = a⌊b(x − h)⌋ + k',
-    note: 'Peldaños discontinuos con extremo cerrado izquierdo y extremo abierto derecho.',
+    formulaTemplate: 'f(x) = a\\lfloor b(x - h)\\rfloor + k',
+    note: 'Peldaños discontinuos de longitud $L = 1/b$ con extremo cerrado izquierdo y abierto derecho.',
   },
 ];
 
@@ -163,12 +164,12 @@ export const DIRECT_TRIG_FNS: {
   name: string;
   note: string;
 }[] = [
-  { id: 'sen', symbol: 'sen', name: 'Seno', note: 'Onda periódica impar respecto al origen sin asíntotas.' },
-  { id: 'cos', symbol: 'cos', name: 'Coseno', note: 'Onda periódica par desfasada π/2 respecto al seno.' },
-  { id: 'tan', symbol: 'tan', name: 'Tangente', note: 'Período π/k con asíntotas verticales en kx + φ = π/2 + nπ.' },
-  { id: 'cot', symbol: 'cot', name: 'Cotangente', note: 'Período π/k decreciente en cada rama, asíntotas en kx + φ = nπ.' },
-  { id: 'sec', symbol: 'sec', name: 'Secante', note: 'Recíproca del coseno (1/cos), con curva guía cos punteada.' },
-  { id: 'csc', symbol: 'csc', name: 'Cosecante', note: 'Recíproca del seno (1/sen), con curva guía sen punteada.' },
+  { id: 'sen', symbol: 'sen', name: 'Seno', note: 'Onda periódica impar respecto al origen ($f(-x) = -f(x)$) sin asíntotas.' },
+  { id: 'cos', symbol: 'cos', name: 'Coseno', note: 'Onda periódica par ($f(-x) = f(x)$) desfasada $\\pi/2$ respecto al seno.' },
+  { id: 'tan', symbol: 'tan', name: 'Tangente', note: 'Período $T = \\pi/k$ con asíntotas verticales en $kx + \\varphi = \\frac{\\pi}{2} + n\\pi$.' },
+  { id: 'cot', symbol: 'cot', name: 'Cotangente', note: 'Período $T = \\pi/k$ decreciente en cada rama, asíntotas en $kx + \\varphi = n\\pi$.' },
+  { id: 'sec', symbol: 'sec', name: 'Secante', note: 'Recíproca del coseno ($\\sec x = 1/\\cos x$), con curva envolvente $\\cos$ punteada.' },
+  { id: 'csc', symbol: 'csc', name: 'Cosecante', note: 'Recíproca del seno ($\\csc x = 1/\\operatorname{sen} x$), con curva envolvente $\\operatorname{sen}$ punteada.' },
 ];
 
 export const INVERSE_TRIG_FNS: {
@@ -177,12 +178,12 @@ export const INVERSE_TRIG_FNS: {
   name: string;
   note: string;
 }[] = [
-  { id: 'arcsen', symbol: 'arcsen', name: 'Arcoseno (sen⁻¹)', note: 'Dominio acotado [h−1/B; h+1/B] y rango principal [−π/2; π/2] escalado.' },
-  { id: 'arccos', symbol: 'arccos', name: 'Arcocoseno (cos⁻¹)', note: 'Dominio acotado [h−1/B; h+1/B], decreciente hacia [0; π] escalado.' },
-  { id: 'arctan', symbol: 'arctan', name: 'Arcotangente (tan⁻¹)', note: 'Definida en todo ℝ con asíntotas horizontales en y = D ± Aπ/2.' },
-  { id: 'arccot', symbol: 'arccot', name: 'Arcocotangente (cot⁻¹)', note: 'Definida en todo ℝ, decreciente entre las asíntotas y = D y y = D + Aπ.' },
-  { id: 'arcsec', symbol: 'arcsec', name: 'Arcosecante (sec⁻¹)', note: 'Dominio exterior |B(x−h)| ≥ 1 con asíntota horizontal central y = D + Aπ/2.' },
-  { id: 'arccsc', symbol: 'arccsc', name: 'Arcocosecante (csc⁻¹)', note: 'Dominio exterior |B(x−h)| ≥ 1 con asíntota horizontal central y = D.' },
+  { id: 'arcsen', symbol: 'arcsen', name: 'Arcoseno ($\\operatorname{sen}^{-1}$)', note: 'Dominio acotado $[h - 1/B;\\,h + 1/B]$ y rango principal $[-\\frac{\\pi}{2};\\,\\frac{\\pi}{2}]$ escalado.' },
+  { id: 'arccos', symbol: 'arccos', name: 'Arcocoseno ($\\cos^{-1}$)', note: 'Dominio acotado $[h - 1/B;\\,h + 1/B]$, decreciente hacia $[0;\\,\\pi]$ escalado.' },
+  { id: 'arctan', symbol: 'arctan', name: 'Arcotangente ($\\tan^{-1}$)', note: 'Definida en todo $\\mathbb{R}$ con asíntotas horizontales en $y = D \\pm A\\frac{\\pi}{2}$.' },
+  { id: 'arccot', symbol: 'arccot', name: 'Arcocotangente ($\\cot^{-1}$)', note: 'Definida en todo $\\mathbb{R}$, decreciente entre las asíntotas $y = D$ y $y = D + A\\pi$.' },
+  { id: 'arcsec', symbol: 'arcsec', name: 'Arcosecante ($\\sec^{-1}$)', note: 'Dominio exterior $|B(x - h)| \\ge 1$ con asíntota horizontal central $y = D + A\\frac{\\pi}{2}$.' },
+  { id: 'arccsc', symbol: 'arccsc', name: 'Arcocosecante ($\\csc^{-1}$)', note: 'Dominio exterior $|B(x - h)| \\ge 1$ con asíntota horizontal central $y = D$.' },
 ];
 
 export const CALCULUS_MODES: {
@@ -195,19 +196,19 @@ export const CALCULUS_MODES: {
     id: 'derivada',
     label: 'Tangente vs. Secante',
     title: 'Derivada: Recta Tangente, Secante y Diferencial',
-    note: 'Visualiza cómo la recta secante entre P(x₀) y Q(x₀+h) converge a la recta tangente cuando h → 0.',
+    note: 'Visualiza cómo la recta secante entre $P(x_0)$ y $Q(x_0 + h)$ converge a la recta tangente cuando $h \\to 0$.',
   },
   {
     id: 'integral',
     label: 'Sumas de Riemann',
     title: 'Integral Definida y Particiones de Riemann',
-    note: 'Compara la suma de áreas de n rectángulos con el valor exacto por el Teorema Fundamental del Cálculo.',
+    note: 'Compara la suma de áreas de $n$ rectángulos con el valor exacto $\\int_a^b f(x)\\,dx$ por el Teorema Fundamental del Cálculo.',
   },
   {
     id: 'curva',
-    label: 'Criterio f, f′ y f″',
+    label: 'Criterio $f, f\'$ y $f^{\'\'}$',
     title: 'Análisis Completo: Función, 1.ª y 2.ª Derivada',
-    note: 'Superpone f(x), su velocidad de cambio f′(x) y su concavidad f″(x) para hallar extremos e inflexión.',
+    note: 'Superpone $f(x)$, su velocidad de cambio $f\'(x)$ y su concavidad $f^{\'\'}(x)$ para hallar extremos e inflexión.',
   },
 ];
 
@@ -226,10 +227,10 @@ export const CALCULUS_FUNCTIONS: {
 }[] = [
   {
     id: 'cubica',
-    label: 'x³ − 3x',
-    formula: 'f(x) = x³ − 3x',
-    derivativeFormula: 'f′(x) = 3x² − 3',
-    secondDerivativeFormula: 'f″(x) = 6x',
+    label: 'x^3 - 3x',
+    formula: 'f(x) = x^3 - 3x',
+    derivativeFormula: 'f\'(x) = 3x^2 - 3',
+    secondDerivativeFormula: 'f^{\'\'}(x) = 6x',
     f: (x) => x * x * x - 3 * x,
     df: (x) => 3 * x * x - 3,
     d2f: (x) => 6 * x,
@@ -239,10 +240,10 @@ export const CALCULUS_FUNCTIONS: {
   },
   {
     id: 'agnesi',
-    label: '4 / (x² + 1)',
-    formula: 'f(x) = 4 / (x² + 1)',
-    derivativeFormula: 'f′(x) = −8x / (x² + 1)²',
-    secondDerivativeFormula: 'f″(x) = 8(3x² − 1) / (x² + 1)³',
+    label: '\\tfrac{4}{x^2 + 1}',
+    formula: 'f(x) = \\dfrac{4}{x^2 + 1}',
+    derivativeFormula: 'f\'(x) = \\dfrac{-8x}{(x^2 + 1)^2}',
+    secondDerivativeFormula: 'f^{\'\'}(x) = \\dfrac{8(3x^2 - 1)}{(x^2 + 1)^3}',
     f: (x) => 4 / (x * x + 1),
     df: (x) => (-8 * x) / ((x * x + 1) * (x * x + 1)),
     d2f: (x) => (8 * (3 * x * x - 1)) / Math.pow(x * x + 1, 3),
@@ -252,10 +253,10 @@ export const CALCULUS_FUNCTIONS: {
   },
   {
     id: 'oscilante',
-    label: '2 sen(x) + 0.5x',
-    formula: 'f(x) = 2 sen(x) + 0.5x',
-    derivativeFormula: 'f′(x) = 2 cos(x) + 0.5',
-    secondDerivativeFormula: 'f″(x) = −2 sen(x)',
+    label: '2\\operatorname{sen}(x) + 0.5x',
+    formula: 'f(x) = 2\\operatorname{sen}(x) + 0.5x',
+    derivativeFormula: 'f\'(x) = 2\\cos(x) + 0.5',
+    secondDerivativeFormula: 'f^{\'\'}(x) = -2\\operatorname{sen}(x)',
     f: (x) => 2 * Math.sin(x) + 0.5 * x,
     df: (x) => 2 * Math.cos(x) + 0.5,
     d2f: (x) => -2 * Math.sin(x),
@@ -265,10 +266,10 @@ export const CALCULUS_FUNCTIONS: {
   },
   {
     id: 'cuartica',
-    label: '0.5x⁴ − 2x²',
-    formula: 'f(x) = 0.5x⁴ − 2x²',
-    derivativeFormula: 'f′(x) = 2x³ − 4x',
-    secondDerivativeFormula: 'f″(x) = 6x² − 4',
+    label: '0.5x^4 - 2x^2',
+    formula: 'f(x) = 0.5x^4 - 2x^2',
+    derivativeFormula: 'f\'(x) = 2x^3 - 4x',
+    secondDerivativeFormula: 'f^{\'\'}(x) = 6x^2 - 4',
     f: (x) => 0.5 * Math.pow(x, 4) - 2 * x * x,
     df: (x) => 2 * x * x * x - 4 * x,
     d2f: (x) => 6 * x * x - 4,
@@ -357,8 +358,8 @@ export function inverseTrigFacts(
     const yMin = shiftD - Math.abs(scaleA) * (Math.PI / 2);
     const yMax = shiftD + Math.abs(scaleA) * (Math.PI / 2);
     return {
-      domainText: `[${pretty(leftBound)}; ${pretty(rightBound)}]`,
-      rangeText: `[${pretty(yMin)}; ${pretty(yMax)}]`,
+      domainText: `[${pretty(leftBound)};\\,${pretty(rightBound)}]`,
+      rangeText: `[${pretty(yMin)};\\,${pretty(yMax)}]`,
       hAsymptotes: [] as number[],
       endpoints: [
         { x: leftBound, y: shiftD - scaleA * (Math.PI / 2), label: 'E₁' },
@@ -370,8 +371,8 @@ export function inverseTrigFacts(
     const y1 = shiftD;
     const y2 = shiftD + scaleA * Math.PI;
     return {
-      domainText: `[${pretty(leftBound)}; ${pretty(rightBound)}]`,
-      rangeText: `[${pretty(Math.min(y1, y2))}; ${pretty(Math.max(y1, y2))}]`,
+      domainText: `[${pretty(leftBound)};\\,${pretty(rightBound)}]`,
+      rangeText: `[${pretty(Math.min(y1, y2))};\\,${pretty(Math.max(y1, y2))}]`,
       hAsymptotes: [] as number[],
       endpoints: [
         { x: leftBound, y: shiftD + scaleA * Math.PI, label: 'E₁' },
@@ -383,8 +384,8 @@ export function inverseTrigFacts(
     const a1 = shiftD - scaleA * (Math.PI / 2);
     const a2 = shiftD + scaleA * (Math.PI / 2);
     return {
-      domainText: 'ℝ (−∞; +∞)',
-      rangeText: `(${pretty(Math.min(a1, a2))}; ${pretty(Math.max(a1, a2))})`,
+      domainText: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+      rangeText: `(${pretty(Math.min(a1, a2))};\\,${pretty(Math.max(a1, a2))})`,
       hAsymptotes: [a1, a2],
       endpoints: [] as PointMarker[],
     };
@@ -393,8 +394,8 @@ export function inverseTrigFacts(
     const a1 = shiftD;
     const a2 = shiftD + scaleA * Math.PI;
     return {
-      domainText: 'ℝ (−∞; +∞)',
-      rangeText: `(${pretty(Math.min(a1, a2))}; ${pretty(Math.max(a1, a2))})`,
+      domainText: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+      rangeText: `(${pretty(Math.min(a1, a2))};\\,${pretty(Math.max(a1, a2))})`,
       hAsymptotes: [a1, a2],
       endpoints: [] as PointMarker[],
     };
@@ -404,8 +405,8 @@ export function inverseTrigFacts(
     const y1 = shiftD;
     const y2 = shiftD + scaleA * Math.PI;
     return {
-      domainText: `(−∞; ${pretty(leftBound)}] ∪ [${pretty(rightBound)}; +∞)`,
-      rangeText: `[${pretty(Math.min(y1, y2))}; ${pretty(Math.max(y1, y2))}] \\ {${pretty(midAsymptote)}}`,
+      domainText: `(-\\infty;\\,${pretty(leftBound)}] \\cup [${pretty(rightBound)};\\,+\\infty)`,
+      rangeText: `[${pretty(Math.min(y1, y2))};\\,${pretty(Math.max(y1, y2))}] \\setminus \\{${pretty(midAsymptote)}\\}`,
       hAsymptotes: [midAsymptote],
       endpoints: [
         { x: leftBound, y: shiftD + scaleA * Math.PI, label: 'F₁' },
@@ -418,8 +419,8 @@ export function inverseTrigFacts(
   const y1 = shiftD - scaleA * (Math.PI / 2);
   const y2 = shiftD + scaleA * (Math.PI / 2);
   return {
-    domainText: `(−∞; ${pretty(leftBound)}] ∪ [${pretty(rightBound)}; +∞)`,
-    rangeText: `[${pretty(Math.min(y1, y2))}; ${pretty(Math.max(y1, y2))}] \\ {${pretty(midAsymptote)}}`,
+    domainText: `(-\\infty;\\,${pretty(leftBound)}] \\cup [${pretty(rightBound)};\\,+\\infty)`,
+    rangeText: `[${pretty(Math.min(y1, y2))};\\,${pretty(Math.max(y1, y2))}] \\setminus \\{${pretty(midAsymptote)}\\}`,
     hAsymptotes: [midAsymptote],
     endpoints: [
       { x: leftBound, y: shiftD - scaleA * (Math.PI / 2), label: 'F₁' },
@@ -493,10 +494,55 @@ function pretty(n: number, precision = 2) {
   });
 }
 
-function signedTerm(v: number, suffix = '', showFirstPlus = false) {
+function signedTerm(v: number, suffix = '', showFirstPlus = true) {
   if (Math.abs(v) < 1e-9) return '';
-  const sign = v >= 0 ? (showFirstPlus ? ' + ' : '') : ' − ';
+  const sign = v >= 0 ? (showFirstPlus ? ' + ' : '') : ' - ';
   return `${sign}${pretty(Math.abs(v))}${suffix}`;
+}
+
+/** Renders a LaTeX math string to HTML via KaTeX, falling back cleanly in headless VM tests. */
+export function renderKatex(tex: string, displayMode = false): string {
+  const k = katex as unknown as {
+    renderToString?: typeof katex.renderToString;
+    default?: { renderToString?: typeof katex.renderToString };
+  };
+  const fn = k?.renderToString ?? k?.default?.renderToString;
+  if (typeof fn !== 'function') return tex;
+  return fn(tex, { throwOnError: false, displayMode, output: 'html' });
+}
+
+function KaTeX({
+  math,
+  display = false,
+  className = '',
+}: {
+  math: string;
+  display?: boolean;
+  className?: string;
+}) {
+  const html = useMemo(() => renderKatex(math, display), [math, display]);
+  return (
+    <span
+      className={className}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+/** Renders text that mixes Spanish prose with inline `$...$` LaTeX formulas via KaTeX. */
+function MathText({ text, className = '' }: { text: string; className?: string }) {
+  const parts = useMemo(() => text.split(/(\$[^$]+\$)/g), [text]);
+  return (
+    <span className={className}>
+      {parts.map((part, idx) =>
+        part.startsWith('$') && part.endsWith('$') && part.length > 2 ? (
+          <KaTeX key={idx} math={part.slice(1, -1)} />
+        ) : (
+          <span key={idx}>{part}</span>
+        )
+      )}
+    </span>
+  );
 }
 
 /** "Nice" axis ticks (steps 1·10ⁿ, 2·10ⁿ, 5·10ⁿ) for any interval — used by zoomed/auto-fit views. */
@@ -703,16 +749,23 @@ function Range({
   value: number;
   onChange: (n: number) => void;
 }) {
+  const badgeLatex =
+    symbol === 'x₀'
+      ? `x_0 = ${pretty(value, 2)}`
+      : symbol === 'φ°'
+        ? `\\varphi = ${pretty(value, 0)}^\\circ`
+        : `${symbol} = ${pretty(value, 2)}`;
+  const plainAria = caption.replace(/\$|\\/g, '');
   return (
     <label className="block rounded-2xl border border-[#E8E1F3] bg-white p-3 transition hover:border-[#D4C3EC]">
       <span className="mb-1.5 flex items-center justify-between gap-2">
-        <span className="text-[11px] font-semibold text-[#625374]">{caption}</span>
-        <span className="rounded-md bg-[#F1E9FF] px-2 py-0.5 font-mono text-xs font-bold text-[#6733C7]">
-          {symbol} = {pretty(value, 2)}
+        <MathText text={caption} className="text-[11px] font-semibold text-[#625374]" />
+        <span className="rounded-md bg-[#F1E9FF] px-2 py-0.5 text-xs font-bold text-[#6733C7]">
+          <KaTeX math={badgeLatex} />
         </span>
       </span>
       <input
-        aria-label={caption}
+        aria-label={plainAria}
         type="range"
         min={min}
         max={max}
@@ -1643,13 +1696,13 @@ function MathGraph({
           {aux && (
             <span className="inline-flex items-center gap-1.5">
               <i className="h-0.5 w-4 rounded border-t-2 border-dashed border-[#E4A0B6]" />
-              {auxLabel ?? 'Referencia'}
+              <MathText text={auxLabel ?? 'Referencia'} />
             </span>
           )}
           {secondaryAux && (
             <span className="inline-flex items-center gap-1.5">
               <i className="h-0.5 w-4 rounded border-t-2 border-dashed border-[#10B981]" />
-              {secondaryAuxLabel ?? 'f′(x)'}
+              <MathText text={secondaryAuxLabel ?? "$f'(x)$"} />
             </span>
           )}
           {tangent && (
@@ -1667,13 +1720,13 @@ function MathGraph({
           {diffTriangle && (
             <span className="inline-flex items-center gap-1.5 text-[#0F766E]">
               <i className="h-2.5 w-4 rounded-sm border border-[#0F9F6E] bg-[#10B981]/20" />
-              Triángulo Δx·Δy
+              <MathText text="Triángulo $\Delta x\cdot\Delta y$" />
             </span>
           )}
           {diffTriangle?.slope !== undefined && (
             <span className="inline-flex items-center gap-1.5 text-[#C2410C]">
               <i className="h-3 w-0.5 rounded bg-[#E8613C]" />
-              Diferencial dy
+              <MathText text="Diferencial $dy$" />
             </span>
           )}
           {vAsymptotes && vAsymptotes.length > 0 && (
@@ -1797,24 +1850,24 @@ export default function MathStudio() {
             : undefined,
         extraMarkers: [{ x: 0, y: c, label: `(0; ${pretty(c, 1)})`, color: '#0EA5E9' }],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(a)}x²${signedTerm(b, 'x')}${signedTerm(c)}`,
-        domainStr: 'ℝ (−∞; +∞)',
+        equation: `f(x) = ${pretty(a)}x^2${signedTerm(b, 'x')}${signedTerm(c)}`,
+        domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
         rangeStr:
           Math.abs(a) < 1e-6
-            ? 'ℝ'
+            ? '\\mathbb{R}'
             : a > 0
-              ? `[${pretty(quad.vertexY)}; +∞)`
-              : `(−∞; ${pretty(quad.vertexY)}]`,
+              ? `[${pretty(quad.vertexY)};\\,+\\infty)`
+              : `(-\\infty;\\,${pretty(quad.vertexY)}]`,
         line1:
           Math.abs(a) < 1e-6
-            ? `Degenera en recta lineal (a = 0) · Corte Y: (0; ${pretty(c)})`
-            : `Vértice (${pretty(quad.vertexX)}; ${pretty(quad.vertexY)}) · Δ = ${pretty(quad.discriminant)} · Concavidad: ${a > 0 ? '∪ (hacia arriba)' : '∩ (hacia abajo)'}`,
+            ? `Degenera en recta lineal ($a = 0$) · Corte $Y$: $(0;\\,${pretty(c)})$`
+            : `Vértice $V(${pretty(quad.vertexX)};\\,${pretty(quad.vertexY)})$ · $\\Delta = ${pretty(quad.discriminant)}$ · Concavidad: ${a > 0 ? '$\\cup$ (hacia arriba)' : '$\\cap$ (hacia abajo)'}`,
         line2:
           quad.discriminant < 0
-            ? 'Sin raíces reales (Δ < 0, raíces complejas conjugadas)'
+            ? 'Sin raíces reales ($\\Delta < 0$, raíces complejas conjugadas)'
             : quad.roots.length === 1
-              ? `Raíz real única: x = ${pretty(quad.roots[0])}`
-              : `Raíces: ${pretty(quad.roots[0])} y ${pretty(quad.roots[1])} · Eje de simetría: x = ${pretty(quad.vertexX)}`,
+              ? `Raíz real única: $x = ${pretty(quad.roots[0])}$`
+              : `Raíces: $x_1 = ${pretty(quad.roots[0])}$ y $x_2 = ${pretty(quad.roots[1])}$ · Eje de simetría: $x = ${pretty(quad.vertexX)}$`,
       };
     }
 
@@ -1836,13 +1889,16 @@ export default function MathStudio() {
             : [],
         stepSegments: undefined,
         equation: `f(x) = ${pretty(m)}x${signedTerm(interceptB)}`,
-        domainStr: 'ℝ (−∞; +∞)',
-        rangeStr: Math.abs(m) < 1e-6 ? `{${pretty(interceptB)}} (Constante)` : 'ℝ (−∞; +∞)',
-        line1: `Pendiente m = ${pretty(m)} · Ángulo θ = ${pretty(angleDeg, 1)}° (${m > 0 ? 'Creciente' : m < 0 ? 'Decreciente' : 'Constante horizontal'})`,
+        domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        rangeStr:
+          Math.abs(m) < 1e-6
+            ? `\\{${pretty(interceptB)}\\}\\;\\text{(Constante)}`
+            : '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        line1: `Pendiente $m = ${pretty(m)}$ · Ángulo $\\theta = ${pretty(angleDeg, 1)}^\\circ$ (${m > 0 ? 'Creciente' : m < 0 ? 'Decreciente' : 'Constante horizontal'})`,
         line2:
           rootX.length > 0
-            ? `Raíz en eje X: x = ${pretty(rootX[0])} · Ordenada al origen: (0; ${pretty(interceptB)})`
-            : `Recta paralela al eje X · Ordenada constante y = ${pretty(interceptB)}`,
+            ? `Raíz en eje $X$: $x = ${pretty(rootX[0])}$ · Ordenada al origen: $(0;\\,${pretty(interceptB)})$`
+            : `Recta paralela al eje $X$ · Ordenada constante $y = ${pretty(interceptB)}$`,
       };
     }
 
@@ -1862,11 +1918,11 @@ export default function MathStudio() {
         marker: { x: hShift, y: kShift, label: `V(${pretty(hShift, 1)}; ${pretty(kShift, 1)})` },
         extraMarkers: [{ x: 0, y: nonZeroA * Math.abs(hShift) + kShift, label: 'Corte Y', color: '#0EA5E9' }],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)}|x${signedTerm(-hShift)}|${signedTerm(kShift)}`,
-        domainStr: 'ℝ (−∞; +∞)',
-        rangeStr: nonZeroA > 0 ? `[${pretty(kShift)}; +∞)` : `(−∞; ${pretty(kShift)}]`,
-        line1: `Vértice angular V(${pretty(hShift)}; ${pretty(kShift)}) · Eje de simetría: x = ${pretty(hShift)}`,
-        line2: `Pendientes laterales: m₁ = −${pretty(nonZeroA)} y m₂ = +${pretty(nonZeroA)} · ${roots.length ? 'Raíces: ' + roots.map((r) => pretty(r)).join(' y ') : 'Sin raíces reales'}`,
+        equation: `f(x) = ${pretty(nonZeroA)}\\left|x${signedTerm(-hShift)}\\right|${signedTerm(kShift)}`,
+        domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        rangeStr: nonZeroA > 0 ? `[${pretty(kShift)};\\,+\\infty)` : `(-\\infty;\\,${pretty(kShift)}]`,
+        line1: `Vértice angular $V(${pretty(hShift)};\\,${pretty(kShift)})$ · Eje de simetría: $x = ${pretty(hShift)}$`,
+        line2: `Pendientes laterales: $m_1 = ${pretty(-nonZeroA)}$ y $m_2 = ${pretty(nonZeroA)}$ · ${roots.length ? 'Raíces: ' + roots.map((r) => `$x = ${pretty(r)}$`).join(' y ') : 'Sin raíces reales'}`,
       };
     }
 
@@ -1888,14 +1944,14 @@ export default function MathStudio() {
         marker: { x: hShift, y: kShift, label: `Inicio (${pretty(hShift, 1)}; ${pretty(kShift, 1)})` },
         extraMarkers: [],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)}√(${radSign === 1 ? '' : '−'}(x${signedTerm(-hShift)}))${signedTerm(kShift)}`,
-        domainStr: radSign === 1 ? `[${pretty(hShift)}; +∞)` : `(−∞; ${pretty(hShift)}]`,
-        rangeStr: nonZeroA >= 0 ? `[${pretty(kShift)}; +∞)` : `(−∞; ${pretty(kShift)}]`,
-        line1: `Punto frontera inicial: (${pretty(hShift)}; ${pretty(kShift)}) · Orientación: ${radSign === 1 ? 'Derecha (+x)' : 'Izquierda (−x)'}`,
+        equation: `f(x) = ${pretty(nonZeroA)}\\sqrt{${radSign === 1 ? '' : '-'}(x${signedTerm(-hShift)})}${signedTerm(kShift)}`,
+        domainStr: radSign === 1 ? `[${pretty(hShift)};\\,+\\infty)` : `(-\\infty;\\,${pretty(hShift)}]`,
+        rangeStr: nonZeroA >= 0 ? `[${pretty(kShift)};\\,+\\infty)` : `(-\\infty;\\,${pretty(kShift)}]`,
+        line1: `Punto frontera inicial: $(${pretty(hShift)};\\,${pretty(kShift)})$ · Orientación: ${radSign === 1 ? 'Derecha ($+x$)' : 'Izquierda ($-x$)'}`,
         line2:
           roots.length > 0
-            ? `Cero de la función (raíz): x = ${pretty(roots[0])}`
-            : 'La curva no corta al eje X para estos parámetros.',
+            ? `Cero de la función (raíz): $x = ${pretty(roots[0])}$`
+            : 'La curva no corta al eje $X$ para estos parámetros.',
       };
     }
 
@@ -1910,11 +1966,11 @@ export default function MathStudio() {
         marker: { x: hShift, y: kShift, label: `Centro (${pretty(hShift, 1)}; ${pretty(kShift, 1)})`, color: '#8B5CF6' },
         extraMarkers: [],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)} / (x${signedTerm(-hShift)}) ${signedTerm(kShift, '', true)}`,
-        domainStr: `ℝ \\ {${pretty(hShift)}}`,
-        rangeStr: `ℝ \\ {${pretty(kShift)}}`,
-        line1: `Asíntota Vertical: x = ${pretty(hShift)} · Asíntota Horizontal: y = ${pretty(kShift)}`,
-        line2: `Ramas hiperbólicas en cuadrantes ${nonZeroA > 0 ? 'I y III' : 'II y IV'} respecto al centro (${pretty(hShift)}; ${pretty(kShift)})`,
+        equation: `f(x) = \\dfrac{${pretty(nonZeroA)}}{x${signedTerm(-hShift)}}${signedTerm(kShift)}`,
+        domainStr: `\\mathbb{R} \\setminus \\{${pretty(hShift)}\\}`,
+        rangeStr: `\\mathbb{R} \\setminus \\{${pretty(kShift)}\\}`,
+        line1: `Asíntota Vertical: $x = ${pretty(hShift)}$ · Asíntota Horizontal: $y = ${pretty(kShift)}$`,
+        line2: `Ramas hiperbólicas en cuadrantes ${nonZeroA > 0 ? 'I y III' : 'II y IV'} respecto al centro $(${pretty(hShift)};\\,${pretty(kShift)})$`,
       };
     }
 
@@ -1940,14 +1996,14 @@ export default function MathStudio() {
         marker: { x: hShift, y: kShift, label: `Inflexión (${pretty(hShift, 1)}; ${pretty(kShift, 1)})` },
         extraMarkers: extra,
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)}(x${signedTerm(-hShift)})³${signedTerm(b, `(x${signedTerm(-hShift)})`)}${signedTerm(kShift)}`,
-        domainStr: 'ℝ (−∞; +∞)',
-        rangeStr: 'ℝ (−∞; +∞)',
-        line1: `Punto de inflexión simétrico: I(${pretty(hShift)}; ${pretty(kShift)}) · Cambio de concavidad`,
+        equation: `f(x) = ${pretty(nonZeroA)}(x${signedTerm(-hShift)})^3${signedTerm(b, `(x${signedTerm(-hShift)})`)}${signedTerm(kShift)}`,
+        domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        rangeStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        line1: `Punto de inflexión simétrico: $I(${pretty(hShift)};\\,${pretty(kShift)})$ · Cambio de concavidad`,
         line2:
           extra.length > 0
-            ? `Posee 2 extremos locales (máximo y mínimo relativos) porque a·b < 0.`
-            : `Función estrictamente monótona en todo ℝ (sin extremos locales).`,
+            ? `Posee 2 extremos locales (máximo y mínimo relativos) porque $a\\cdot b < 0$.`
+            : `Función estrictamente monótona en todo $\\mathbb{R}$ (sin extremos locales).`,
       };
     }
 
@@ -1966,11 +2022,11 @@ export default function MathStudio() {
         marker: { x: hShift, y: nonZeroA + kShift, label: `P(${pretty(hShift, 1)}; ${pretty(nonZeroA + kShift, 1)})` },
         extraMarkers: [],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)} · (${pretty(safeBase)})^(x${signedTerm(-hShift)})${signedTerm(kShift)}`,
-        domainStr: 'ℝ (−∞; +∞)',
-        rangeStr: nonZeroA > 0 ? `(${pretty(kShift)}; +∞)` : `(−∞; ${pretty(kShift)})`,
-        line1: `Asíntota Horizontal: y = ${pretty(kShift)} · Punto base (x = ${pretty(hShift)}): y = ${pretty(nonZeroA + kShift)}`,
-        line2: `Régimen: ${safeBase > 1 ? 'Crecimiento exponencial (b > 1)' : safeBase < 1 ? 'Decaimiento exponencial (0 < b < 1)' : 'Constante (b = 1)'}`,
+        equation: `f(x) = ${pretty(nonZeroA)} \\cdot (${pretty(safeBase)})^{x${signedTerm(-hShift)}}${signedTerm(kShift)}`,
+        domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        rangeStr: nonZeroA > 0 ? `(${pretty(kShift)};\\,+\\infty)` : `(-\\infty;\\,${pretty(kShift)})`,
+        line1: `Asíntota Horizontal: $y = ${pretty(kShift)}$ · Punto base ($x = ${pretty(hShift)}$): $y = ${pretty(nonZeroA + kShift)}$`,
+        line2: `Régimen: ${safeBase > 1 ? 'Crecimiento exponencial ($b > 1$)' : safeBase < 1 ? 'Decaimiento exponencial ($0 < b < 1$)' : 'Constante ($b = 1$)'}`,
       };
     }
 
@@ -1985,11 +2041,11 @@ export default function MathStudio() {
         marker: { x: hShift + 1, y: kShift, label: `(${pretty(hShift + 1, 1)}; ${pretty(kShift, 1)})` },
         extraMarkers: [],
         stepSegments: undefined,
-        equation: `f(x) = ${pretty(nonZeroA)} · ln(x${signedTerm(-hShift)})${signedTerm(kShift)}`,
-        domainStr: `(${pretty(hShift)}; +∞)`,
-        rangeStr: 'ℝ (−∞; +∞)',
-        line1: `Asíntota Vertical: x = ${pretty(hShift)} · Punto canónico (h+1; k) = (${pretty(hShift + 1)}; ${pretty(kShift)})`,
-        line2: `Raíz exacta en eje X: x = ${pretty(rootX)} · Función inversa de la exponencial.`,
+        equation: `f(x) = ${pretty(nonZeroA)} \\cdot \\ln(x${signedTerm(-hShift)})${signedTerm(kShift)}`,
+        domainStr: `(${pretty(hShift)};\\,+\\infty)`,
+        rangeStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+        line1: `Asíntota Vertical: $x = ${pretty(hShift)}$ · Punto canónico $(h+1;\\,k) = (${pretty(hShift + 1)};\\,${pretty(kShift)})$`,
+        line2: `Raíz exacta en eje $X$: $x = ${pretty(rootX)}$ · Función inversa de la exponencial.`,
       };
     }
 
@@ -2019,11 +2075,11 @@ export default function MathStudio() {
       },
       extraMarkers: [],
       stepSegments: segments,
-      equation: `f(x) = ${pretty(nonZeroA)}⌊${pretty(scaleB)}(x${signedTerm(-hShift)})⌋${signedTerm(kShift)}`,
-      domainStr: 'ℝ (−∞; +∞)',
-      rangeStr: `{${pretty(nonZeroA)}n + ${pretty(kShift)} | n ∈ ℤ} (Valores discretos)`,
-      line1: `Longitud de cada peldaño: L = 1/${pretty(scaleB)} = ${pretty(stepLen)} · Salto vertical: Δy = ${pretty(Math.abs(nonZeroA))}`,
-      line2: `Discontinuidades de salto finito en x = ${pretty(hShift)} + n·(${pretty(stepLen)}) con n ∈ ℤ.`,
+      equation: `f(x) = ${pretty(nonZeroA)}\\left\\lfloor ${pretty(scaleB)}(x${signedTerm(-hShift)})\\right\\rfloor${signedTerm(kShift)}`,
+      domainStr: '\\mathbb{R}\\;(-\\infty;\\,+\\infty)',
+      rangeStr: `\\{${pretty(nonZeroA)}n${signedTerm(kShift)} \\mid n \\in \\mathbb{Z}\\}`,
+      line1: `Longitud de cada peldaño: $L = 1/${pretty(scaleB)} = ${pretty(stepLen)}$ · Salto vertical: $\\Delta y = ${pretty(Math.abs(nonZeroA))}$`,
+      line2: `Discontinuidades de salto finito en $x = ${pretty(hShift)} + n\\cdot(${pretty(stepLen)})$ con $n \\in \\mathbb{Z}$.`,
     };
   }, [familyId, a, b, c, hShift, kShift, radSign, expBase, stepFreq, quad]);
 
@@ -2067,26 +2123,26 @@ export default function MathStudio() {
 
       const auxLabel =
         directTrigId === 'sec'
-          ? 'Envolvente A·cos'
+          ? 'Envolvente $A\\cdot\\cos$'
           : directTrigId === 'csc'
-            ? 'Envolvente A·sen'
+            ? 'Envolvente $A\\cdot\\operatorname{sen}$'
             : 'Curva canónica base';
 
       const yLow = trigVertShift - Math.abs(amplitude);
       const yHigh = trigVertShift + Math.abs(amplitude);
       const domainStr =
         directTrigId === 'sen' || directTrigId === 'cos'
-          ? 'ℝ (−∞; +∞)'
+          ? '\\mathbb{R}\\;(-\\infty;\\,+\\infty)'
           : directTrigId === 'tan' || directTrigId === 'sec'
-            ? `ℝ \\ {x | ${pretty(frequency)}x + ${phase}° = 90° + 180°n}`
-            : `ℝ \\ {x | ${pretty(frequency)}x + ${phase}° = 180°n}`;
+            ? `\\mathbb{R} \\setminus \\{x \\mid ${pretty(frequency)}x + ${phase}^\\circ = 90^\\circ + 180^\\circ n\\}`
+            : `\\mathbb{R} \\setminus \\{x \\mid ${pretty(frequency)}x + ${phase}^\\circ = 180^\\circ n\\}`;
 
       const rangeStr =
         directTrigId === 'sen' || directTrigId === 'cos'
-          ? `[${pretty(yLow)}; ${pretty(yHigh)}]`
+          ? `[${pretty(yLow)};\\,${pretty(yHigh)}]`
           : directTrigId === 'tan' || directTrigId === 'cot'
-            ? 'ℝ (−∞; +∞)'
-            : `(−∞; ${pretty(yLow)}] ∪ [${pretty(yHigh)}; +∞)`;
+            ? '\\mathbb{R}\\;(-\\infty;\\,+\\infty)'
+            : `(-\\infty;\\,${pretty(yLow)}] \\cup [${pretty(yHigh)};\\,+\\infty)`;
 
       return {
         domain: dom,
@@ -2097,14 +2153,14 @@ export default function MathStudio() {
         hAsymptotes: [] as number[],
         extraMarkers: [] as PointMarker[],
         yPiTicks: false,
-        equation: `y = ${pretty(amplitude)} ${activeDirectTrig.symbol}(${pretty(frequency)}x ${phase >= 0 ? '+' : '−'} ${Math.abs(phase)}°)${signedTerm(trigVertShift)}`,
+        equation: `y = ${pretty(amplitude)}\\,\\operatorname{${activeDirectTrig.symbol}}(${pretty(frequency)}x ${phase >= 0 ? '+' : '-'} ${Math.abs(phase)}^\\circ)${signedTerm(trigVertShift)}`,
         domainStr,
         rangeStr,
-        line1: `Amplitud/Escala: ${pretty(trig.amplitude)} · Período: T = ${pretty(trig.period)} rad · Desfase: ${pretty(trig.shift)} rad`,
+        line1: `Amplitud/Escala: $A = ${pretty(trig.amplitude)}$ · Período: $T = ${pretty(trig.period)}\\text{ rad}$ · Desfase: $${pretty(trig.shift)}\\text{ rad}$`,
         line2:
           trig.asymptotes.length > 0
-            ? `Posee ${trig.asymptotes.length} asíntotas verticales en [−2π; 2π] · Eje medio: y = ${pretty(trigVertShift)}`
-            : `Oscilación continua entre [${pretty(yLow)}; ${pretty(yHigh)}] con eje medio y = ${pretty(trigVertShift)}`,
+            ? `Posee ${trig.asymptotes.length} asíntotas verticales en $[-2\\pi;\\,2\\pi]$ · Eje medio: $y = ${pretty(trigVertShift)}$`
+            : `Oscilación continua entre $[${pretty(yLow)};\\,${pretty(yHigh)}]$ con eje medio $y = ${pretty(trigVertShift)}$`,
       };
     }
 
@@ -2143,13 +2199,13 @@ export default function MathStudio() {
       hAsymptotes: invTrig.hAsymptotes,
       extraMarkers: invTrig.endpoints,
       yPiTicks: true,
-      equation: `y = ${pretty(invScaleA)} ${activeInverseTrig.symbol}(${pretty(bAbs)}(x${signedTerm(-invShiftH)}))${signedTerm(invShiftD)}`,
+      equation: `y = ${pretty(invScaleA)}\\,\\operatorname{${activeInverseTrig.symbol}}\\left(${pretty(bAbs)}(x${signedTerm(-invShiftH)})\\right)${signedTerm(invShiftD)}`,
       domainStr: invTrig.domainText,
       rangeStr: invTrig.rangeText,
-      line1: `Dominio principal: ${invTrig.domainText} · Rango principal: ${invTrig.rangeText}`,
+      line1: `Dominio principal: $${invTrig.domainText}$ · Rango principal: $${invTrig.rangeText}$`,
       line2:
         invTrig.hAsymptotes.length > 0
-          ? `Asíntotas horizontales en: ${invTrig.hAsymptotes.map((ha) => 'y = ' + pretty(ha)).join(' y ')}`
+          ? `Asíntotas horizontales en: ${invTrig.hAsymptotes.map((ha) => `$y = ${pretty(ha)}$`).join(' y ')}`
           : `Curva acotada con puntos terminales cerrados en los extremos del dominio.`,
     };
   }, [
@@ -2269,9 +2325,9 @@ export default function MathStudio() {
       domain: dom,
       plot: fnObj.f,
       aux: fnObj.d2f,
-      auxLabel: '2.ª derivada f″(x)',
+      auxLabel: "2.ª derivada $f''(x)$",
       secondaryAux: fnObj.df,
-      secondaryAuxLabel: '1.ª derivada f′(x)',
+      secondaryAuxLabel: "1.ª derivada $f'(x)$",
       tangent: (x: number) => calculus.y + calculus.exact * (x - x0),
       secant: undefined,
       marker: {
@@ -2345,7 +2401,7 @@ export default function MathStudio() {
                 {item.stage}
               </span>
               <span className="hidden rounded-full bg-[#F2EAFA] px-2 py-0.5 text-[9px] font-extrabold text-[#6D3BC7] sm:inline-block">
-                {item.badge}
+                <MathText text={item.badge} />
               </span>
             </div>
             <span className="mt-0.5 block text-[11px] font-extrabold text-[#3C2A4B] sm:text-sm">
@@ -2363,8 +2419,8 @@ export default function MathStudio() {
               <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#7A4BC7]">
                 <Layers className="size-3.5" /> Catálogo de 9 Familias de Funciones Reales
               </span>
-              <span className="font-mono text-[10px] font-bold text-[#8A789B]">
-                {activeFamily.formulaTemplate}
+              <span className="text-[11px] font-bold text-[#7A5DA0]">
+                <KaTeX math={activeFamily.formulaTemplate} />
               </span>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -2380,7 +2436,7 @@ export default function MathStudio() {
                       : 'border-[#E3D6F0] bg-white text-[#523F66] hover:border-[#C6AEE0] hover:bg-[#F7F2FC]')
                   }
                 >
-                  {fam.short}
+                  <MathText text={fam.short} />
                 </button>
               ))}
             </div>
@@ -2416,10 +2472,14 @@ export default function MathStudio() {
                   Funciones Inversas / Arco (6)
                 </button>
               </div>
-              <span className="font-mono text-[10px] font-bold text-[#7D6891]">
-                {trigCategory === 'directas'
-                  ? 'sen · cos · tan · cot · sec · csc'
-                  : 'arcsen · arccos · arctan · arccot · arcsec · arccsc'}
+              <span className="text-[11px] font-bold text-[#7D6891]">
+                <KaTeX
+                  math={
+                    trigCategory === 'directas'
+                      ? '\\operatorname{sen} \\cdot \\cos \\cdot \\tan \\cdot \\cot \\cdot \\sec \\cdot \\csc'
+                      : '\\operatorname{arcsen} \\cdot \\arccos \\cdot \\arctan \\cdot \\operatorname{arccot} \\cdot \\operatorname{arcsec} \\cdot \\operatorname{arccsc}'
+                  }
+                />
               </span>
             </div>
 
@@ -2437,7 +2497,7 @@ export default function MathStudio() {
                         : 'border-[#E3D6F0] bg-white text-[#523F66] hover:border-[#C6AEE0]')
                     }
                   >
-                    {fn.name} ({fn.symbol})
+                    {fn.name} (<KaTeX math={`\\operatorname{${fn.symbol}}`} />)
                   </button>
                 ))}
               </div>
@@ -2455,7 +2515,7 @@ export default function MathStudio() {
                         : 'border-[#E3D6F0] bg-white text-[#523F66] hover:border-[#C6AEE0]')
                     }
                   >
-                    {fn.name}
+                    <MathText text={fn.name} />
                   </button>
                 ))}
               </div>
@@ -2478,13 +2538,13 @@ export default function MathStudio() {
                       : 'border-[#E3D6F0] bg-white text-[#523F66] hover:border-[#C6AEE0]')
                   }
                 >
-                  {m.label}
+                  <MathText text={m.label} />
                 </button>
               ))}
             </div>
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#847198]">
-                Función f(x):
+                <MathText text="Función $f(x)$:" />
               </span>
               {CALCULUS_FUNCTIONS.map((cf) => (
                 <button
@@ -2492,13 +2552,13 @@ export default function MathStudio() {
                   type="button"
                   onClick={() => setCalcFnId(cf.id)}
                   className={
-                    'rounded-md border px-2 py-1 font-mono text-[11px] font-bold transition ' +
+                    'rounded-md border px-2 py-1 text-[11px] font-bold transition ' +
                     (calcFnId === cf.id
                       ? 'border-[#7E42DF] bg-[#EFE5FF] text-[#5B26B8]'
                       : 'border-[#E5DAEF] bg-white text-[#69587A] hover:bg-[#F7F2FC]')
                   }
                 >
-                  {cf.label}
+                  <KaTeX math={cf.label} />
                 </button>
               ))}
             </div>
@@ -2514,23 +2574,31 @@ export default function MathStudio() {
           </span>
 
           <h3 className="font-display text-xl font-bold leading-tight text-[#2F1A4C] sm:text-2xl">
-            {level === 'secundaria'
-              ? activeFamily.title
-              : level === 'preuni'
-                ? trigCategory === 'directas'
-                  ? `Función ${activeDirectTrig.name} (${activeDirectTrig.symbol})`
-                  : `Función ${activeInverseTrig.name}`
-                : activeCalcMode.title}
+            <MathText
+              text={
+                level === 'secundaria'
+                  ? activeFamily.title
+                  : level === 'preuni'
+                    ? trigCategory === 'directas'
+                      ? `Función ${activeDirectTrig.name} ($\\operatorname{${activeDirectTrig.symbol}}$)`
+                      : `Función ${activeInverseTrig.name}`
+                    : activeCalcMode.title
+              }
+            />
           </h3>
 
           <p className="mt-1.5 text-xs leading-5 text-[#7A6B88]">
-            {level === 'secundaria'
-              ? activeFamily.note
-              : level === 'preuni'
-                ? trigCategory === 'directas'
-                  ? activeDirectTrig.note
-                  : activeInverseTrig.note
-                : activeCalcMode.note}
+            <MathText
+              text={
+                level === 'secundaria'
+                  ? activeFamily.note
+                  : level === 'preuni'
+                    ? trigCategory === 'directas'
+                      ? activeDirectTrig.note
+                      : activeInverseTrig.note
+                    : activeCalcMode.note
+              }
+            />
           </p>
 
           <div className="mt-4 flex items-center justify-between gap-2">
@@ -2569,7 +2637,7 @@ export default function MathStudio() {
                   onChange={setB}
                 />
                 <Range
-                  caption="Término independiente (corte Y)"
+                  caption="Término independiente (corte $Y$)"
                   symbol="c"
                   min={-4}
                   max={4}
@@ -2592,7 +2660,7 @@ export default function MathStudio() {
                   onChange={setA}
                 />
                 <Range
-                  caption="Ordenada al origen (corte Y)"
+                  caption="Ordenada al origen (corte $Y$)"
                   symbol="b"
                   min={-5}
                   max={5}
@@ -2680,7 +2748,7 @@ export default function MathStudio() {
                         (radSign === 1 ? 'bg-[#6733C7] text-white' : 'bg-[#F3ECFC] text-[#5B3E85]')
                       }
                     >
-                      √(x − h) →
+                      <KaTeX math="\sqrt{x - h} \to" />
                     </button>
                     <button
                       type="button"
@@ -2690,7 +2758,7 @@ export default function MathStudio() {
                         (radSign === -1 ? 'bg-[#6733C7] text-white' : 'bg-[#F3ECFC] text-[#5B3E85]')
                       }
                     >
-                      ← √(h − x)
+                      <KaTeX math="\leftarrow \sqrt{h - x}" />
                     </button>
                   </div>
                 </div>
@@ -2709,7 +2777,7 @@ export default function MathStudio() {
                   onChange={(v) => setA(v === 0 ? 0.5 : v)}
                 />
                 <Range
-                  caption="Término lineal (genera extremos si a·b < 0)"
+                  caption="Término lineal (genera extremos si $a\cdot b < 0$)"
                   symbol="b"
                   min={-3}
                   max={3}
@@ -2750,7 +2818,7 @@ export default function MathStudio() {
                   onChange={(v) => setA(v === 0 ? 0.5 : v)}
                 />
                 <Range
-                  caption="Base exponencial (b < 1 decae, b > 1 crece)"
+                  caption="Base exponencial ($b < 1$ decae, $b > 1$ crece)"
                   symbol="b"
                   min={0.5}
                   max={3}
@@ -2782,7 +2850,7 @@ export default function MathStudio() {
                   onChange={(v) => setA(v === 0 ? 1 : v)}
                 />
                 <Range
-                  caption="Frecuencia de escalón (L = 1/b)"
+                  caption="Frecuencia de escalón ($L = 1/b$)"
                   symbol="b"
                   min={0.5}
                   max={2}
@@ -2855,7 +2923,7 @@ export default function MathStudio() {
             {level === 'preuni' && trigCategory === 'inversas' && (
               <>
                 <Range
-                  caption="Factor de escala en rango (múltiplo de π)"
+                  caption="Factor de escala en rango (múltiplo de $\pi$)"
                   symbol="A"
                   min={0.5}
                   max={2}
@@ -2905,7 +2973,7 @@ export default function MathStudio() {
                   onChange={setX0}
                 />
                 <Range
-                  caption="Incremento de la secante (Δx = h)"
+                  caption="Incremento de la secante ($\Delta x = h$)"
                   symbol="h"
                   min={0.05}
                   max={1.2}
@@ -2921,7 +2989,7 @@ export default function MathStudio() {
                     {(
                       [
                         ['global', 'Vista global'],
-                        ['lupa', 'Lupa sobre P y Q'],
+                        ['lupa', 'Lupa sobre $P$ y $Q$'],
                       ] as const
                     ).map(([vId, vLabel]) => (
                       <button
@@ -2936,13 +3004,12 @@ export default function MathStudio() {
                             : 'border-[#E5DAEF] bg-white text-[#69587A] hover:bg-[#F7F2FC]')
                         }
                       >
-                        {vLabel}
+                        <MathText text={vLabel} />
                       </button>
                     ))}
                   </div>
                   <p className="mt-1.5 text-[10px] leading-4 text-[#8A7B97]">
-                    La lupa amplía el entorno de P: al reducir h, la curva se confunde con su recta
-                    tangente (linealidad local).
+                    <MathText text="La lupa amplía el entorno de $P$: al reducir $h$, la curva se confunde con su recta tangente (linealidad local)." />
                   </p>
                 </div>
               </>
@@ -2969,7 +3036,7 @@ export default function MathStudio() {
                   onChange={setIntB}
                 />
                 <Range
-                  caption="Número de rectángulos (particiones n)"
+                  caption="Número de rectángulos (particiones $n$)"
                   symbol="n"
                   min={2}
                   max={36}
@@ -3009,7 +3076,7 @@ export default function MathStudio() {
             {level === 'universidad' && calcMode === 'curva' && (
               <>
                 <Range
-                  caption="Abscisa de evaluación (x₀)"
+                  caption="Abscisa de evaluación ($x_0$)"
                   symbol="x₀"
                   min={-2}
                   max={2}
@@ -3019,11 +3086,11 @@ export default function MathStudio() {
                 />
                 <div className="rounded-xl border border-[#E8E1F3] bg-white p-3 text-xs text-[#59486B]">
                   <p className="font-bold text-[#3B2554]">Derivadas analíticas del modelo:</p>
-                  <p className="mt-1 font-mono text-[11px] text-[#059669]">
-                    {activeCalcFn.derivativeFormula}
+                  <p className="mt-1 text-[12px] font-bold text-[#059669]">
+                    <KaTeX math={activeCalcFn.derivativeFormula} />
                   </p>
-                  <p className="mt-0.5 font-mono text-[11px] text-[#D9468F]">
-                    {activeCalcFn.secondDerivativeFormula}
+                  <p className="mt-0.5 text-[12px] font-bold text-[#D9468F]">
+                    <KaTeX math={activeCalcFn.secondDerivativeFormula} />
                   </p>
                 </div>
               </>
@@ -3041,109 +3108,154 @@ export default function MathStudio() {
 
             {level === 'secundaria' && (
               <>
-                <p className="mt-2 break-words font-mono text-[13px] font-bold text-[#5C2EA7]">
-                  {secundariaView.equation}
-                </p>
-                <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[11px]">
+                <div className="mt-2 overflow-x-auto text-[14px] font-bold text-[#5C2EA7]">
+                  <KaTeX math={secundariaView.equation} />
+                </div>
+                <div className="mt-2.5 grid grid-cols-1 gap-1.5 text-[11px] sm:grid-cols-2">
                   <div className="rounded-lg border border-[#E6DAF3] bg-white px-2.5 py-1.5">
                     <span className="font-bold text-[#7A5BA1]">Dominio: </span>
-                    <span className="font-mono text-[#38234C]">{secundariaView.domainStr}</span>
+                    <span className="text-[#38234C]">
+                      <KaTeX math={secundariaView.domainStr} />
+                    </span>
                   </div>
                   <div className="rounded-lg border border-[#E6DAF3] bg-white px-2.5 py-1.5">
                     <span className="font-bold text-[#7A5BA1]">Rango: </span>
-                    <span className="font-mono text-[#38234C]">{secundariaView.rangeStr}</span>
+                    <span className="text-[#38234C]">
+                      <KaTeX math={secundariaView.rangeStr} />
+                    </span>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-[#574769]">{secundariaView.line1}</p>
-                <p className="mt-1 text-xs leading-5 text-[#574769]">{secundariaView.line2}</p>
+                <p className="mt-2 text-xs leading-5 text-[#574769]">
+                  <MathText text={secundariaView.line1} />
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#574769]">
+                  <MathText text={secundariaView.line2} />
+                </p>
               </>
             )}
 
             {level === 'preuni' && (
               <>
-                <p className="mt-2 break-words font-mono text-[13px] font-bold text-[#5C2EA7]">
-                  {preuniView.equation}
-                </p>
+                <div className="mt-2 overflow-x-auto text-[14px] font-bold text-[#5C2EA7]">
+                  <KaTeX math={preuniView.equation} />
+                </div>
                 <div className="mt-2.5 grid grid-cols-1 gap-1.5 text-[11px] sm:grid-cols-2">
                   <div className="rounded-lg border border-[#E6DAF3] bg-white px-2.5 py-1.5">
                     <span className="font-bold text-[#7A5BA1]">Dom: </span>
-                    <span className="font-mono text-[#38234C]">{preuniView.domainStr}</span>
+                    <span className="text-[#38234C]">
+                      <KaTeX math={preuniView.domainStr} />
+                    </span>
                   </div>
                   <div className="rounded-lg border border-[#E6DAF3] bg-white px-2.5 py-1.5">
                     <span className="font-bold text-[#7A5BA1]">Ran: </span>
-                    <span className="font-mono text-[#38234C]">{preuniView.rangeStr}</span>
+                    <span className="text-[#38234C]">
+                      <KaTeX math={preuniView.rangeStr} />
+                    </span>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-[#574769]">{preuniView.line1}</p>
-                <p className="mt-1 text-xs leading-5 text-[#574769]">{preuniView.line2}</p>
+                <p className="mt-2 text-xs leading-5 text-[#574769]">
+                  <MathText text={preuniView.line1} />
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#574769]">
+                  <MathText text={preuniView.line2} />
+                </p>
               </>
             )}
 
             {level === 'universidad' && calcMode === 'derivada' && (
               <>
-                <p className="mt-2 font-mono text-[13px] font-bold text-[#5C2EA7]">
-                  {activeCalcFn.formula} · ({activeCalcFn.derivativeFormula})
-                </p>
+                <div className="mt-2 overflow-x-auto text-[14px] font-bold text-[#5C2EA7]">
+                  <KaTeX
+                    math={`${activeCalcFn.formula} \\;\\cdot\\; \\left(${activeCalcFn.derivativeFormula}\\right)`}
+                  />
+                </div>
                 <p className="mt-2 text-xs leading-5 text-[#574769]">
-                  Pendiente tangente f′({pretty(x0, 1)}) ={' '}
-                  <strong className="text-[#C2410C]">{pretty(calculus.exact, 3)}</strong> ·
-                  Pendiente secante ={' '}
-                  <strong className="text-[#0F766E]">{pretty(calculus.approximate, 3)}</strong>
-                </p>
-                <p className="mt-1 text-xs leading-5 text-[#574769]">
-                  Diferencial dy = {pretty(calculus.dy, 3)} vs. Δy = {pretty(calculus.deltaY, 3)} ·
-                  Error |f′ − m_sec| = {pretty(Math.abs(calculus.exact - calculus.approximate), 3)}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-[#574769]">
-                  Resto ε = Δy − dy = {pretty(calculus.deltaY - calculus.dy, 3)} · ε/h ={' '}
-                  <strong className="text-[#7C3AED]">
-                    {pretty((calculus.deltaY - calculus.dy) / h, 3)}
+                  Pendiente tangente <KaTeX math={`f'(${pretty(x0, 1)}) =`} />{' '}
+                  <strong className="text-[#C2410C]">
+                    <KaTeX math={pretty(calculus.exact, 3)} />
                   </strong>{' '}
-                  → 0 cuando h → 0 (f es diferenciable en x₀)
+                  · Pendiente secante <KaTeX math="m_{\text{sec}} =" />{' '}
+                  <strong className="text-[#0F766E]">
+                    <KaTeX math={pretty(calculus.approximate, 3)} />
+                  </strong>
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#574769]">
+                  <MathText
+                    text={`Diferencial $dy = ${pretty(calculus.dy, 3)}$ vs. $\\Delta y = ${pretty(calculus.deltaY, 3)}$ · Error $|f' - m_{\\text{sec}}| = ${pretty(Math.abs(calculus.exact - calculus.approximate), 3)}$`}
+                  />
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#574769]">
+                  Resto{' '}
+                  <KaTeX math={`\\varepsilon = \\Delta y - dy = ${pretty(calculus.deltaY - calculus.dy, 3)}`} />{' '}
+                  · <KaTeX math="\varepsilon / h =" />{' '}
+                  <strong className="text-[#7C3AED]">
+                    <KaTeX math={pretty((calculus.deltaY - calculus.dy) / h, 3)} />
+                  </strong>{' '}
+                  <MathText text="$\to 0$ cuando $h \to 0$ ($f$ es diferenciable en $x_0$)" />
                 </p>
               </>
             )}
 
             {level === 'universidad' && calcMode === 'integral' && (
               <>
-                <p className="mt-2 font-mono text-[13px] font-bold text-[#5C2EA7]">
-                  ∫[{pretty(Math.min(intA, intB), 1)} → {pretty(Math.max(intA, intB), 1)}] ({activeCalcFn.label}) dx
-                </p>
+                <div className="mt-2 overflow-x-auto text-[14px] font-bold text-[#5C2EA7]">
+                  <KaTeX
+                    math={`\\int_{${pretty(Math.min(intA, intB), 1)}}^{${pretty(Math.max(intA, intB), 1)}} \\left(${activeCalcFn.label}\\right)\\,dx`}
+                  />
+                </div>
                 <p className="mt-2 text-xs leading-5 text-[#574769]">
-                  Suma de Riemann (n = {riemannN}, Δx = {pretty(riemann.dx, 2)}):{' '}
-                  <strong className="text-[#5C2EA7]">{pretty(riemann.riemannSum, 4)}</strong>
+                  Suma de Riemann (
+                  <KaTeX math={`n = ${riemannN},\\; \\Delta x = ${pretty(riemann.dx, 2)}`} />
+                  ):{' '}
+                  <strong className="text-[#5C2EA7]">
+                    <KaTeX math={pretty(riemann.riemannSum, 4)} />
+                  </strong>
                 </p>
                 <p className="mt-1 text-xs leading-5 text-[#574769]">
-                  Integral exacta F(b) − F(a) ={' '}
-                  <strong className="text-[#0F766E]">{pretty(riemann.exactIntegral, 4)}</strong> ·
-                  Error = {pretty(riemann.error, 4)}
+                  Integral exacta <KaTeX math="F(b) - F(a) =" />{' '}
+                  <strong className="text-[#0F766E]">
+                    <KaTeX math={pretty(riemann.exactIntegral, 4)} />
+                  </strong>{' '}
+                  · Error <KaTeX math={`|I - S_n| = ${pretty(riemann.error, 4)}`} />
                 </p>
               </>
             )}
 
             {level === 'universidad' && calcMode === 'curva' && (
               <>
-                <p className="mt-2 font-mono text-[13px] font-bold text-[#5C2EA7]">
-                  En x₀ = {pretty(x0, 1)}: f(x₀) = {pretty(calculus.y, 2)}
-                </p>
+                <div className="mt-2 overflow-x-auto text-[14px] font-bold text-[#5C2EA7]">
+                  <KaTeX math={`x_0 = ${pretty(x0, 1)} \\implies f(x_0) = ${pretty(calculus.y, 2)}`} />
+                </div>
                 <p className="mt-2 text-xs leading-5 text-[#574769]">
-                  1.ª Derivada f′({pretty(x0, 1)}) = {pretty(calculus.exact, 2)} →{' '}
+                  1.ª Derivada{' '}
+                  <KaTeX math={`f'(${pretty(x0, 1)}) = ${pretty(calculus.exact, 2)} \\implies`} />{' '}
                   <strong>
-                    {Math.abs(calculus.exact) < 0.08
-                      ? 'Punto estacionario (extremo local)'
-                      : calculus.exact > 0
-                        ? 'Función Creciente (↗)'
-                        : 'Función Decreciente (↘)'}
+                    <MathText
+                      text={
+                        Math.abs(calculus.exact) < 0.08
+                          ? "Punto estacionario ($f' = 0$, extremo local)"
+                          : calculus.exact > 0
+                            ? "Función Creciente ($f' > 0$, $\\nearrow$)"
+                            : "Función Decreciente ($f' < 0$, $\\searrow$)"
+                      }
+                    />
                   </strong>
                 </p>
                 <p className="mt-1 text-xs leading-5 text-[#574769]">
-                  2.ª Derivada f″({pretty(x0, 1)}) = {pretty(calculus.secondDeriv, 2)} →{' '}
+                  2.ª Derivada{' '}
+                  <KaTeX
+                    math={`f''(${pretty(x0, 1)}) = ${pretty(calculus.secondDeriv, 2)} \\implies`}
+                  />{' '}
                   <strong>
-                    {Math.abs(calculus.secondDeriv) < 0.08
-                      ? 'Punto de inflexión (f″ = 0)'
-                      : calculus.secondDeriv > 0
-                        ? 'Cóncava hacia arriba (∪)'
-                        : 'Cóncava hacia abajo (∩)'}
+                    <MathText
+                      text={
+                        Math.abs(calculus.secondDeriv) < 0.08
+                          ? "Punto de inflexión ($f'' = 0$)"
+                          : calculus.secondDeriv > 0
+                            ? "Cóncava hacia arriba ($f'' > 0$, $\\cup$)"
+                            : "Cóncava hacia abajo ($f'' < 0$, $\\cap$)"
+                      }
+                    />
                   </strong>
                 </p>
               </>
