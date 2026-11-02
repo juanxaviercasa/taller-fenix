@@ -3323,16 +3323,16 @@ export default function MathStudio() {
                 Deja atrás el gráfico estático en 2D que se borra en la pizarra.
               </p>
               <p className="mt-1 text-[11px] leading-5 text-[#7A6A87]">
-                En el curso grabado de US$9 aprendes a tu propio ritmo a construir y publicar tu
-                primera aplicación matemática con IA, y das tu primer paso dentro de nuestro
-                ecosistema de herramientas docentes.
+                Por solo US$9 das tu primer paso construyendo y publicando tu primer módulo
+                matemático interactivo con IA, y abres la puerta a todo nuestro ecosistema de
+                aplicaciones para el aula.
               </p>
             </div>
             <a
-              href="#proyectos"
+              href="#inscripcion"
               className="inline-flex shrink-0 items-center gap-1.5 text-xs font-bold text-[#6D39C8] hover:underline"
             >
-              Ver ecosistema <ArrowUpRight className="size-4" />
+              Crear mis aplicaciones <ArrowUpRight className="size-4" />
             </a>
           </div>
         </div>
