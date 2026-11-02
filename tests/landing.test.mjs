@@ -11,6 +11,8 @@ test('la landing se orienta a matemáticas y un precio de entrada',()=>{
   assert.match(app,/profesores de matemáticas/i);
   assert.match(app,/Menos tiempo escribiendo y dibujando en la pizarra/);
   assert.match(app,/Más tiempo guiando el aprendizaje/);
+  assert.match(app,/Pizarras Vivas en 2D y 3D/);
+  assert.match(app,/USB 100% sin internet/);
   assert.match(app,/id="caso-real"/);
   assert.doesNotMatch(app,/82% plazas ocupadas|Solo 50 plazas|AbTestingBar/);
 });

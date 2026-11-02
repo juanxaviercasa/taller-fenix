@@ -1,8 +1,28 @@
-# Plan Maestro Intencional de Copywriting, Bonos y Order Bumps (Basado en la Investigación Forense de Mercado)
+# Arquitectura Maestra Intencional: TSL + Bonos Destructores de Objeciones + 3 Order Bumps Forenses
 
 > [!IMPORTANT]
-> **Nada al azar — Todo es 100% intencional:**
-> Tras cruzar el informe forense [Investigacion_Profesores_de_Matematicas.md](file:///c:/Users/cabel/Music/taller_web_cero/Investigacion_Profesores_de_Matematicas.md) con nuestra página de ventas, cada titular, cada objeción rebatida, cada bono gratuito y cada *Order Bump* del checkout cumplen ahora una función quirúrgica dentro del embudo.
+> **Nada al azar — Todo es 100% intencional (Incluido el Primer Pliegue / Hero `#inicio`):**
+> Tras cruzar el informe forense [Investigacion_Profesores_de_Matematicas.md](file:///c:/Users/cabel/Music/taller_web_cero/Investigacion_Profesores_de_Matematicas.md) con nuestra página de ventas, cada elemento desde la **Sección Principal (`#inicio`)** hasta los *Order Bumps* del checkout cumple una función quirúrgica dentro del embudo.
+
+---
+
+## 0. Diagnóstico y Reforma Quirúrgica de la Sección Principal (`#inicio` — Above the Fold)
+
+### ¿Por qué la Sección Principal anterior aún se sentía débil?
+En la versión previa, aunque los bloques 2 al 12 ya tenían los hallazgos del estudio forense, el **Bloque 1 (Hero `#inicio`)** todavía conservaba el titular antiguo (*«Menos tiempo escribiendo y dibujando en la pizarra...»*) y el subtítulo genérico (*«Aprende a crear aplicaciones con IA para utilizarlas durante tus clases de matemáticas...»*).
+Según las **Secciones 5 y 9 de [Investigacion_Profesores_de_Matematicas.md](file:///c:/Users/cabel/Music/taller_web_cero/Investigacion_Profesores_de_Matematicas.md)**, decirle a un profesor agotado *"Aprende a crear aplicaciones con IA"* activa su escepticismo defensivo (Fase 3–4 de Sofisticación de Eugene Schwartz), porque suena a más trabajo no remunerado, teoría o programación.
+
+### Cómo aplica ahora la Sección Principal (`#inicio`) el 100% de la Investigación Forense:
+1. **Pre-Titular de Hiper-Identificación (Secciones 1, 2 y 8 del Estudio):**
+   > *«PARA PROFESORES DE MATEMÁTICAS (SECUNDARIA, PRE Y UNIVERSIDAD) AGOTADOS DE DIBUJAR LA MISMA GRÁFICA 15 VECES POR SEMANA Y QUEDARSE HASTA LAS 11:30 PM PREPARANDO MATERIAL»*
+2. **Gran Titular `H1` (Fusión de los Hooks #2, #3, #5 y #6 + El Mecanismo Único de la Sección 5 y 9):**
+   > **Deja de perder media hora y tu garganta dibujando de espaldas al salón en una pizarra plana que no se mueve. Clona «Pizarras Vivas en 2D y 3D» en 60 segundos y llévalas en tu USB 100% sin internet.**
+3. **Subtítulo Forense (Derriba las 3 Creencias Falsas de la Sección 4 + Activa los 3 Motores de Compra de la Sección 3):**
+   > *«Olvídate de sufrir metiendo comandos lentos en GeoGebra frente a 40 alumnos inquietos (donde te equivocas en un paréntesis y perdiste la hora) o de usar diapositivas estáticas. **Si sabes mandar un WhatsApp y copiar y pegar en Word, ya tienes el 100% de la habilidad necesaria:** copias nuestra plantilla en español, pones el tema de tu clase en la IA gratuita y descargas un archivo liviano para el televisor o proyector de tu colegio. **Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje, recuperando tus domingos y cotizando tus clases particulares entre S/ 60 y S/ 80+ la hora.**»*
+4. **Grilla de 3 Pilares Forenses en el Primer Pliegue (`heroPillars` en [src/App.tsx](file:///c:/Users/cabel/Music/taller_web_cero/src/App.tsx)):**
+   - **Pilar 1 (El dolor real que dejas atrás hoy):** Dar la espalda 2 minutos mientras la mitad saca el celular y trazar un poliedro con 3 colores de plumón para que pregunten *«¿Profe, esa raya de atrás está adentro o afuera?»*.
+   - **Pilar 2 (El Mecanismo de Inyección de Plantillas):** Cero código y cero comandos de GeoGebra. Plantilla en español + IA gratuita = archivo `.html` en tu USB 100% sin internet.
+   - **Pilar 3 (Retorno desde la primera semana):** 10 visualizadores ya armados para mañana a las 8:00 AM, fin del «domingo negro» y salto de S/ 25/h a S/ 60–80+/h en clases particulares.
 
 ---
 
@@ -38,7 +58,7 @@ flowchart LR
 ## 2. Actualizaciones Intencionales Bloque por Bloque en [`src/App.tsx`](file:///c:/Users/cabel/Music/taller_web_cero/src/App.tsx)
 
 ### A. Inyección de la «Voz Literal del Cliente» (Sala de Profesores en Perú y LatAm)
-En el **Bloque 2 (El Lead «De Profesor a Profesor»)** y en el **Bloque 3 (Matriz Comparativa)** incorporamos los síntomas exactos detectados por la investigación:
+En el **Bloque 1 (Hero `#inicio`)**, en el **Bloque 2 (El Lead «De Profesor a Profesor»)** y en el **Bloque 3 (Matriz Comparativa)** incorporamos los síntomas exactos detectados por la investigación:
 1. **La tragedia de los 2 minutos de espaldas y la raya del poliedro:**
    > *«Pasarte media hora dibujando un poliedro con tres colores de plumón para que al final te pregunten: "¿Profe, esa raya punteada está adentro o afuera?", mientras la mitad del salón ya sacó el celular a tus espaldas.»*
 2. **El dolor de las 11:30 PM, el síndrome del domingo a las 5:00 PM y el "Profesor Taxi":**
@@ -48,7 +68,7 @@ En el **Bloque 2 (El Lead «De Profesor a Profesor»)** y en el **Bloque 3 (Matr
 
 ---
 
-### B. Nuevo Bloque Intencional: «Por qué fallaron las soluciones que probaste antes» (Nivel 3–4 de Sofisticación de Eugene Schwartz)
+### B. Bloque Intencional: «Por qué fallaron las soluciones que probaste antes» (Nivel 3–4 de Sofisticación de Eugene Schwartz)
 Rebatimos con empatía por qué el profesor tiene razón al desconfiar de lo que ya probó:
 * **❌ Diapositivas de PowerPoint / Canva:** Son imágenes muertas en 2D; si un alumno pregunta *«¿qué pasa si el coeficiente es negativo?»*, la diapositiva no se mueve y terminas escribiendo encima con plumón.
 * **❌ GeoGebra manual en vivo:** Configurar comandos frente a 40 adolescentes inquietos consume media clase; te equivocas en un paréntesis y perdiste el salón.
@@ -58,7 +78,7 @@ Rebatimos con empatía por qué el profesor tiene razón al desconfiar de lo que
 ---
 
 ### C. Rediseño Intencional del *Grand Slam Offer Stack* (`Valor Total: US$197` → `Hoy: US$9`)
-En el **Bloque 10 (`#inscripcion`)**, reemplazamos los entregables genéricos por los **5 Entregables y Bonos Intencionales** del estudio forense, donde cada uno mata una objeción específica:
+En el **Bloque 10 (`#inscripcion`)**, presentamos los **5 Entregables y Bonos Intencionales** del estudio forense, donde cada uno mata una objeción específica:
 
 | Entregable / Bono Intencional (Incluido hoy por US$9) | Objeción que Destruye | Valor Anclado |
 | :--- | :--- | :---: |
@@ -73,7 +93,7 @@ En el **Bloque 10 (`#inscripcion`)**, reemplazamos los entregables genéricos po
 ---
 
 ### D. Los 3 *Order Bumps* Intencionales en el Checkout (Validación de Demanda en Vivo)
-Dentro de la tarjeta de pago en `#inscripcion` (y conectados con el registro de interesados/checkout), añadimos el selector interactivo de **Complementos Opcionales de 1 Clic (*Order Bumps*)** para cumplir dos metas simultáneas:
+Dentro de la tarjeta de pago en `#inscripcion`, añadimos el selector interactivo de **Complementos Opcionales de 1 Clic (*Order Bumps*)** para cumplir dos metas simultáneas:
 1. **Elevar el Ticket Promedio (AOV) de US$9 a US$16–US$37** para financiar Facebook Ads.
 2. **Medir intencionalmente qué dolor complementario tiene mayor disposición de pago:**
 
@@ -87,7 +107,7 @@ Dentro de la tarjeta de pago en `#inscripcion` (y conectados con el registro de 
 ---
 
 ### E. Sección de FAQ Intencional (Las 7 Objeciones Forenses del Estudio)
-Actualizamos las preguntas frecuentes con las objeciones literales descubiertas en la investigación:
+Las preguntas frecuentes rebaten palabra por palabra las objeciones literales descubiertas en la investigación:
 1. **«En mi colegio no hay internet en los salones, apenas un proyector o TV. ¿Igual funciona?»** → Explicación del archivo único `.html` en memoria USB 100% offline.
 2. **«Ya probé GeoGebra y cursos de TICs y perdía demasiado tiempo metiendo comandos. ¿Por qué esto es distinto?»** → Contraste con las plantillas en español de copiar y pegar.
 3. **«No soy programador y tengo más de 45 años. ¿Necesito saber código o pagar una IA cara de US$20/mes?»** → Analogía del WhatsApp/Word + funciona con IA 100% gratuita.

@@ -19,6 +19,24 @@ const projects:Project[]=[
   {name:'Todo Lima',image:'todo-lima.webp',description:'Directorio digital que demuestra cómo dominar este sistema te abre puertas económicas más allá de la docencia.',skill:'Proyectos digitales escalables',url:'https://todolima.com/',group:'Otros'}
 ];
 
+const heroPillars:[string,string,string][]=[
+  [
+    '1. El dolor real que dejas atrás hoy',
+    'No más pérdida de control ni garganta destrozada',
+    'Dejas de darle la espalda 2 minutos al salón (mientras la mitad saca el celular) y de trazar con 3 colores de plumón un poliedro en 2D para que al final te digan: «¿Profe, esa raya de atrás está adentro o afuera?».'
+  ],
+  [
+    '2. El Mecanismo: Inyección de Plantillas',
+    'Si sabes usar WhatsApp y Word, ya sabes hacerlo',
+    'Cero código y cero comandos lentos de GeoGebra. Copias nuestra plantilla en español, escribes el tema de tu clase en la IA gratuita y en 60 segundos descargas un archivo único (.html) que abre 100% SIN INTERNET desde tu USB.'
+  ],
+  [
+    '3. Tu retorno desde la primera semana',
+    'Recupera tus domingos y duplica tu tarifa por hora',
+    'Incluye 10 visualizadores ya armados listos para mañana a las 8:00 AM. Apagas tu laptop a las 7:00 PM, brillas ante el coordinador académico y pasas de pelear por S/ 25/h a cobrar entre S/ 60 y S/ 80+ por hora en tus clases particulares.'
+  ]
+];
+
 const oldVsNew:[string,string][]=[
   [
     'Pasarte media hora dibujando un poliedro con 3 colores de plumón para que al final te digan: «¿Profe, esa raya de atrás está adentro o afuera?».',
@@ -179,26 +197,16 @@ const faq:[string,string][]=[
   ['"Soy \'profesor taxi\', dicto más de 40 horas a la semana y ya no doy más. ¿Esto me va a quitar tiempo?"', 'Al contrario: está hecho para devolverte tus noches y erradicar el dolor de estómago del domingo a las 5:00 PM. Además, incluye una Bóveda con 10 visualizadores ya armados para que los uses mañana mismo a las 8:00 AM sin crear nada desde cero, y cada recurso nuevo te toma menos de 15 minutos dejándolo listo para todo el año.'],
   ['"¿Por qué cuesta solo US$9 (aprox. S/ 33 soles)? ¿Hay cobros mensuales ocultos?"', 'No hay ningún cobro mensual ni letra chica: es un único pago de US$9 (exactamente lo que te cuestan dos cajas de plumones acrílicos o lo que cobras en una sola hora de clase particular estándar). Lo fijamos en este precio de entrada para que cualquier docente de Perú y Latinoamérica pueda comprobar el sistema en su aula hoy mismo y entrar a nuestro ecosistema.'],
   ['"¿Cómo recupero estos US$9 dando clases particulares, en academia o en mi colegio?"', 'En el mercado de clases particulares, quien enseña con un PDF estático pelea por S/ 20 o S/ 30 la hora contra estudiantes universitarios. Cuando le muestras a los padres de familia tus propios simuladores 2D y 3D donde su hijo comprende en 15 minutos lo que no entendió en todo el bimestre, justificas tarifas de S/ 60 a S/ 80+ la hora. Con una sola hora de clase recuperas hasta el doble de tu inversión.'],
-  ['"¿Las plataformas grandes multi-módulo como Sólidos Geométricos completo vienen dentro de los US$9?"', 'Esas plataformas avanzadas te muestran hasta dónde puedes escalar dentro de nuestro ecosistema. En tu acceso hoy de US$9 recibes las 3 plantillas maestras (3D, Funciones/Trigo/Cálculo y Álgebra Paso a Paso), los 2 bonos (Clonador de Retos + Guía USB Sin Internet con 10 Apps listas) para lograr tu victoria rápida desde tu primera clase.']
-];
-
-const steps=[
-  {n:'01',time:'Cero comandos raros',title:'Copias nuestra Plantilla en Español del tema de tu clase',desc:'Olvídate de sufrir con GeoGebra o de empezar desde cero. Tomas la plantilla lista, escribes entre corchetes el tema de tu sílabo y la pegas en la IA gratuita.',outcome:'Si sabes usar WhatsApp y Word, ya lo dominas',icon:Lightbulb,image:'/metodo/etapa-01-modelo-matematico.webp'},
-  {n:'02',time:'En 60 segundos',title:'La IA te entrega tu Pizarra Viva 2D o 3D con controles listos',desc:'Sin tocar código, obtienes tu visualizador con deslizadores en tiempo real, resolución paso a paso y el botón «Nuevo Reto» para generar ejercicios exactos al instante.',outcome:'Rompes el bloqueo y la ansiedad matemática del salón',icon:Wrench,image:'/metodo/etapa-02-interaccion-ia.webp'},
-  {n:'03',time:'En tu USB sin internet',title:'Lo guardas en tu USB y lo usas todo el año sin Wi-Fi',desc:'Se descarga en un archivo único liviano que abres sin internet en el televisor o proyector de tu colegio, academia, universidad o clases particulares por Zoom.',outcome:'Ahorras horas cada semana y duplicas tu tarifa por hora',icon:MonitorPlay,image:'/metodo/etapa-03-publicacion-web.webp'}
+  ['"¿Las plataformas grandes multi-módulo como Sólidos Geométricos completo vienen dentro de los US$9?"', 'Esas plataformas avanzadas te muestran hasta dónde puedes escalar dentro de nuestro ecosistema. En tu acceso hoy de US$9 recibes las 3 plantillas maestras (3D, Funciones/Trigo/Cálculo y Paso a Paso), el Clonador de Ejercicios Infinitos, la Guía USB Sin Internet y las 10 aplicaciones listas para usar mañana mismo.']
 ];
 
 function Heading({eyebrow,title,body}:{eyebrow:string;title:string;body?:string}){
- return <div className="max-w-3xl">
-  <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">{eyebrow}</p>
-  <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.45rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#291840]">{title}</h2>
-  {body&&<p className="mt-5 text-base leading-8 text-[#6D5C7D]">{body}</p>}
- </div>;
+ return <div className="max-w-3xl"><p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">{eyebrow}</p><h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.35rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">{title}</h2>{body&&<p className="mt-4 text-base leading-8 text-[#685977] sm:text-lg">{body}</p>}</div>;
 }
 
 function ProjectCard({project}:{project:Project}){
- return <article className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5D9EE] bg-white shadow-[0_9px_30px_rgba(65,29,100,0.055)]">
-  <div className="aspect-[16/10] overflow-hidden bg-[#EFE5F9]"><img src={'/projects/captures/'+project.image} alt={'Captura documentada de '+project.name} loading="lazy" decoding="async" className="size-full object-cover object-top"/></div>
+ return <article className="group flex flex-col overflow-hidden rounded-[22px] border border-[#E7DCF0] bg-white shadow-[0_14px_40px_rgba(68,31,120,.06)]">
+  <div className="aspect-[16/10] overflow-hidden border-b border-[#EFE6F7] bg-[#F5EEFC]"><img src={`/projects/captures/${project.image}`} alt={`Vista previa de ${project.name}`} loading="lazy" decoding="async" className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"/></div>
   <div className="flex flex-1 flex-col p-6"><span className="text-[10px] font-bold uppercase tracking-[.13em] text-[#8A51C5]">{project.skill}</span><h3 className="mt-2 font-display text-xl font-bold text-[#2C1A40]">{project.name}</h3><p className="mt-3 flex-1 text-sm leading-7 text-[#695B77]">{project.description}</p><a href={project.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#6531C6] hover:underline">Ver resultado en vivo <ExternalLink className="size-4"/></a></div>
  </article>;
 }
@@ -233,44 +241,73 @@ export default function App(){
  return <div id="inicio" className="min-h-screen overflow-x-clip bg-[#FCFAFF] font-sans text-[#2D1A42]">
   <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-4">Saltar al contenido</a>
   <main id="contenido">
-   {/* BLOQUE 1: HERO DE IMPULSO LOW-TICKET + PUENTE DE PRUEBA EN VIVO */}
-   <section className="brand-hero relative px-5 pb-24 pt-10 sm:px-7 sm:pt-14">
+   {/* BLOQUE 1: SECCIÓN PRINCIPAL (HERO FORENSE DE RESPUESTA DIRECTA + MECANISMO ÚNICO + PUENTE EN VIVO) */}
+   <section className="brand-hero relative px-5 pb-24 pt-8 sm:px-7 sm:pt-12">
     <div className="relative mx-auto max-w-7xl">
      <div className="mx-auto max-w-5xl text-center">
-      <p className="inline-flex items-center gap-2 rounded-full border border-[#D8C4ED] bg-white/90 px-4 py-2 text-xs font-extrabold uppercase tracking-[.1em] text-[#7238BF] shadow-sm">
-        <Sparkles className="size-4 text-[#9B4DFF]"/> Para profesores de matemáticas que aman enseñar, pero odian quedarse hasta las 11:30 PM preparando material
+      {/* PRE-TITULAR FORENSE: LLAMADO DIRECTO AL AVATAR Y SU DOLOR DE LAS 11:30 PM Y 15 REPETICIONES */}
+      <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#D8C4ED] bg-white/95 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[.08em] text-[#7238BF] shadow-sm sm:text-xs">
+        <Sparkles className="size-4 shrink-0 text-[#9B4DFF]"/>
+        <span>Para profesores de matemáticas (Secundaria, Pre y Universidad) agotados de dibujar la misma gráfica 15 veces por semana y quedarse hasta las 11:30 PM preparando material</span>
       </p>
-      <h1 className="mt-6 font-display text-[clamp(2.55rem,5.1vw,5.2rem)] font-bold leading-[1.08] tracking-[-.065em] text-[#25173C]">
-        Menos tiempo escribiendo y dibujando en la pizarra. <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">Más tiempo guiando el aprendizaje.</span>
+
+      {/* GRAN TITULAR H1: DOLOR ESCÉNICO/FÍSICO + MECANISMO ÚNICO «PIZARRA VIVA IA™» + USB SIN INTERNET */}
+      <h1 className="mt-6 font-display text-[clamp(2.25rem,4.7vw,4.65rem)] font-bold leading-[1.08] tracking-[-.06em] text-[#25173C]">
+        Deja de perder media hora y tu garganta dibujando de espaldas al salón en una pizarra plana que no se mueve.{' '}
+        <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">
+          Clona «Pizarras Vivas en 2D y 3D» en 60 segundos y llévalas en tu USB 100% sin internet.
+        </span>
       </h1>
-      <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-[#665674] sm:text-xl">
-        Aprende a crear aplicaciones con IA para utilizarlas durante tus clases de matemáticas: visualiza conceptos complejos, manipula figuras y funciones en tiempo real, y guía la exploración y la práctica de tus estudiantes.
+
+      {/* SUBTÍTULO FORENSE: DERRIBA LAS 3 CREENCIAS FALSAS (GEOGEBRA, PROGRAMACIÓN, INTERNET) Y ACTIVA LOS 3 MOTORES */}
+      <p className="mx-auto mt-6 max-w-4xl text-base leading-8 text-[#5E4E6E] sm:text-xl">
+        Olvídate de sufrir metiendo comandos lentos en GeoGebra frente a 40 alumnos inquietos (donde te equivocas en un paréntesis y perdiste la hora) o de usar diapositivas estáticas. <strong className="text-[#2B1840]">Si sabes mandar un WhatsApp y copiar y pegar en Word, ya tienes el 100% de la habilidad necesaria:</strong> copias nuestra plantilla en español, pones el tema de tu clase en la IA gratuita y descargas un archivo liviano para el televisor o proyector de tu colegio. <strong className="text-[#6932C8]">Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje, recuperando tus domingos y cotizando tus clases particulares entre S/ 60 y S/ 80+ la hora.</strong>
       </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-2.5 text-xs font-bold text-[#564667]">
-        {['Secundaria','Preuniversitario','Universidad','Funciona en tu USB sin internet en el aula'].map(t=>(
-          <span key={t} className="rounded-full border border-[#E4D7F0] bg-white/95 px-3.5 py-2 shadow-sm">
+
+      {/* 4 PÍLDORAS DESTRUCTORAS DE OBJECIONES EN EL PRIMER PLIEGUE */}
+      <div className="mt-6 flex flex-wrap justify-center gap-2.5 text-xs font-bold text-[#4F3E60]">
+        {[
+          '🔌 Abre 100% SIN INTERNET desde tu USB en cualquier TV o proyector',
+          '📋 Cero código ni comandos de GeoGebra (Plantillas en español copiar y pegar)',
+          '⚡ Incluye 10 Pizarras Vivas ya armadas listas para mañana a las 8:00 AM',
+          '🆓 Funciona con IA 100% gratuita (sin pagar suscripciones de US$20/mes)'
+        ].map(t=>(
+          <span key={t} className="rounded-full border border-[#DEC9F2] bg-white/95 px-3.5 py-2 shadow-sm">
             <CheckCircle2 className="mr-1.5 inline size-4 text-[#1D896A]"/>{t}
           </span>
         ))}
       </div>
+
+      {/* CTA PRINCIPAL DE IMPULSO + ANCLAJE A 2 CAJAS DE PLUMONES / 1 HORA DE CLASE PARTICULAR */}
       <div className="mt-8 flex flex-col items-center">
         <a href="#inscripcion" className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(101,48,200,.26)] transition hover:scale-[1.01] hover:opacity-95 sm:w-auto sm:text-lg">
-          ¡Quiero ahorrar horas de pizarra y transformar mis clases · US$9! <ArrowRight className="size-5"/>
+          ¡Quiero mi Kit de Pizarras Vivas IA™ en mi USB + 10 Apps Listas · US$9! <ArrowRight className="size-5"/>
         </a>
-        <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-semibold text-[#6E5B82]">
-          <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único de US$9 (Lo que cuestan 2 cajas de plumones)</span>
+        <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-semibold text-[#66537A]">
+          <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único de US$9 (~S/ 33 · Lo que cuestan 2 cajas de plumones o 1 hora de clase particular)</span>
           <span>·</span>
-          <span>⚡ Listo en 15 min sin saber programar</span>
+          <span>⚡ Victoria en 15 minutos</span>
           <span>·</span>
-          <span>🔌 Abre sin internet desde tu USB</span>
+          <span>🛡️ Garantía incondicional de 14 días</span>
         </div>
+      </div>
+
+      {/* GRILLA DE IMPACTO EN EL HERO: LOS 3 PILARES FORENSES DEL ESTUDIO (DOLOR -> MECANISMO -> RETORNO) */}
+      <div className="mt-10 grid gap-4 text-left md:grid-cols-3">
+        {heroPillars.map(([badge,heading,copy])=>(
+          <div key={badge} className="rounded-2xl border border-[#E2D2F1] bg-white/95 p-5 shadow-[0_12px_32px_rgba(72,34,122,0.06)]">
+            <span className="inline-block rounded-full bg-[#F3EAFF] px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#6F37C5]">{badge}</span>
+            <h2 className="mt-2.5 font-display text-base font-bold leading-6 text-[#2B1840]">{heading}</h2>
+            <p className="mt-1.5 text-xs leading-6 text-[#665676]">{copy}</p>
+          </div>
+        ))}
       </div>
      </div>
 
-     {/* PUENTE DE ACTIVACIÓN EN VIVO SOBRE EL SIMULADOR */}
-     <div className="mx-auto mt-12 max-w-4xl rounded-2xl border border-[#DFC9F5] bg-white/90 px-5 py-3.5 text-center shadow-sm">
+     {/* PUENTE DE ACTIVACIÓN EN VIVO SOBRE EL SIMULADOR (CONECTA LA PREGUNTA EN CLASE CON LA DEMO) */}
+     <div className="mx-auto mt-10 max-w-4xl rounded-2xl border border-[#DFC9F5] bg-white/95 px-5 py-4 text-center shadow-sm">
        <p className="text-xs leading-6 text-[#58456A] sm:text-sm">
-         <strong className="text-[#6932C8]"><Zap className="mr-1 inline size-4 text-[#B93EA3]"/>Pruébalo tú mismo ahora:</strong> Mueve cualquier deslizador en el laboratorio de abajo. Lo que en la pizarra te toma <strong className="text-[#2D1A42]">20 minutos trazar y borrar de espaldas al salón</strong>, aquí tus alumnos lo ven moverse y lo comprenden en <strong className="text-[#2D1A42]">10 segundos</strong>.
+         <strong className="text-[#6932C8]"><Zap className="mr-1 inline size-4 text-[#B93EA3]"/>Pruébalo tú mismo aquí abajo (sin darle la espalda a tu salón):</strong> Cuando en clase un alumno te pregunta <em className="font-semibold text-[#2D1A42]">«¿Profe, qué pasa si el coeficiente es negativo o si giramos el sólido?»</em>, en una pizarra estática tendrías que borrar todo y volver a dibujar. <strong className="text-[#2D1A42]">Mueve cualquier control abajo y mira cómo tus alumnos exclaman «¡Profe, ahora sí lo vi clarito!» en 10 segundos:</strong>
        </p>
      </div>
 
@@ -294,109 +331,105 @@ export default function App(){
          <h2 className="mt-4 font-display text-[clamp(1.95rem,3.9vw,3.1rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#291840]">
            «Me paso media hora dibujando con tres colores de plumón para que al final me digan: “¿Profe, esa raya de atrás está adentro o afuera?”…»
          </h2>
-         <figure className="mt-6 overflow-hidden rounded-2xl border border-[#DFCFEF] bg-[#FAF6FF] p-2.5 shadow-[0_14px_38px_rgba(70,32,120,0.08)]">
-           <div className="relative overflow-hidden rounded-xl border border-[#E7DAF4]">
-             <img
-               src="/metodo/dolor-pizarra-vs-clase-viva.webp"
-               alt="Contraste real en el aula de matemáticas: el desgaste de dar la espalda dibujando en una pizarra estática frente a alumnos dispersos versus enseñar de frente con visualizaciones interactivas y alumnos participando"
-               loading="lazy"
-               decoding="async"
-               className="aspect-[16/9] w-full object-cover"
-             />
-           </div>
-           <figcaption className="mt-2.5 grid gap-2 text-[11px] font-bold sm:grid-cols-2">
-             <span className="flex items-center gap-1.5 rounded-lg bg-[#FFF1F5] px-3 py-1.5 text-[#9B2C53]">
-               <XCircle className="size-3.5 shrink-0 text-[#D14B72]"/> Seguir igual: espalda al salón, fatiga y alumnos en el celular
-             </span>
-             <span className="flex items-center gap-1.5 rounded-lg bg-[#ECFBF5] px-3 py-1.5 text-[#146C52]">
-               <CheckCircle2 className="size-3.5 shrink-0 text-[#198768]"/> Con Pizarra Viva: de frente al aula, energía y atención total
-             </span>
+         <figure className="mt-6 overflow-hidden rounded-2xl border border-[#DFC9F2] bg-[#F7F1FC] shadow-[0_14px_34px_rgba(65,30,115,0.09)]">
+           <img
+             src="/metodo/dolor-pizarra-vs-clase-viva.webp"
+             alt="Contraste hiperrealista en el aula: el desgaste de dibujar en la pizarra de espaldas al salón vs. proyectar un visualizador matemático interactivo con alumnos atentos"
+             loading="lazy"
+             decoding="async"
+             className="aspect-[16/10] w-full object-cover"
+           />
+           <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-[#E6D7F4] bg-white px-4 py-2.5 text-[11px] font-bold text-[#5E4B70]">
+             <span className="text-[#B83B66]">❌ Antes: 2 minutos de espaldas = salón en el celular y dibujo 2D mudo</span>
+             <span className="text-[#178366]">✅ Ahora: Pizarra Viva 2D/3D desde tu USB (100% sin internet)</span>
            </figcaption>
          </figure>
-         <div className="mt-6 space-y-4 text-base leading-8 text-[#59486B]">
+         <div className="mt-6 space-y-4 text-base leading-8 text-[#645574]">
            <p>
-             Si eres maestro de matemáticas, conoces este desgaste en carne propia: apenas le das la espalda al salón durante dos minutos para trazar una gráfica en la pizarra, <strong className="text-[#2B1840]">ya perdiste el orden del aula y la mitad está metida en el celular</strong>. Y si dictas en cinco secciones distintas, repetir y borrar la misma gráfica 15 veces por semana te deja el hombro, la espalda y la garganta destrozados.
+             Si enseñas matemáticas en el Perú o Latinoamérica, conoces este desgaste en el cuerpo: dictar en cinco secciones, <strong className="text-[#35204A]">dibujar y borrar la misma gráfica 15 veces por semana</strong> hasta quedarte sin garganta y con el hombro adolorido… y apenas les das la espalda dos minutos para trazar en la pizarra, volteas y la mitad del salón ya está metida en el celular.
            </p>
            <p>
-             Para colmo, te toca enseñar <strong className="text-[#2B1840]">uno de los cursos más temidos de la escuela</strong>. Cuando preguntas <em>«¿Todo claro?»</em>, todos te dicen <em>«¡Sí, profe!»</em> calladitos porque sufren de ansiedad matemática y <strong className="text-[#2B1840]">les da vergüenza parecer tontos frente a sus compañeros</strong>… pero el viernes tomas la práctica y la mayoría reprueba porque un dibujo plano en 2D no se mueve ni les permite ver de dónde salen las fórmulas.
+             Les preguntas <em>«¿Todo claro?»</em> y todos te dicen <strong className="text-[#35204A]">«¡Sí, profe!»</strong> calladitos por vergüenza a quedar mal frente a sus compañeros, pero como el dibujo plano en 2D no se mueve, el viernes tomas la práctica y todos jalan. Y lo peor empieza a las <strong className="text-[#35204A]">11:30 PM de un domingo</strong>: cuando ya te duele el estómago pensando en el lunes mientras sigues despierto trabajando gratis en casa cuadrando gráficos y ecuaciones en Word.
            </p>
-           <p>
-             Y cuando suena el timbre, empieza tu segundo turno no pagado: correr como «profesor taxi» de un colegio a otro o quedarte hasta las <strong className="text-[#2B1840]">11:30 de la noche de un domingo</strong> peleando con ecuaciones y grafiquitos en Word para el día siguiente.
-           </p>
-           <p className="rounded-2xl border border-[#E7DAF4] bg-[#FAF6FF] p-4 text-sm leading-7 text-[#4B3860]">
-             <strong>Tu momento de evolucionar ha llegado —y seamos claros:</strong> ningún profesor compra esto porque quiera «ponerse a programar aplicaciones». Lo haces por el <strong>resultado directo en tu vida y en tu bolsillo</strong>: apagar tu laptop a las 7:00 PM, dominar tu aula de frente sin gritar y pasar de cobrar S/ 25 la hora a <strong>S/ 60–S/ 80+ la hora</strong> en tus clases particulares como un docente potenciado con tecnología.
+           <p className="rounded-2xl border-l-4 border-[#6E36C9] bg-[#F7F1FE] p-4 font-medium text-[#352049]">
+             No es tu culpa ni la de tus alumnos: una pizarra estática en 2D no puede competir contra la pantalla de un celular, y nadie tiene tiempo para programar ni para meter comandos en GeoGebra frente a 40 chicos inquietos. Por eso creamos el <strong className="text-[#6932C8]">Método Pizarra Viva IA™ por Inyección de Plantillas</strong>: copias en español, pegas en la IA gratuita y llevas tus propios simuladores 2D y 3D en tu memoria USB <strong className="text-[#6932C8]">sin necesitar internet en tu colegio</strong>.
            </p>
          </div>
        </div>
 
-       <div className="space-y-5 lg:sticky lg:top-8">
-         <div className="rounded-2xl border border-[#DECFF0] bg-[#F6EEFF] px-5 py-4">
-           <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#6E36C4]">Los 3 motores reales por los que haces este cambio hoy</p>
-         </div>
-         {[
-           {
-             icon:Clock,
-             badge:'01 · SALUD, GARGANTA Y DOMINGOS LIBRES',
-             title:'Deja de dibujar 15 veces lo mismo y apaga tu laptop temprano',
-             desc:'En lugar de desgastar tu hombro en 5 secciones o quedarte hasta medianoche armando gráficos, copias una plantilla en español, la IA crea tu pizarra viva en 60 segundos y la reutilizas todo el año.'
-           },
-           {
-             icon:Users,
-             badge:'02 · CONTROL DEL AULA Y CERO MIEDO MATEMÁTICO',
-             title:'Enseña siempre de frente y logra el «¡Ah, ahora sí entendí!»',
-             desc:'Sin darle la espalda al salón ni pelear con comandos lentos de GeoGebra, mueves un control en vivo, el sólido o la función cobra movimiento y hasta el alumno más distraído participa.'
-           },
-           {
-             icon:Coins,
-             badge:'03 · PRESTIGIO Y SALTO DE S/ 25 A S/ 80 LA HORA',
-             title:'Destaca en tu institución y duplica tu tarifa en clases particulares',
-             desc:'Lleva tus visualizadores en tu USB (funcionan sin internet en el colegio) para brillar en las observaciones de aula, y úsalos en tus asesorías particulares para cobrar como un especialista premium.'
-           }
-         ].map(({icon:Icon,badge,title,desc})=>(
-           <div key={title} className="rounded-2xl border border-[#E8DEF1] bg-white p-6 shadow-[0_10px_30px_rgba(70,32,120,0.05)]">
-             <div className="flex items-center gap-2.5 text-xs font-extrabold tracking-[.12em] text-[#7A41C8]">
-               <span className="flex size-8 items-center justify-center rounded-lg bg-[#EFE4FD] text-[#6932C8]"><Icon className="size-4"/></span>
-               {badge}
+       <div className="space-y-4">
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#F2E8FF] text-[#6B35C2]"><Clock className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#7C44CE]">Motor #1 · Salud, Voz y Tiempo Libre</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Apaga tu laptop a las 7:00 PM y salva tu garganta</h3>
              </div>
-             <h3 className="mt-3 font-display text-xl font-bold text-[#2F1B42]">{title}</h3>
-             <p className="mt-2 text-sm leading-7 text-[#6E5E7C]">{desc}</p>
            </div>
-         ))}
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Elimina las 12 a 18 horas semanales de trabajo fantasma no remunerado en casa y el «síndrome del domingo a las 5:00 PM». Generas tu pizarra interactiva en 60 segundos, la guardas en tu USB y la reutilizas en tus 5 secciones sin volver a dibujar desde cero.
+           </p>
+         </div>
+
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F8F3] text-[#178568]"><Users className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#178568]">Motor #2 · Autoridad Escénica y Cero Ansiedad</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Explicas siempre de frente y brillas ante el director</h3>
+             </div>
+           </div>
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Sin darle la espalda al grupo, giras poliedros en 3D, mueves deslizadores y revelas despejes paso a paso con un clic. Rompes la ansiedad matemática del salón y dejas boquiabiertos a tus colegas y al coordinador académico en las observaciones de aula.
+           </p>
+         </div>
+
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#FFF2E5] text-[#C85A17]"><Coins className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#C85A17]">Motor #3 · De S/ 25/h a S/ 60–80+/h en Tutorías</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Con 1 sola hora de clase particular recuperas tus US$9</h3>
+             </div>
+           </div>
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Deja de competir por precio contra universitarios que cobran S/ 20 la hora con un PDF estático. Cuando muestras a los padres tus propios simuladores interactivos 2D/3D con tu nombre, justificas tarifas de S/ 60 a S/ 80+ por hora y llenas tu agenda por recomendación.
+           </p>
+         </div>
        </div>
      </div>
    </section>
 
-   {/* BLOQUE 3: AUDITORÍA DE SOLUCIONES PREVIAS + MATRIZ "VIEJA PIZARRA VS. PIZARRA VIVA IA" */}
-   <section className="border-t border-[#E6DBF0] bg-[#F7F2FC] px-5 py-20 sm:px-7 sm:py-24">
+   {/* BLOQUE 3: POR QUÉ FALLARON LAS SOLUCIONES ANTERIORES + MATRIZ COMPARATIVA */}
+   <section className="border-t border-[#E6DAEF] bg-[#F7F2FC] px-5 py-20 sm:px-7">
      <div className="mx-auto max-w-6xl">
        <div className="mx-auto max-w-3xl text-center">
-         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Por qué no es tu culpa estar cansado de las capacitaciones tradicionales</p>
-         <h2 className="mt-3 font-display text-[clamp(2rem,4.2vw,3.3rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#291840]">
-           Por qué lo que probaste antes falló en el aula <span className="text-[#7139C9]">(y cómo este nuevo vehículo lo resuelve)</span>
+         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Por qué no es tu culpa · Diagnóstico de aula real</p>
+         <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">
+           Por qué las «soluciones» que te dieron en las capacitaciones fracasan frente a 40 alumnos reales
          </h2>
-         <p className="mt-4 text-base leading-8 text-[#695978]">
-           Nos hicieron creer que para modernizar la clase de matemáticas había que usar diapositivas quietas o aprender programas complicados.
+         <p className="mt-4 text-base leading-8 text-[#685977]">
+           Ya te metieron a cursos teóricos de TICs y probaste de todo. Mira por qué esas herramientas te daban más trabajo en vez de quitártelo:
          </p>
        </div>
 
-       {/* 4 TARJETAS DE POR QUÉ FALLARON LAS SOLUCIONES ANTERIORES */}
        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-         {failedAlternatives.map(([name,shortWhy,detail])=>(
-           <div key={name} className="rounded-2xl border border-[#E8D8EE] bg-white p-5 shadow-sm">
-             <div className="flex items-center gap-2 text-xs font-extrabold text-[#B0305C]">
-               <XCircle className="size-4 shrink-0"/> {name}
+         {failedAlternatives.map(([name,verdict,reason])=>(
+           <div key={name} className="rounded-2xl border border-[#E7D8F1] bg-white p-5 shadow-sm">
+             <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#C93B6B]">
+               <XCircle className="size-4 shrink-0"/> Solución Fallida
              </div>
-             <p className="mt-2 font-display text-sm font-bold text-[#2E1B42]">{shortWhy}</p>
-             <p className="mt-1.5 text-xs leading-6 text-[#6D5D7C]">{detail}</p>
+             <h3 className="mt-2 font-display text-base font-bold text-[#2B1840]">{name}</h3>
+             <p className="mt-1 text-xs font-bold text-[#8E3967]">{verdict}</p>
+             <p className="mt-2 text-xs leading-6 text-[#675876]">{reason}</p>
            </div>
          ))}
        </div>
 
-       {/* TABLA COMPARATIVA DIRECTA */}
-       <div className="mt-10 overflow-hidden rounded-[28px] border border-[#DFCFEF] bg-white shadow-[0_20px_60px_rgba(68,31,115,0.07)]">
-         <div className="grid border-b border-[#E7DCF2] bg-[#FAF7FD] text-xs font-extrabold uppercase tracking-[.14em] md:grid-cols-2">
-           <div className="flex items-center gap-2 px-6 py-4 text-[#9B3B5A] md:border-r md:border-[#E7DCF2]">
-             <XCircle className="size-4 shrink-0"/> El viejo desgaste (Pizarra 2D y Comandos Lentos)
+       <div className="mt-12 overflow-hidden rounded-[28px] border border-[#DECFF0] bg-white shadow-[0_18px_50px_rgba(68,31,120,0.07)]">
+         <div className="grid border-b border-[#EAE0F5] bg-[#FAF6FF] text-xs font-extrabold uppercase tracking-wider sm:grid-cols-2">
+           <div className="flex items-center gap-2 border-b border-[#EAE0F5] px-6 py-4 text-[#8C4366] sm:border-b-0 sm:border-r">
+             <XCircle className="size-4 shrink-0 text-[#D14B72]"/> La Vieja Forma (Desgaste de Garganta, Pizarra 2D y Noches en Vela)
            </div>
            <div className="flex items-center gap-2 bg-[#F2E8FF] px-6 py-4 text-[#5F2AB8]">
              <CheckCircle2 className="size-4 shrink-0 text-[#198768]"/> El Nuevo Vehículo (Método Pizarra Viva IA™ en tu USB)
@@ -452,95 +485,96 @@ export default function App(){
     </div>
    </section>
 
-   {/* BLOQUE 5: PRUEBA DEMOSTRADA #2: SÓLIDOS GEOMÉTRICOS 3D */}
-   <section id="caso-solidos" className="border-b border-[#E8DDF3] bg-white px-5 py-20 sm:px-7 sm:py-24">
-     <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.03fr_.97fr] lg:gap-16">
-       <div className="overflow-hidden rounded-[28px] border border-[#E4D7F0] bg-gradient-to-br from-[#F3EBFF] via-white to-[#FFF1E7] p-3.5 shadow-[0_20px_68px_rgba(77,44,117,.09)] sm:p-5">
-         <div className="flex flex-wrap items-center justify-between gap-2 px-2 pb-4"><span className="text-xs font-extrabold text-[#5D3989]">Sólidos Geométricos · Resultado en el aula</span><span className="rounded-full border border-[#DCCCEC] bg-white px-3 py-1 text-[10px] font-bold text-[#7045B1]">Comprensión 3D en segundos</span></div>
-         <img src="/projects/captures/solidos-geometricos.webp" alt="Captura real de Sólidos Geométricos con modelos 3D y recursos didácticos" loading="lazy" decoding="async" className="aspect-[16/10] w-full rounded-xl border border-[#EBE1F5] bg-[#EEE6F8] object-cover object-top"/>
-         <p className="px-2 pt-4 text-xs leading-6 text-[#786888]">Lo que en la pizarra plana confunde al alumno, en 3D interactivo queda claro en segundos y sin esfuerzo.</p>
+   {/* BLOQUE 5: PRUEBA DEMOSTRADA #2: SÓLIDOS GEOMÉTRICOS */}
+   <section id="caso-solidos" className="border-b border-[#E7DAF1] bg-[#FAF6FE] px-5 py-20 sm:px-7 sm:py-24">
+     <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.04fr_.96fr] lg:gap-16">
+       <div className="overflow-hidden rounded-[26px] border border-[#E4D5F0] bg-white p-2.5 shadow-[0_24px_70px_rgba(80,37,117,.11)] sm:p-4">
+         <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-1 text-[11px] font-semibold text-[#715A83]"><span>Aplicación real en el aula</span><span className="rounded-full bg-[#EFE7FA] px-2.5 py-1 text-[#6834C3]">Secuencia didáctica 3D</span></div>
+         <img src="/projects/captures/solidos-geometricos.webp" alt="Captura real de la aplicación Sólidos Geométricos mostrando modelos tridimensionales interactivos para clases de matemáticas" loading="lazy" decoding="async" className="aspect-[16/10] w-full rounded-xl border border-[#EDE2F6] bg-[#F8F4FC] object-cover object-top"/>
+         <p className="px-3 pb-1 pt-3 text-xs leading-6 text-[#77658A]">Sólidos Geométricos reúne exploración tridimensional, desplegado de la red plana, conceptos clave y retos de verificación.</p>
        </div>
        <div>
-         <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#783FC0]">El fin del gráfico plano en 2D que nadie entiende</p>
-         <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.45rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#2B1940]">Sólidos en 3D que se mueven en vivo y <span className="text-[#7840C8]">guían una secuencia didáctica.</span></h2>
-         <p className="mt-5 text-base leading-8 text-[#685879]">Tratar de explicar poliedros, secciones o volúmenes con líneas punteadas en 2D es agotador para ti y confuso para tus alumnos. En mis clases utilizo <strong className="text-[#34204B]">Sólidos Geométricos</strong> para girar el cuerpo en 3D en tiempo real, abrir su desarrollo plano con un clic y guiar la práctica sin gastar un solo minuto peleando con la perspectiva en la pizarra.</p>
-         <div className="mt-6 rounded-[24px] border border-[#E7DCEF] bg-[#FAF7FE] p-5">
-           <h3 className="font-display text-sm font-extrabold text-[#423055]">Por qué tus alumnos por fin entienden a la primera</h3>
-           <ol className="mt-4 grid gap-3 sm:grid-cols-2">
-             {[
-               ['01','Ven el sólido real','Giras la figura en 3D y eliminas de raíz la confusión del dibujo plano.'],
-               ['02','Entienden el porqué','Muestras caras, vértices y aristas desplegando su red plana al instante.'],
-               ['03','Deducen sin miedo','Conectas lo visual con las fórmulas en la mitad del tiempo habitual.'],
-               ['04','Practican atentos','Resuelve retos en vivo donde todo el salón quiere participar.']
-             ].map(([n,title,body])=><li key={n} className="flex gap-3 rounded-xl border border-[#EAE0F3] bg-white p-3"><span className="font-mono text-xs font-bold text-[#844ECF]">{n}</span><div><strong className="text-sm text-[#3F2A53]">{title}</strong><p className="mt-1 text-xs leading-5 text-[#776786]">{body}</p></div></li>)}
-           </ol>
+         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D8BCEC] bg-white px-4 py-1.5 text-xs font-extrabold text-[#6B36B5]"><CheckCircle2 className="size-4"/> Fin de la ceguera espacial en Geometría del Espacio</div>
+         <h2 className="font-display text-[clamp(1.95rem,3.8vw,3.3rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#2B1940]">Sólidos Geométricos: <span className="text-[#773ECF]">de la intuición visual en 3D a la comprensión matemática.</span></h2>
+         <p className="mt-5 text-base leading-8 text-[#645474]">Intentar que un salón entienda cuerpos tridimensionales dibujando líneas punteadas en una pizarra plana de 2D es agotador para ti y confuso para tus estudiantes. Con <strong className="text-[#332047]">Sólidos Geométricos</strong> lo resuelves en segundos siguiendo una <strong className="text-[#332047]">secuencia didáctica</strong> lista para proyectar.</p>
+         <div className="mt-6 grid gap-3 sm:grid-cols-2">
+           {[
+             ['1. Observa y manipula en 3D','Gira el modelo, explora sus caras, vértices y aristas sin perder ni un minuto dibujando a mano.'],
+             ['2. Despliega la red plana','Abre el desarrollo plano con un clic para que el estudiante conecte el volumen con el área de forma inmediata.'],
+             ['3. Conecta con las fórmulas','Relaciona cada elemento geométrico con sus propiedades sin llenar tres pizarras de texto.'],
+             ['4. Resuelve retos en clase','Verifica de inmediato si tus alumnos comprendieron mediante actividades prácticas integradas.']
+           ].map(([title,desc])=><div key={title} className="rounded-2xl border border-[#E5D8F1] bg-white p-4"><h3 className="font-display text-sm font-extrabold text-[#332048]">{title}</h3><p className="mt-1.5 text-xs leading-6 text-[#6B5A7A]">{desc}</p></div>)}
          </div>
-         <a href="https://solidosgeometricos.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#6732CC] px-6 py-3.5 text-sm font-bold text-white hover:bg-[#5624B8]">Ver demostración en vivo <ExternalLink className="size-4"/></a>
-         <p className="mt-3 text-xs leading-6 text-[#85748F]">Muestra del nivel avanzado al que puedes escalar dentro de nuestro ecosistema tras dar tu primer paso de US$9.</p>
+         <div className="mt-7 flex flex-wrap items-center gap-4">
+           <a href="https://solidosgeometricos.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6633C9] px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(102,51,201,.16)] hover:bg-[#5526B7]">Explorar Sólidos Geométricos <ExternalLink className="size-4"/></a>
+           <a href="#inscripcion" className="inline-flex items-center gap-2 text-sm font-bold text-[#6331B9] underline-offset-4 hover:underline">Empezar con mi propio visualizador 3D · US$9 <ArrowRight className="size-4"/></a>
+         </div>
        </div>
      </div>
    </section>
 
-   {/* BLOQUE 6: EL MECANISMO ÚNICO ("INYECCIÓN DE PLANTILLAS EN ESPAÑOL") + CRONOGRAMA DE 15 MINUTOS */}
-   <section id="metodo" className="border-y border-[#E9DDF3] bg-[#F4EDFD] px-5 py-24 sm:px-7">
-     <div className="mx-auto max-w-7xl">
+   {/* BLOQUE 6: EL MECANISMO ÚNICO + LÍNEA DE TIEMPO DE 15 MINUTOS (HORMOZI ZERO EFFORT / TIME DELAY) */}
+   <section id="metodo" className="px-5 py-24 sm:px-7">
+     <div className="mx-auto max-w-6xl">
        <Heading
-         eyebrow="El Mecanismo Único · Método Pizarra Viva IA™ por Inyección de Plantillas"
-         title="Si sabes mandar un WhatsApp y copiar y pegar en Word, ya tienes el 100% de la habilidad técnica necesaria."
-         body="Olvídate de cursos teóricos de tecnología o de aprender código. Nuestro método funciona en español cotidiano, usa Inteligencia Artificial gratuita y descarga tus visualizadores listos para funcionar sin internet en cualquier salón."
+         eyebrow="El Mecanismo Único · Cero programación · 100% en español"
+         title="El Método «Pizarra Viva IA™»: de una plantilla en español a tu memoria USB sin internet en 15 minutos."
+         body="No tienes que aprender código ni pelear con comandos de GeoGebra. Si sabes mandar un WhatsApp y copiar y pegar un texto en Word, ya tienes el 100% de la habilidad técnica necesaria."
        />
-       <div className="mt-11 grid gap-5 lg:grid-cols-3">
-         {steps.map(({n,time,title,desc,outcome,icon:Icon,image})=><article key={n} className="flex flex-col overflow-hidden rounded-[26px] border border-[#E2D5EF] bg-white shadow-[0_8px_30px_rgba(65,29,100,0.04)]"><div className="aspect-[16/9] w-full overflow-hidden bg-[#F2EAFA]"><img src={image} alt={`Etapa ${n}: ${title}`} loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-500 hover:scale-105"/></div><div className="flex flex-1 flex-col p-7"><div className="flex items-center justify-between"><span className="flex size-12 items-center justify-center rounded-xl bg-[#EDE1FC] text-[#6634CB]"><Icon className="size-6"/></span><span className="rounded-full bg-[#F4ECFF] px-3 py-1 font-mono text-xs font-extrabold text-[#6D39C8]">{time}</span></div><span className="mt-7 text-xs font-extrabold tracking-[.2em] text-[#9A70C8]">PASO {n}</span><h3 className="mt-2 font-display text-2xl font-bold text-[#322048]">{title}</h3><p className="mt-3 flex-1 text-sm leading-7 text-[#6F607C]">{desc}</p><p className="mt-6 border-t border-[#EEE5F5] pt-4 text-sm font-semibold text-[#443150]"><Check className="mr-2 inline size-4 text-[#20846D]"/>{outcome}</p></div></article>)}
-       </div>
 
-       {/* CRONOGRAMA DE IMPLEMENTACIÓN EN 15 MINUTOS + PORTABILIDAD USB OFFLINE */}
-       <div className="mt-12 rounded-[28px] border border-[#DCC8F2] bg-white p-7 shadow-[0_14px_40px_rgba(78,35,128,0.06)] sm:p-9">
-         <div className="flex flex-col justify-between gap-4 border-b border-[#EFE6F8] pb-6 lg:flex-row lg:items-center">
-           <div>
-             <p className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-[#7338C6]">
-               <Timer className="size-4"/> Cronograma real · ¿Qué pasa hoy mismo apenas entras por US$9?
-             </p>
-             <h3 className="mt-2 font-display text-2xl font-bold text-[#2B1941] sm:text-3xl">
-               De cero a tu primera clase interactiva en tu USB en 15 minutos
-             </h3>
+       {/* CRONOGRAMA DE VICTORIA EN 15 MINUTOS */}
+       <div className="mt-8 grid gap-4 rounded-3xl border border-[#DFC9F5] bg-gradient-to-r from-[#F6EFFF] via-white to-[#FFF4FA] p-6 sm:grid-cols-3">
+         {quickWinTimeline.map(([stepTime,stepDesc,badge])=>(
+           <div key={stepTime} className="rounded-2xl border border-[#E7DAF4] bg-white p-5 shadow-sm">
+             <div className="inline-flex items-center gap-1.5 rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">
+               <Timer className="size-3.5"/> {stepTime}
+             </div>
+             <p className="mt-3 text-xs leading-6 text-[#645474]">{stepDesc}</p>
+             <p className="mt-3 border-t border-[#F1E8F9] pt-2.5 text-[11px] font-bold text-[#178568]">✓ {badge}</p>
            </div>
-           <a href="#inscripcion" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6630CB] px-5 py-3 text-xs font-extrabold text-white hover:bg-[#5624B8] sm:text-sm">
-             Probar el sistema hoy · US$9 <ArrowRight className="size-4"/>
-           </a>
-         </div>
-         <div className="mt-6 grid gap-5 md:grid-cols-3">
-           {quickWinTimeline.map(([title,desc,pill])=>(
-             <div key={title} className="rounded-2xl border border-[#EAE0F5] bg-[#FCF9FF] p-5">
-               <span className="inline-block rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6B35C4]">{pill}</span>
-               <h4 className="mt-3 font-display text-lg font-bold text-[#2F1B44]">{title}</h4>
-               <p className="mt-2 text-xs leading-6 text-[#695978]">{desc}</p>
+         ))}
+       </div>
+
+       <div className="mt-10 grid gap-6 md:grid-cols-3">
+         {[
+           ['01','Eliges el tema de tu clase de mañana','Seleccionas la plantilla en español según tu tema: Geometría del Espacio 3D, Funciones y Cálculo, o Resolución Paso a Paso Anti-Ansiedad.',Lightbulb,'/metodo/etapa-01-modelo-matematico.webp','Plantillas en español listas para reemplazar el tema entre corchetes'],
+           ['02','Inyectas la plantilla en la IA gratuita','Pegas la instrucción en el lienzo gratuito de la IA y en 60 segundos genera los deslizadores, gráficas interactivas y el botón de «Nuevo Reto».',Wrench,'/metodo/etapa-02-interaccion-ia.webp','Generación automática con controles deslizantes y retos exactos'],
+           ['03','Lo llevas en tu USB sin necesitar internet','Descargas un archivo único liviano (.html) que guardas en tu memoria USB y se abre al instante en cualquier proyector o televisor del colegio.',MonitorPlay,'/metodo/etapa-03-publicacion-web.webp','Aplicación ejecutándose offline desde el USB en el aula']
+         ].map(([n,t,d,Icon,imgSrc,imgAlt])=>{
+           const C=Icon as typeof Lightbulb;
+           return <div key={n as string} className="flex flex-col overflow-hidden rounded-[24px] border border-[#E6DAF1] bg-white shadow-sm">
+             <div className="aspect-[16/10] w-full overflow-hidden border-b border-[#EFE5F8] bg-[#F7F2FC]">
+               <img src={imgSrc as string} alt={imgAlt as string} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 hover:scale-[1.03]"/>
              </div>
-           ))}
-         </div>
+             <div className="flex flex-1 flex-col p-6">
+               <div className="flex items-center justify-between"><span className="font-mono text-xs font-bold text-[#8A54C5]">ETAPA {n as string}</span><C className="size-5 text-[#753EC9]"/></div>
+               <h3 className="mt-3 font-display text-xl font-bold text-[#2D1A42]">{t as string}</h3>
+               <p className="mt-2.5 text-sm leading-7 text-[#6A5C78]">{d as string}</p>
+             </div>
+           </div>;
+         })}
        </div>
      </div>
    </section>
 
-   {/* BLOQUE 7: PERFILES DE IMPACTO DOCENTE + TUS 3 RETORNOS (TIEMPO, AULA Y BOLSILLO) + ECOSISTEMA */}
-   <section id="proyectos" className="px-5 py-24 sm:px-7">
+   {/* BLOQUE 7: ESCALERA DE VALOR COMERCIAL + 3 PERFILES DE ÉXITO DOCENTE */}
+   <section className="border-t border-[#E6DAEF] bg-white px-5 py-24 sm:px-7">
      <div className="mx-auto max-w-7xl">
        <Heading
-         eyebrow="Más tiempo libre, mejor reputación y salto de S/ 25 a S/ 80+ por hora"
-         title="Lo que empieza ahorrándote horas de pizarra termina multiplicando el valor de cada hora de tu trabajo."
-         body="Tanto si dictas 40 horas en colegio estatal o privado, como si enseñas en academia preuniversitaria, universidad o das clases particulares por las tardes, este sistema te coloca en el 1% de docentes más cotizados."
+         eyebrow="De ahorrar tiempo en tu colegio a multiplicar tus ingresos particulares"
+         title="Una habilidad que te devuelve tu vida en casa y duplica lo que cobras por hora."
+         body="Mira cómo cambia la semana laboral en los tres perfiles de profesores de matemáticas que aplican este sistema:"
        />
 
-       {/* 3 ESCENARIOS DE IDENTIFICACIÓN INMEDIATA SEGÚN EL PERFIL DEL PROFESOR */}
-       <div className="mt-10 grid gap-5 md:grid-cols-3">
-         {teacherProfiles.map(([role,quote,result])=>(
-           <div key={role} className="flex flex-col justify-between rounded-[24px] border border-[#E2D3F0] bg-white p-6 shadow-[0_10px_30px_rgba(68,31,115,0.04)]">
+       {/* 3 PERFILES DOCENTES DE IDENTIFICACIÓN INMEDIATA */}
+       <div className="mt-8 grid gap-5 md:grid-cols-3">
+         {teacherProfiles.map(([role,quote,outcome])=>(
+           <div key={role} className="flex flex-col justify-between rounded-2xl border border-[#E3D4F1] bg-[#FCFAFF] p-6 shadow-sm">
              <div>
-               <span className="inline-block rounded-full bg-[#F3EAFF] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-[#6D37C7]">{role}</span>
-               <p className="mt-4 text-sm italic leading-7 text-[#4E3D60]">{quote}</p>
+               <span className="inline-block rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">{role}</span>
+               <p className="mt-3.5 text-sm italic leading-7 text-[#534264]">{quote}</p>
              </div>
-             <p className="mt-5 border-t border-[#EFE7F6] pt-3.5 text-xs font-extrabold text-[#178568]">
-               <CheckCircle2 className="mr-1.5 inline size-4"/>{result}
-             </p>
+             <p className="mt-4 border-t border-[#EDE3F6] pt-3 text-xs font-extrabold text-[#178568]">✓ {outcome}</p>
            </div>
          ))}
        </div>
@@ -751,29 +785,22 @@ export default function App(){
 
              <div className="mt-6 flex items-baseline justify-between rounded-2xl border border-[#DFC9F2] bg-white px-4 py-3">
                <div>
-                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Total a abonar hoy:</span>
-                 <span className="text-[11px] text-[#178568]">
+                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Total de tu orden hoy:</span>
+                 <span className="text-[11px] font-semibold text-[#178568]">
                    {selectedBumps.length===0
-                     ? 'Kit Principal Pizarra Viva IA™ (Pago único)'
-                     : `Kit Principal (US$9) + ${selectedBumps.length} complemento(s)`}
+                     ? 'Kit Principal + 2 Bonos (Sin mensualidades)'
+                     : `Kit Principal + ${selectedBumps.length} complemento(s) seleccionado(s)`}
                  </span>
                </div>
-               <div className="font-display text-3xl font-extrabold text-[#2D1945]">
-                 US${totalUsd} <span className="text-xs font-semibold text-[#7C6B89]">USD</span>
+               <div className="text-right">
+                 <span className="font-display text-4xl font-extrabold tracking-tight text-[#25173D]">US${totalUsd}</span>
+                 <span className="block text-[11px] font-bold text-[#6E5C7E]">≈ S/ {totalUsd * 3.7} PEN · Pago único</span>
                </div>
              </div>
 
-             <div className="mt-5">
-               <PeruCheckoutButton
-                 label={
-                   selectedBumps.length===0
-                     ? '¡Quiero ahorrar tiempo y evolucionar mis clases · US$9!'
-                     : `¡Quiero mi Kit + ${selectedBumps.length} complemento(s) · US$${totalUsd}!`
-                 }
-               />
-             </div>
-             <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-semibold text-[#6F5D80]">
-               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago Único (Sin mensualidades)</span>
+             <div className="mt-5"><PeruCheckoutButton/></div>
+             <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-[11px] font-semibold text-[#6E5C7E]">
+               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago 100% Seguro (Yape / Tarjetas)</span>
                <span>·</span>
                <span>⚡ Acceso Inmediato 24/7</span>
              </div>
