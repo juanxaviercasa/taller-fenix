@@ -36,24 +36,24 @@ export function WaitlistForm() {
   };
 
   return <div className="waitlist-shell rounded-[24px] border border-[#E4D9F0] bg-white p-5 shadow-[0_16px_50px_rgba(64,35,105,0.07)] sm:p-7">
-    <div className="mb-3 flex items-center gap-2 font-display text-lg font-bold text-[#27133E]"><Mail className="size-5 text-[#6836DB]"/> ¿Quieres enterarte cuando abramos inscripciones?</div>
-    {complete ? <p role="status" className="flex items-center gap-2 text-sm font-semibold text-[#186B5C]"><CheckCircle2 className="size-5"/> Registro recibido. Te avisaremos sobre la apertura de este taller.</p> :
+    <div className="mb-3 flex items-center gap-2 font-display text-lg font-bold text-[#27133E]"><Mail className="size-5 text-[#6836DB]"/> ¿Quieres recibir acceso inmediato apenas se habilite la pasarela de pago?</div>
+    {complete ? <p role="status" className="flex items-center gap-2 text-sm font-semibold text-[#186B5C]"><CheckCircle2 className="size-5"/> Registro recibido. Te enviaremos el enlace de acceso al curso grabado por US$9.</p> :
       available ? <form onSubmit={submit} className="grid gap-3">
         <div className="hidden" aria-hidden="true"><label>Web<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
-        <label className="text-sm font-semibold text-[#3B294D]" htmlFor="interest-email">Correo electrónico</label>
+        <label className="text-sm font-semibold text-[#3B294D]" htmlFor="interest-email">Correo electrónico del docente</label>
         <div className="flex flex-col gap-2 sm:flex-row">
           <input id="interest-email" required type="email" maxLength={254} autoComplete="email" placeholder="tu@correo.com" value={email} onChange={e=>setEmail(e.target.value)} className="min-w-0 flex-1 rounded-xl border border-[#D4C2E8] bg-[#FEFCFF] px-4 py-3.5 text-[#291642] outline-none focus:border-[#7540DC] focus:ring-2 focus:ring-[#E4D6FF]" />
-          <button disabled={busy || !consent} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6234D3] px-6 py-3.5 font-bold text-white hover:bg-[#5427BF] disabled:cursor-not-allowed disabled:opacity-50">{busy?'Guardando…':'Avísame'}<ArrowRight className="size-4"/></button>
+          <button disabled={busy || !consent} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6234D3] px-6 py-3.5 font-bold text-white hover:bg-[#5427BF] disabled:cursor-not-allowed disabled:opacity-50">{busy?'Guardando…':'Quiero mi acceso'}<ArrowRight className="size-4"/></button>
         </div>
         <label className="flex items-start gap-2 text-xs leading-5 text-[#685875]">
           <input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} className="mt-1 accent-[#6234D3]" required/>
-          Acepto recibir un correo sobre la apertura de este taller. Puedo solicitar la eliminación de mis datos. <a href="/privacidad" className="font-semibold underline">Privacidad</a>.
+          Acepto recibir la notificación de acceso al curso grabado y novedades del ecosistema Matemáticas × IA. Puedo solicitar la eliminación de mis datos en cualquier momento. <a href="/privacidad" className="font-semibold underline">Privacidad</a>.
         </label>
         {error && <p role="alert" className="text-sm text-[#A22555]">{error}</p>}
       </form> :
       <div>
-        <p className="text-sm leading-6 text-[#645775]">La lista automatizada todavía no está habilitada. Si deseas que te avisemos, puedes escribir directamente por correo.</p>
-        <a href={'mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('Quiero enterarme del taller De demo a app')} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-[#6F37D7] px-5 py-3 font-bold text-[#6632CA] hover:bg-[#F4EEFF]">Escribir para recibir novedades <ArrowRight className="size-4"/></a>
+        <p className="text-sm leading-6 text-[#645775]">Mientras se termina de activar el cobro automático con Mercado Pago y Yape, puedes solicitar tu acceso directo al curso grabado de US$9 escribiendo por correo.</p>
+        <a href={'mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('Quiero acceder al curso grabado Matemáticas x IA (US$9)')} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-[#6F37D7] px-5 py-3 font-bold text-[#6632CA] hover:bg-[#F4EEFF]">Solicitar acceso al curso grabado <ArrowRight className="size-4"/></a>
       </div>
     }
   </div>;

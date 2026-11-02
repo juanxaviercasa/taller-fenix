@@ -65,8 +65,8 @@ test('imágenes y mockups de alta conversión integrados',()=>{
 test('SEO corresponde a la campaña educativa y su dominio',()=>{
   assert.match(html,/vibecoding\.sistemazenit\.com/);
   assert.match(html,/og-matematicas-ia\.png/);
-  assert.match(html,/Menos tiempo dibujando, más tiempo enseñando matemáticas/);
-  assert.ok(existsSync(new URL('../public/og-matematicas-ia.png',import.meta.url)));
+  assert.match(html,/Menos tiempo escribiendo y dibujando en la pizarra/);
+  assert.ok(existsSync(new URL('../public/og-matematicas-ia.webp',import.meta.url)) || existsSync(new URL('../public/og-matematicas-ia.png',import.meta.url)));
 });
 test('el registro de interesados no está activo sin D1 y consentimiento',()=>{
   const api=readFileSync(new URL('../functions/api/waitlist.ts',import.meta.url),'utf8');

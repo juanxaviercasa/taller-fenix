@@ -74,13 +74,13 @@ const LEVELS: { id: Level; stage: string; label: string; badge: string }[] = [
   },
   {
     id: 'preuni',
-    stage: 'Academia preuniversitaria',
+    stage: 'Preuniversitario',
     label: 'Trigonometría Directa e Inversa',
     badge: '12 funciones (6+6)',
   },
   {
     id: 'universidad',
-    stage: 'Nivel universitario',
+    stage: 'Universidad',
     label: 'Cálculo Diferencial e Integral',
     badge: 'Derivada · Riemann · $f^{\'\'}$',
   },
@@ -3320,19 +3320,19 @@ export default function MathStudio() {
           <div className="mt-4 flex flex-col gap-3 rounded-[18px] border border-[#E8DDF1] bg-[#FBF9FF] p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-extrabold text-[#3C2A4E]">
-                Demostración programada con rigor matemático y pedagógico.
+                Deja atrás el gráfico estático en 2D que se borra en la pizarra.
               </p>
               <p className="mt-1 text-[11px] leading-5 text-[#7A6A87]">
-                El taller de US$9 enseña el método paso a paso para construir y verificar tu primer
-                módulo guiado; este laboratorio ilustra el estándar de detalle al que aspiramos en
-                clase.
+                En el curso grabado de US$9 aprendes a tu propio ritmo a construir y publicar tu
+                primera aplicación matemática con IA, y das tu primer paso dentro de nuestro
+                ecosistema de herramientas docentes.
               </p>
             </div>
             <a
               href="#proyectos"
               className="inline-flex shrink-0 items-center gap-1.5 text-xs font-bold text-[#6D39C8] hover:underline"
             >
-              Proyectos reales <ArrowUpRight className="size-4" />
+              Ver ecosistema <ArrowUpRight className="size-4" />
             </a>
           </div>
         </div>
