@@ -3320,19 +3320,18 @@ export default function MathStudio() {
           <div className="mt-4 flex flex-col gap-3 rounded-[18px] border border-[#E8DDF1] bg-[#FBF9FF] p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-extrabold text-[#3C2A4E]">
-                Deja atrás el gráfico estático en 2D que se borra en la pizarra.
+                ¿Te imaginas enseñar así sin volver a dibujar ni borrar la pizarra 10 veces por clase?
               </p>
               <p className="mt-1 text-[11px] leading-5 text-[#7A6A87]">
-                Por solo US$9 das tu primer paso construyendo y publicando tu primer módulo
-                matemático interactivo con IA, y abres la puerta a todo nuestro ecosistema de
-                aplicaciones para el aula.
+                Lo preparas una sola vez en minutos con IA, lo reutilizas todo el año en tus salones
+                y capturas la atención de tus alumnos desde el primer segundo.
               </p>
             </div>
             <a
               href="#inscripcion"
               className="inline-flex shrink-0 items-center gap-1.5 text-xs font-bold text-[#6D39C8] hover:underline"
             >
-              Crear mis aplicaciones <ArrowUpRight className="size-4" />
+              Ahorrar tiempo en mis clases <ArrowUpRight className="size-4" />
             </a>
           </div>
         </div>
