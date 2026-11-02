@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
   ArrowRight, Check, CheckCircle2, ChevronDown, Clock, Coins,
-  ExternalLink, Gift, GraduationCap, Lightbulb, MonitorPlay, ShieldCheck,
-  Sparkles, Users, Wrench, XCircle, Zap
+  ExternalLink, Gift, GraduationCap, Lightbulb, Lock, MonitorPlay, ShieldCheck,
+  Sparkles, Timer, Users, Wrench, XCircle, Zap
 } from 'lucide-react';
 import { PeruCheckoutButton } from './components/PeruCheckoutButton';
 import { WaitlistForm } from './components/WaitlistForm';
@@ -39,6 +39,42 @@ const oldVsNew:[string,string][]=[
   [
     'Sentirte estancado cobrando lo mismo de siempre, sin una ventaja visible que te diferencie de otros profesores.',
     'Prestigio inmediato frente a directivos, padres y colegas, pudiendo cobrar mejor tus clases particulares o monetizar tus propios recursos.'
+  ]
+];
+
+const quickWinTimeline:[string,string,string][]=[
+  [
+    'Minuto 1 · Abres tu Plantilla Lista',
+    'Recibes tu acceso inmediato tras el pago de US$9 y eliges la plantilla del tema que te toca enseñar esta semana (funciones, geometría, trigonometría o cálculo).',
+    'Sin instalaciones complicadas'
+  ],
+  [
+    'Minuto 5 · Copias y Pegas en la IA',
+    'Pegas nuestra estructura guiada en español sencillo. La IA programa todo el plano interactivo, los deslizadores y las fórmulas por ti.',
+    'Cero código · Cero estrés técnico'
+  ],
+  [
+    'Minuto 15 · Listo para tu Salón',
+    'Obtienes tu enlace listo para abrir mañana mismo desde el proyector, televisor, laptop o celular, y reutilizarlo todo el año escolar.',
+    'Ahorras horas cada semana'
+  ]
+];
+
+const teacherProfiles:[string,string,string][]=[
+  [
+    'Docente de Colegio (Secundaria)',
+    '«Dejé de dibujar y borrar la misma parábola en 5 secciones distintas. Ahora abro mi recurso en 3 segundos, mantengo el orden mirando al salón y termino el día con energía.»',
+    'Resultado: +6 horas libres por semana y control del aula'
+  ],
+  [
+    'Docente Preuniversitario y Universidad',
+    '«En temas intensos como razones trigonométricas, límites o sumas de Riemann, avanzo el doble de rápido sin llenar tres pizarras de trazos que nadie alcanza a copiar.»',
+    'Resultado: Comprensión visual inmediata en temas complejos'
+  ],
+  [
+    'Docente de Clases Particulares / Independiente',
+    '«Cuando los padres ven que enseño con mis propios simuladores interactivos y que su hijo por fin entiende sin miedo, pagan mi tarifa por hora sin regatear y me recomiendan.»',
+    'Resultado: Mayor prestigio y mejores ingresos por hora'
   ]
 ];
 
@@ -118,7 +154,7 @@ export default function App(){
  return <div id="inicio" className="min-h-screen overflow-x-clip bg-[#FCFAFF] font-sans text-[#2D1A42]">
   <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-4">Saltar al contenido</a>
   <main id="contenido">
-   {/* BLOQUE 1: HERO PRINCIPAL + PUENTE DE PRUEBA EN VIVO */}
+   {/* BLOQUE 1: HERO DE IMPULSO LOW-TICKET + PUENTE DE PRUEBA EN VIVO */}
    <section className="brand-hero relative px-5 pb-24 pt-10 sm:px-7 sm:pt-14">
     <div className="relative mx-auto max-w-7xl">
      <div className="mx-auto max-w-5xl text-center">
@@ -142,9 +178,13 @@ export default function App(){
         <a href="#inscripcion" className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(101,48,200,.26)] transition hover:scale-[1.01] hover:opacity-95 sm:w-auto sm:text-lg">
           ¡Quiero ahorrar horas de pizarra y transformar mis clases · US$9! <ArrowRight className="size-5"/>
         </a>
-        <p className="mt-3.5 text-xs font-semibold text-[#6E5B82]">
-          Sin saber programar · Lo preparas una vez en minutos y lo reutilizas todo el año · Pago único de US$9
-        </p>
+        <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-semibold text-[#6E5B82]">
+          <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único de US$9 (93% OFF hoy)</span>
+          <span>·</span>
+          <span>⚡ Listo en 15 minutos sin saber programar</span>
+          <span>·</span>
+          <span>🇵🇪 Yape / Mercado Pago / Tarjeta</span>
+        </div>
       </div>
      </div>
 
@@ -228,7 +268,7 @@ export default function App(){
      </div>
    </section>
 
-   {/* BLOQUE 3 (NUEVO): MATRIZ COMPARATIVA "VIEJA PIZARRA VS. SISTEMA PIZARRA VIVA" (BRUNSON VEHICLE SHIFT) */}
+   {/* BLOQUE 3: MATRIZ COMPARATIVA "VIEJA PIZARRA VS. SISTEMA PIZARRA VIVA" (BRUNSON VEHICLE SHIFT) */}
    <section className="border-t border-[#E6DBF0] bg-[#F7F2FC] px-5 py-20 sm:px-7 sm:py-24">
      <div className="mx-auto max-w-6xl">
        <div className="mx-auto max-w-3xl text-center">
@@ -329,7 +369,7 @@ export default function App(){
      </div>
    </section>
 
-   {/* BLOQUE 6: EL MECANISMO SIN ESFUERZO EN 3 PASOS (HORMOZI: MÍNIMO TIEMPO Y CERO SACRIFICIO TÉCNICO) */}
+   {/* BLOQUE 6: EL MECANISMO SIN ESFUERZO EN 3 PASOS + CRONOGRAMA DE VICTORIA EN 15 MINUTOS (MODELO HORMOZI ADS) */}
    <section id="metodo" className="border-y border-[#E9DDF3] bg-[#F4EDFD] px-5 py-24 sm:px-7">
      <div className="mx-auto max-w-7xl">
        <Heading
@@ -340,10 +380,36 @@ export default function App(){
        <div className="mt-11 grid gap-5 lg:grid-cols-3">
          {steps.map(({n,time,title,desc,outcome,icon:Icon,image})=><article key={n} className="flex flex-col overflow-hidden rounded-[26px] border border-[#E2D5EF] bg-white shadow-[0_8px_30px_rgba(65,29,100,0.04)]"><div className="aspect-[16/9] w-full overflow-hidden bg-[#F2EAFA]"><img src={image} alt={`Etapa ${n}: ${title}`} loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-500 hover:scale-105"/></div><div className="flex flex-1 flex-col p-7"><div className="flex items-center justify-between"><span className="flex size-12 items-center justify-center rounded-xl bg-[#EDE1FC] text-[#6634CB]"><Icon className="size-6"/></span><span className="rounded-full bg-[#F4ECFF] px-3 py-1 font-mono text-xs font-extrabold text-[#6D39C8]">{time}</span></div><span className="mt-7 text-xs font-extrabold tracking-[.2em] text-[#9A70C8]">PASO {n}</span><h3 className="mt-2 font-display text-2xl font-bold text-[#322048]">{title}</h3><p className="mt-3 flex-1 text-sm leading-7 text-[#6F607C]">{desc}</p><p className="mt-6 border-t border-[#EEE5F5] pt-4 text-sm font-semibold text-[#443150]"><Check className="mr-2 inline size-4 text-[#20846D]"/>{outcome}</p></div></article>)}
        </div>
+
+       {/* CRONOGRAMA DE IMPLEMENTACIÓN EN 15 MINUTOS (GATILLO DE IMPULSO FACEBOOK ADS) */}
+       <div className="mt-12 rounded-[28px] border border-[#DCC8F2] bg-white p-7 shadow-[0_14px_40px_rgba(78,35,128,0.06)] sm:p-9">
+         <div className="flex flex-col justify-between gap-4 border-b border-[#EFE6F8] pb-6 lg:flex-row lg:items-center">
+           <div>
+             <p className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-[#7338C6]">
+               <Timer className="size-4"/> Cronograma real · ¿Qué pasa hoy mismo apenas entras por US$9?
+             </p>
+             <h3 className="mt-2 font-display text-2xl font-bold text-[#2B1941] sm:text-3xl">
+               De cero a tu primera clase interactiva lista en 15 minutos
+             </h3>
+           </div>
+           <a href="#inscripcion" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6630CB] px-5 py-3 text-xs font-extrabold text-white hover:bg-[#5624B8] sm:text-sm">
+             Probar el sistema hoy · US$9 <ArrowRight className="size-4"/>
+           </a>
+         </div>
+         <div className="mt-6 grid gap-5 md:grid-cols-3">
+           {quickWinTimeline.map(([title,desc,pill])=>(
+             <div key={title} className="rounded-2xl border border-[#EAE0F5] bg-[#FCF9FF] p-5">
+               <span className="inline-block rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6B35C4]">{pill}</span>
+               <h4 className="mt-3 font-display text-lg font-bold text-[#2F1B44]">{title}</h4>
+               <p className="mt-2 text-xs leading-6 text-[#695978]">{desc}</p>
+             </div>
+           ))}
+         </div>
+       </div>
      </div>
    </section>
 
-   {/* BLOQUE 7 (REESTRUCTURADO): TUS 3 RETORNOS (TIEMPO, AULA Y BOLSILLO) + ECOSISTEMA */}
+   {/* BLOQUE 7: PERFILES DE IMPACTO DOCENTE + TUS 3 RETORNOS (TIEMPO, AULA Y BOLSILLO) + ECOSISTEMA */}
    <section id="proyectos" className="px-5 py-24 sm:px-7">
      <div className="mx-auto max-w-7xl">
        <Heading
@@ -352,8 +418,23 @@ export default function App(){
          body="Cuando dejas atrás el desgaste del plumón y construyes tu propio arsenal de recursos interactivos, no solo descansas más: te conviertes en un docente altamente cotizado."
        />
 
-       {/* 3 TARJETAS DE RETORNO ECONÓMICO Y PERSONAL */}
+       {/* 3 ESCENARIOS DE IDENTIFICACIÓN INMEDIATA SEGÚN EL PERFIL DEL PROFESOR */}
        <div className="mt-10 grid gap-5 md:grid-cols-3">
+         {teacherProfiles.map(([role,quote,result])=>(
+           <div key={role} className="flex flex-col justify-between rounded-[24px] border border-[#E2D3F0] bg-white p-6 shadow-[0_10px_30px_rgba(68,31,115,0.04)]">
+             <div>
+               <span className="inline-block rounded-full bg-[#F3EAFF] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-[#6D37C7]">{role}</span>
+               <p className="mt-4 text-sm italic leading-7 text-[#4E3D60]">{quote}</p>
+             </div>
+             <p className="mt-5 border-t border-[#EFE7F6] pt-3.5 text-xs font-extrabold text-[#178568]">
+               <CheckCircle2 className="mr-1.5 inline size-4"/>{result}
+             </p>
+           </div>
+         ))}
+       </div>
+
+       {/* 3 TARJETAS DE RETORNO ECONÓMICO Y PERSONAL */}
+       <div className="mt-6 grid gap-5 md:grid-cols-3">
          {[
            ['1. Retorno en Salud y Tardes Libres','Cada módulo que dejas listo hoy es un tema que nunca más volverás a dibujar desde cero. Ahorras decenas de horas cada bimestre y terminas tus jornadas con energía para ti y tu familia.'],
            ['2. Clases Particulares y Academia Mejor Pagadas','Los padres de familia y alumnos pagan con gusto más por hora al profesor que logra hacer entender en 15 minutos visuales lo que en el colegio no entendieron en dos meses.'],
@@ -399,7 +480,7 @@ export default function App(){
      </div>
    </section>
 
-   {/* BLOQUE 9 (NUEVO): FILTRO DE CALIFICACIÓN DOCENTE (PARA QUIÉN SÍ ES / PARA QUIÉN NO ES) */}
+   {/* BLOQUE 9: FILTRO DE CALIFICACIÓN DOCENTE (PARA QUIÉN SÍ ES / PARA QUIÉN NO ES) */}
    <section className="border-b border-[#E7DCF1] bg-white px-5 py-20 sm:px-7">
      <div className="mx-auto max-w-6xl">
        <div className="mx-auto max-w-3xl text-center">
@@ -437,7 +518,7 @@ export default function App(){
                'Buscas un curso académico de ingeniería de software o quieres aprender lenguajes de programación desde cero durante 6 meses.',
                'Estás cómodo gastando tu voz, tu brazo y tu tiempo libre repitiendo los mismos gráficos estáticos en 2D cada semana.',
                'Crees que la tecnología es una moda pasajera y prefieres enseñar exactamente igual que hace 30 años.',
-               'No estás dispuesto a invertir 20 minutos siguiendo una plantilla paso a paso para ahorrarte cientos de horas en el año.'
+               'No estás dispuesto a invertir 15 minutos siguiendo una plantilla paso a paso para ahorrarte cientos de horas en el año.'
              ].map(item=>(
                <li key={item} className="flex items-start gap-2.5">
                  <XCircle className="mt-1 size-4 shrink-0 text-[#C83E6B]"/>
@@ -450,12 +531,14 @@ export default function App(){
      </div>
    </section>
 
-   {/* BLOQUE 10 (REESTRUCTURADO): GRAND SLAM OFFER STACK DE ALEX HORMOZI */}
+   {/* BLOQUE 10: GRAND SLAM OFFER STACK DE ALEX HORMOZI + RECIBO DE AHORRO 93% OFF + GARANTÍA BLINDADA */}
    <section id="inscripcion" className="px-5 py-24 sm:px-7">
      <div className="mx-auto max-w-6xl">
        <div className="mx-auto text-center">
-         <p className="text-xs font-extrabold uppercase tracking-[.16em] text-[#7A3ABF]">Tu entrada al ecosistema · Inversión ridículamente baja, retorno para todo el año</p>
-         <h2 className="mt-3 font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold tracking-[-.06em] text-[#2C1A43]">¿Cuánto vale para ti ahorrar cientos de horas de pizarra y cotizarte mejor como docente?</h2>
+         <p className="inline-flex items-center gap-1.5 rounded-full border border-[#D8C2EF] bg-[#F6EEFF] px-4 py-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-[#7137C2]">
+           <Sparkles className="size-3.5"/> Oferta de Entrada · 93% de Descuento Hoy (Ahorras US$120)
+         </p>
+         <h2 className="mt-4 font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold tracking-[-.06em] text-[#2C1A43]">¿Cuánto vale para ti ahorrar cientos de horas de pizarra y cotizarte mejor como docente?</h2>
          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-[#6F607C]">Por menos de lo que cuestan dos plumones de pizarra, recibes el sistema completo y los bonos para transformar tus clases a tu propio ritmo y sin horarios fijos.</p>
        </div>
 
@@ -489,33 +572,49 @@ export default function App(){
 
          <div className="flex flex-col justify-between border-t border-[#EDE1F5] bg-gradient-to-br from-[#F6EFFF] to-[#FFF6FA] p-7 sm:p-10 lg:border-l lg:border-t-0">
            <div>
-             <p className="text-xs font-bold uppercase tracking-[.15em] text-[#8754C4]">Resumen de tu inversión hoy</p>
-             <div className="mt-4 rounded-2xl border border-[#E5D5F2] bg-white/85 p-4">
+             <div className="flex items-center justify-between">
+               <p className="text-xs font-bold uppercase tracking-[.15em] text-[#8754C4]">Resumen de tu orden hoy</p>
+               <span className="rounded-full bg-[#E5F7F0] px-3 py-1 text-[11px] font-extrabold text-[#14795D]">AHORRAS 93% HOY</span>
+             </div>
+             <div className="mt-4 rounded-2xl border border-[#E5D5F2] bg-white/90 p-4 shadow-sm">
                <div className="flex items-center justify-between text-xs font-semibold text-[#7A6889]">
-                 <span>Valor total del paquete + bonos:</span>
-                 <span className="font-mono text-sm font-bold line-through text-[#B55279]">US$129</span>
+                 <span>Valor total de los 3 módulos + 2 bonos:</span>
+                 <span className="font-mono text-sm font-bold line-through text-[#B55279]">US$129.00</span>
                </div>
-               <div className="mt-2 flex items-baseline justify-between border-t border-[#EFE6F7] pt-2">
-                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#38214E]">Precio de entrada hoy:</span>
-                 <span className="font-display text-2xl font-extrabold text-[#178568]">Solo US$9</span>
+               <div className="mt-1.5 flex items-center justify-between text-xs font-semibold text-[#178568]">
+                 <span>Descuento especial para docentes:</span>
+                 <span className="font-mono text-xs font-extrabold">− US$120.00</span>
+               </div>
+               <div className="mt-2.5 flex items-baseline justify-between border-t border-[#EFE6F7] pt-2.5">
+                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#38214E]">Tu único pago hoy:</span>
+                 <span className="font-display text-2xl font-extrabold text-[#178568]">US$9.00</span>
                </div>
              </div>
 
              <div className="mt-5 font-display text-[clamp(4.2rem,8vw,5.6rem)] font-bold leading-none tracking-[-.075em] text-[#2D1945]">
-               US$9 <span className="text-sm font-semibold tracking-normal text-[#7C6B89]">pago único · acceso inmediato</span>
+               US$9 <span className="text-sm font-semibold tracking-normal text-[#7C6B89]">pago único · acceso de por vida</span>
              </div>
              <p className="mt-4 text-sm leading-7 text-[#6E5D7D]">
                Sin suscripciones mensuales ni horarios obligatorios. Avanzas a tu propio ritmo desde hoy mismo. En Perú puedes abonar en soles con Mercado Pago o Yape.
              </p>
              <div className="mt-7"><PeruCheckoutButton label="¡Quiero ahorrar tiempo y evolucionar mis clases · US$9!"/></div>
+             <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-[11px] font-semibold text-[#6F5D80]">
+               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago 100% Seguro</span>
+               <span>·</span>
+               <span>⚡ Entrega Digital Inmediata</span>
+             </div>
            </div>
 
+           {/* CAJA DE GARANTÍA BLINDADA ANTI-RIESGO PARA TRÁFICO FRÍO DE FACEBOOK ADS */}
            <div className="mt-8 space-y-3 border-t border-[#E6D8F2] pt-5">
-             <div className="flex items-start gap-2.5 rounded-xl bg-white/80 p-3.5 text-xs leading-6 text-[#5E4D6E]">
-               <ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#178568]"/>
-               <div>
-                 <strong className="text-[#2E1A42]">Promesa de Victoria Rápida Docente:</strong> Diseñado para que tengas tu primer visualizador matemático listo para usar en clase sin saber programar.
+             <div className="rounded-2xl border border-[#CBE8DF] bg-[#F5FBF8] p-4 text-xs leading-6 text-[#2C4E44] shadow-sm">
+               <div className="flex items-center gap-2 font-display text-sm font-extrabold text-[#145E4B]">
+                 <ShieldCheck className="size-5 shrink-0 text-[#178568]"/>
+                 <span>Garantía Blindada de Claridad y Victoria Rápida</span>
                </div>
+               <p className="mt-1.5">
+                 Entra hoy por US$9, descarga las plantillas copiar-y-pegar y arma tu primer recurso en 15 minutos. Todo está explicado paso a paso en español sencillo para que cualquier profesor de matemáticas —aunque nunca haya programado— logre el resultado.
+               </p>
              </div>
              <p className="text-[11px] leading-5 text-[#897993]">
                Si la pasarela automática se encuentra en mantenimiento en tu región, registra tus datos abajo para congelar tu precio preferencial de US$9 sin ningún cargo hoy.
@@ -549,7 +648,7 @@ export default function App(){
        <a href="#inscripcion" className="mt-8 inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_15px_32px_rgba(104,50,208,.25)] transition hover:scale-[1.01] hover:opacity-95 sm:text-lg">
          ¡Sí, quiero ahorrar tiempo en pizarra y elevar mis clases · US$9! <ArrowRight className="size-5"/>
        </a>
-       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Pago único de US$9 · Acceso inmediato a tu propio ritmo · Cero programación</p>
+       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Pago único de US$9 (93% OFF hoy) · Acceso inmediato a tu propio ritmo · Cero programación</p>
      </div>
    </section>
   </main>
