@@ -12,17 +12,24 @@
 En la versión previa, aunque los bloques 2 al 12 ya tenían los hallazgos del estudio forense, el **Bloque 1 (Hero `#inicio`)** todavía conservaba el titular antiguo (*«Menos tiempo escribiendo y dibujando en la pizarra...»*) y el subtítulo genérico (*«Aprende a crear aplicaciones con IA para utilizarlas durante tus clases de matemáticas...»*).
 Según las **Secciones 5 y 9 de [Investigacion_Profesores_de_Matematicas.md](file:///c:/Users/cabel/Music/taller_web_cero/Investigacion_Profesores_de_Matematicas.md)**, decirle a un profesor agotado *"Aprende a crear aplicaciones con IA"* activa su escepticismo defensivo (Fase 3–4 de Sofisticación de Eugene Schwartz), porque suena a más trabajo no remunerado, teoría o programación.
 
-### Cómo aplica ahora la Sección Principal (`#inicio`) el 100% de la Investigación Forense:
-1. **Pre-Titular de Hiper-Identificación (Secciones 1, 2 y 8 del Estudio):**
-   > *«PARA PROFESORES DE MATEMÁTICAS (SECUNDARIA, PRE Y UNIVERSIDAD) AGOTADOS DE DIBUJAR LA MISMA GRÁFICA 15 VECES POR SEMANA Y QUEDARSE HASTA LAS 11:30 PM PREPARANDO MATERIAL»*
-2. **Gran Titular `H1` (Fusión de los Hooks #2, #3, #5 y #6 + El Mecanismo Único de la Sección 5 y 9):**
-   > **Deja de perder media hora y tu garganta dibujando de espaldas al salón en una pizarra plana que no se mueve. Clona «Pizarras Vivas en 2D y 3D» en 60 segundos y llévalas en tu USB 100% sin internet.**
-3. **Subtítulo Forense (Derriba las 3 Creencias Falsas de la Sección 4 + Activa los 3 Motores de Compra de la Sección 3):**
-   > *«Olvídate de sufrir metiendo comandos lentos en GeoGebra frente a 40 alumnos inquietos (donde te equivocas en un paréntesis y perdiste la hora) o de usar diapositivas estáticas. **Si sabes mandar un WhatsApp y copiar y pegar en Word, ya tienes el 100% de la habilidad necesaria:** copias nuestra plantilla en español, pones el tema de tu clase en la IA gratuita y descargas un archivo liviano para el televisor o proyector de tu colegio. **Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje, recuperando tus domingos y cotizando tus clases particulares entre S/ 60 y S/ 80+ la hora.**»*
-4. **Grilla de 3 Pilares Forenses en el Primer Pliegue (`heroPillars` en [src/App.tsx](file:///c:/Users/cabel/Music/taller_web_cero/src/App.tsx)):**
-   - **Pilar 1 (El dolor real que dejas atrás hoy):** Dar la espalda 2 minutos mientras la mitad saca el celular y trazar un poliedro con 3 colores de plumón para que pregunten *«¿Profe, esa raya de atrás está adentro o afuera?»*.
-   - **Pilar 2 (El Mecanismo de Inyección de Plantillas):** Cero código y cero comandos de GeoGebra. Plantilla en español + IA gratuita = archivo `.html` en tu USB 100% sin internet.
-   - **Pilar 3 (Retorno desde la primera semana):** 10 visualizadores ya armados para mañana a las 8:00 AM, fin del «domingo negro» y salto de S/ 25/h a S/ 60–80+/h en clases particulares.
+### Cómo aplica ahora la Sección Principal (`#inicio`) la Regla de Oro de Ultra-Conversión (Ogilvy × Brunson × Hormozi):
+En lugar de saturar el primer pliegue con párrafos extensos, estructuramos el **Hero (`#inicio`)** en **2 columnas limpias y filudas** (lectura en menos de 4 segundos + impacto visual inmediato):
+
+1. **Columna Izquierda (Copy Filudo y Puntual):**
+   * **Pre-Titular (Enfoque en Secundaria sin dañar el alcance del Graficador):**
+     > *«PARA PROFESORES DE MATEMÁTICAS · ESPECIALMENTE SI ENSEÑAS EN SECUNDARIA»*
+   * **Titular `H1` Corto y Directo al Hueso (21 palabras):**
+     > **Deja de perder media hora dibujando en la pizarra mientras tu salón se distrae. Lleva «Pizarras Vivas en 2D y 3D» en tu USB 100% sin internet.**
+   * **Subtítulo Conciso (2 oraciones):**
+     > *«Sin saber programar ni pelear con comandos de GeoGebra en plena clase. Copias una plantilla en español, la pegas en la IA gratuita y en 60 segundos descargas un visualizador interactivo para el televisor o proyector de tu aula. **Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje.**»*
+   * **3 Viñetas Rápidas (`✓`) + Botón CTA (`US$9`) + Botón Secundario (`Probar graficador en vivo ↓`):**
+     * `✓ Explicas de frente al aula sin desgastar tu garganta ni tu hombro en 5 secciones`
+     * `✓ Abre 100% sin Wi-Fi desde tu USB (incluye 10 apps listas para mañana a las 8:00 AM)`
+     * `✓ Ideal para secundaria y adaptable hasta nivel preuniversitario y cálculo`
+2. **Columna Derecha (Imagen Protagonista en el Primer Pliegue — *Show, Don't Tell*):**
+   * Presenta en el propio Hero la imagen hiperrealista [`/metodo/dolor-pizarra-vs-clase-viva.webp`](file:///c:/Users/cabel/Music/taller_web_cero/public/metodo/dolor-pizarra-vs-clase-viva.webp) con `fetchPriority="high"`, contrastando visualmente en 1 segundo el **Antes** (*2 min de espaldas trazando con plumón = salón en el celular*) vs. **Ahora** (*Giras sólidos 3D y funciones con un clic mirando siempre a tu clase*).
+3. **Sección 1.5 (`#demostracion`) Separada Debajo del Hero:**
+   * Mantiene el graficador interactivo [`MathStudio`](file:///c:/Users/cabel/Music/taller_web_cero/src/components/MathStudio.tsx) con todo su poder y sus **3 niveles (Secundaria, Preuniversitario y Universidad)** en su propio bloque dedicado para no recargar el primer pliegue.
 
 ---
 
