@@ -57,7 +57,7 @@ test('fotografía auténtica del instructor incorporada',()=>{
 test('imágenes y mockups de alta conversión integrados',()=>{
   assert.match(app,/bundle-kit-taller-docente\.webp/);
   assert.ok(existsSync(new URL('../public/workshop/bundle-kit-taller-docente.webp',import.meta.url)));
-  for(const stage of ['etapa-01-modelo-matematico','etapa-02-interaccion-ia','etapa-03-publicacion-web']){
+  for(const stage of ['dolor-pizarra-vs-clase-viva','etapa-01-modelo-matematico','etapa-02-interaccion-ia','etapa-03-publicacion-web']){
     assert.match(app,new RegExp(stage+'\\.webp'));
     assert.ok(existsSync(new URL('../public/metodo/'+stage+'.webp',import.meta.url)));
   }

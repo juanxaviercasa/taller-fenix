@@ -215,6 +215,25 @@ export default function App(){
          <h2 className="mt-4 font-display text-[clamp(1.95rem,3.9vw,3.1rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#291840]">
            El problema nunca fue tu vocación. Es enseñar en pleno siglo XXI encadenado a una pizarra estática que te drena la energía.
          </h2>
+         <figure className="mt-6 overflow-hidden rounded-2xl border border-[#DFCFEF] bg-[#FAF6FF] p-2.5 shadow-[0_14px_38px_rgba(70,32,120,0.08)]">
+           <div className="relative overflow-hidden rounded-xl border border-[#E7DAF4]">
+             <img
+               src="/metodo/dolor-pizarra-vs-clase-viva.webp"
+               alt="Contraste real en el aula de matemáticas: el desgaste de dar la espalda dibujando en una pizarra estática frente a alumnos dispersos versus enseñar de frente con visualizaciones interactivas y alumnos participando"
+               loading="lazy"
+               decoding="async"
+               className="aspect-[16/9] w-full object-cover"
+             />
+           </div>
+           <figcaption className="mt-2.5 grid gap-2 text-[11px] font-bold sm:grid-cols-2">
+             <span className="flex items-center gap-1.5 rounded-lg bg-[#FFF1F5] px-3 py-1.5 text-[#9B2C53]">
+               <XCircle className="size-3.5 shrink-0 text-[#D14B72]"/> Seguir igual: espalda al salón, fatiga y alumnos dispersos
+             </span>
+             <span className="flex items-center gap-1.5 rounded-lg bg-[#ECFBF5] px-3 py-1.5 text-[#146C52]">
+               <CheckCircle2 className="size-3.5 shrink-0 text-[#198768]"/> Con Pizarra Viva: de frente al aula, energía y atención total
+             </span>
+           </figcaption>
+         </figure>
          <div className="mt-6 space-y-4 text-base leading-8 text-[#59486B]">
            <p>
              Si eres maestro de matemáticas, sabes lo que es estar cansado de lidiar con estudiantes cuya atención se dispersa rápidamente. Y lo peor: te toca explicar <strong className="text-[#2B1840]">uno de los cursos más difíciles de las escuelas</strong> —las matemáticas que son el dolor de cabeza no solo de pequeños, sino también de grandes que se quedaron traumados porque aprendieron a través del miedo, sintiendo que <strong className="text-[#2B1840]">era mejor fingir que entendiste para no parecer tonto</strong> frente al salón—.
