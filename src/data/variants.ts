@@ -306,12 +306,12 @@ export const VARIANTS: Record<VariantId, VariantData> = {
     id: 'creadores',
     path: '/bycoding',
     aliases: ['/bycoding', '/vibecoding', '/creadores', '/vibe'],
-    name: 'Oferta B: Creación Express con IA (Educadores & Creadores)',
+    name: 'Fénix: Entrenamiento de Vibe Coding con IA · US$9',
     badgeTag: 'Ángulo Vibe Coding & Activos Interactivos',
     targetAudience: 'Educadores, consultores, terapeutas, formadores y creadores de infoproductos que necesitan una landing o herramienta interactiva YA.',
     adHook: '¿Tienes una idea de curso, consultoría o servicio parada por no tener web? Mira cómo construir y publicar una landing profesional interactiva con IA en 105 minutos.',
 
-    preHeadline: 'Para educadores, consultores y creadores que necesitan lanzar ya',
+    preHeadline: 'Entrenamiento práctico para emprendedores y creadores',
     vslPoster: imgVslByCoding,
     heroTheme: {
       accentColor: 'text-brand-fuchsia',
@@ -319,12 +319,12 @@ export const VARIANTS: Record<VariantId, VariantData> = {
       glowTo: 'bg-brand-purple/35',
       badgeStyle: 'border-brand-purple/40 bg-brand-purple/20 text-brand-light'
     },
-    headlineMain: 'Publica tu web o herramienta interactiva en 105 minutos.',
-    headlineHighlight: 'Sin programar y con $0 costo mensual.',
-    subheadline: 'Crea páginas de venta modernas, calculadoras dinámicas y embudos con prompts en español (Vibe Coding), sin tocar código ni depender de agencias.',
-    vslUrlBadge: 'fenix-ia.com/metodo-creadores-ia',
-    ctaText: 'Asegurar mi plaza · Crear mi web en 105 min',
-    ctaSubtext: 'Garantía incondicional de 7 días · $19 USD · Materiales descargables de inmediato',
+    headlineMain: 'Aprende a crear y publicar una herramienta web con IA.',
+    headlineHighlight: 'Un proyecto práctico, paso a paso.',
+    subheadline: 'En una sesión de 105 minutos verás cómo planificar, construir, probar y publicar una pequeña aplicación web con inteligencia artificial. No necesitas dominar código para empezar.',
+    vslUrlBadge: 'fenix.cabellosalirrosas.com/bycoding',
+    ctaText: 'Quiero mi entrenamiento · US$9',
+    ctaSubtext: 'Entrenamiento US$9 · Pago en soles para Perú una vez habilitado',
 
     painBadge: 'La Parálisis por Análisis que Mata tus Lanzamientos',
     painTitle: 'Por qué tus mejores ideas se quedan en un cuaderno',
@@ -345,68 +345,68 @@ export const VARIANTS: Record<VariantId, VariantData> = {
       {
         icon: Sparkles,
         title: 'El mito de que necesitas meses para aprender a programar.',
-        text: 'Con el advenimiento del "Vibe Coding", tu único trabajo es estructurar la idea en español claro. La IA escribe el código perfecto y tú solo diriges la orquesta.',
+        text: 'Con IA puedes avanzar más rápido, pero también necesitas revisar el resultado, entender errores y probar la aplicación antes de publicarla.',
         highlight: 'La revolución de los creadores con IA'
       }
     ],
 
     // Vitrina Adaptada a Creadores / Herramientas Interactivas
-    showcaseTitle: 'Herramientas interactivas y activos creados con IA',
-    showcaseSubtitle: 'Calculadoras, páginas de registro y landings de servicios listas para captar prospectos.',
+    showcaseTitle: 'Tres ideas de proyectos que puedes construir con IA',
+    showcaseSubtitle: 'Vistas conceptuales para ilustrar ejercicios. Los proyectos reales del instructor se añadirán con enlaces verificables.',
     showcaseProjects: [
       {
         id: 'calculadora',
-        tag: 'Herramienta Interactiva de Captación',
-        title: 'Calculadora de ROI para Inmobiliarias & Asesores',
-        description: 'Mini-aplicación interactiva donde los clientes deslizan valores y calculan en tiempo real su rentabilidad esperada antes de dejar sus datos de contacto.',
-        time: '35 min con IA',
-        promptSnippet: '“Crea una calculadora interactiva con sliders para monto de inversión, tasa esperada y cálculo automático de plusvalía con captura de lead al final.”',
-        stack: 'React + Vite + Tailwind + Vercel ($0)',
+        tag: 'Ejemplo 1 · Herramienta interactiva',
+        title: 'Calculadora de presupuesto',
+        description: 'Concepto educativo: introduce valores, calcula un resultado y aprende a comprobar si la lógica funciona. La imagen es ilustrativa.',
+        time: 'Ejercicio guiado',
+        promptSnippet: '“Diseña una calculadora interactiva con campos claros, validación de datos y resultados explicados para el usuario.”',
+        stack: 'React + TypeScript · Ejemplo',
         img: imgShowcaseCalculadora,
-        url: 'calculadorainmobiliaria.com',
+        url: 'ejemplo-conceptual',
         stats: [
-          { label: 'Interactividad', value: '100% en vivo' },
-          { label: 'Conversión de Leads', value: '3.4x mayor' },
-          { label: 'Mantenimiento', value: 'Cero absoluto' }
+          { label: 'Tipo', value: 'Simulador' },
+          { label: 'Objetivo', value: 'Interactividad' },
+          { label: 'Estado', value: 'Ejemplo' }
         ]
       },
       {
         id: 'evento',
-        tag: 'Landing de Captación para Masterclass',
-        title: 'Masterclass: Estrategias Digitales 2026',
-        description: 'Página de registro con temporizador de cuenta regresiva en vivo, captura de email optimizada y diseño visual que proyecta máxima autoridad.',
-        time: '15 min con IA',
-        promptSnippet: '“Crea una landing de captación para masterclass con contador regresivo de urgencia, formulario en un solo paso y tarjetas de prueba social.”',
-        stack: 'HTML5 + Tailwind + Cloudflare Pages',
+        tag: 'Ejemplo 2 · Página de captación',
+        title: 'Registro a una clase',
+        description: 'Concepto educativo: formulario, validación de datos y una interfaz clara. Integrar correo o base de datos requiere pasos adicionales.',
+        time: 'Ejercicio guiado',
+        promptSnippet: '“Crea una landing para una clase práctica con formulario de inscripción, estados de validación y diseño adaptable a celulares.”',
+        stack: 'HTML + CSS + IA · Ejemplo',
         img: imgShowcaseEvento,
-        url: 'masterclass.estrategiasdigitales.com',
+        url: 'ejemplo-conceptual',
         stats: [
-          { label: 'Tiempo de Creación', value: '15 min' },
-          { label: 'Formulario', value: 'Un solo paso' },
-          { label: 'Diseño', value: '100% Mobile Ready' }
+          { label: 'Tipo', value: 'Landing' },
+          { label: 'Objetivo', value: 'Formularios' },
+          { label: 'Estado', value: 'Ejemplo' }
         ]
       },
       {
         id: 'consultoria',
-        tag: 'Landing para Consultor / Terapeuta',
-        title: 'Dra. Elena Ramos · Psicología & Bienestar',
-        description: 'Página de presentación profesional con propuesta de valor clara, testimonios con estrellas, perfil de autoridad y botón directo para agendar sesiones por WhatsApp.',
-        time: '20 min con IA',
-        promptSnippet: '“Genera una landing page para consulta de psicología clínica con tono cálido, paleta esmeralda relajante, sección de sobre mí, 3 áreas de especialidad y CTA directo a WhatsApp.”',
-        stack: 'HTML5 + Tailwind CSS + Cloudflare Pages',
+        tag: 'Ejemplo 3 · Página profesional',
+        title: 'Página para un servicio',
+        description: 'Concepto educativo: sección de servicios, testimonios solo cuando sean reales y botón de contacto. Imagen referencial.',
+        time: 'Ejercicio guiado',
+        promptSnippet: '“Diseña una página de presentación profesional con secciones claras, diseño móvil y enlace de contacto a WhatsApp.”',
+        stack: 'HTML + Tailwind · Ejemplo',
         img: imgShowcaseConsultor,
-        url: 'elenaramos-bienestar.pages.dev',
+        url: 'ejemplo-conceptual',
         stats: [
-          { label: 'Tiempo de Carga', value: '0.4s' },
-          { label: 'Costo de Servidores', value: '$0/mes' },
-          { label: 'Puntaje Móvil', value: '99/100' }
+          { label: 'Tipo', value: 'Web' },
+          { label: 'Objetivo', value: 'Presentación' },
+          { label: 'Estado', value: 'Ejemplo' }
         ]
       }
     ],
 
-    offerTitle: 'Todo lo que necesitas para lanzar tu activo digital',
-    offerSubtitle: 'En 1 hora y 45 minutos de práctica pura en vivo, creamos y publicamos juntos una herramienta interactiva o landing de captación real lista para recibir clientes.',
-    priceComparisonContext: 'Una agencia te cobraría $800+ USD y tardaría 4 semanas por la misma página que crearás tú en una tarde.',
+    offerTitle: 'Tu punto de partida para desarrollar con IA',
+    offerSubtitle: 'Entrenamiento guiado de 105 minutos: un proyecto introductorio, pruebas de funcionamiento y publicación según los requisitos de cada plataforma.',
+    priceComparisonContext: 'Precio de lanzamiento US$9. Para compradores en Perú, el importe exacto en soles aparecerá antes de pagar.',
 
     // Bonos Específicos para Creadores / Vibe Coding
     bonuses: [
@@ -432,7 +432,7 @@ export const VARIANTS: Record<VariantId, VariantData> = {
         title: 'Checklist de Publicación en la Nube',
         desc: 'Revisa diseño móvil, dominio propio, velocidad y límites de uso antes de compartir tu enlace con el mundo.',
         img: imgBonoChecklist,
-        features: ['Matriz de verificación técnica pre-lanzamiento', 'Configuración de SSL y dominio gratuito', 'Rendimiento 99+ garantizado en Google']
+        features: ['Matriz de verificación técnica pre-lanzamiento', 'Configuración de HTTPS y subdominio gratuito', 'Pruebas prácticas con herramientas de rendimiento']
       }
     ],
 

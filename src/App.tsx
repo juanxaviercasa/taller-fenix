@@ -1,931 +1,850 @@
-import { useId, useState, useEffect } from 'react';
-import { motion, type Variants } from 'framer-motion';
-import { 
-  ArrowUpRight, 
-  Check, 
-  ChevronDown, 
-  Cloud, 
-  Code2, 
-  Layers3, 
-  Play, 
-  ShieldCheck, 
-  X,
-  Sparkles,
-  Gift,
-  Lock,
-  Zap,
-  CheckCircle2
+import { useState } from 'react';
+import {
+  ArrowRight, Check, CheckCircle2, ChevronDown, Clock, Coins,
+  ExternalLink, Gift, GraduationCap, HardDrive, Lightbulb, Lock, MonitorPlay,
+  ShieldCheck, Sparkles, Timer, Users, Wrench, XCircle, Zap
 } from 'lucide-react';
+import { PeruCheckoutButton } from './components/PeruCheckoutButton';
+import { WaitlistForm } from './components/WaitlistForm';
+import MathStudio from './components/MathStudio';
 
-import mentorPortraitVisual from './assets/mentor_portrait_1790998415489.jpg';
-import workshopStudentVisual from './assets/workshop_student_1790998472338.jpg';
-import imgMasterBundle from './assets/master_bundle_hero.jpg';
+type Project = {name:string;image:string;description:string;skill:string;url:string;group:'Educación'|'Otros'};
+const projects:Project[]=[
+  {name:'Funciones Lab',image:'funciones-lab.webp',description:'Olvídate de trazar y borrar ejes 15 veces por semana: mueve deslizadores en vivo y haz que el salón comprenda funciones en minutos.',skill:'Cero desgaste en pizarra · Comprensión rápida',url:'https://funciones.sistemazenit.com/',group:'Educación'},
+  {name:'Transformaciones Geométricas',image:'transformaciones-geometricas.webp',description:'Visualiza traslaciones, rotaciones y simetrías en tiempo real, sigue una ruta de aprendizaje y descarga fichas imprimibles listas.',skill:'Ahorra horas de dibujo · Material imprimible',url:'https://transformacionesgeometricas.sistemazenit.com/',group:'Educación'},
+  {name:'Sólidos Geométricos',image:'solidos-geometricos.webp',description:'Modelos 3D interactivos, desarrollos planos, teoría y retos al servicio de tus clases de matemáticas sin sufrir dibujando en 2D.',skill:'Impacto visual 3D · Secuencia didáctica lista',url:'https://solidosgeometricos.sistemazenit.com/',group:'Educación'},
+  {name:'Mundos Simulados',image:'mundos-simulados.webp',description:'Modelos visuales de física y sistemas dinámicos listos para proyectar y capturar la atención de toda el aula.',skill:'Atención inmediata · Pensamiento matemático',url:'https://mundossimulados.online/',group:'Educación'},
+  {name:'Test vocacional RALE',image:'rale-test-vocacional.webp',description:'Evaluaciones y formularios automatizados que ahorran horas de revisión manual y abren servicios educativos adicionales.',skill:'Automatización y flujos de evaluación',url:'https://raletest.sistemazenit.com/',group:'Otros'},
+  {name:'Herramientas para Pymes',image:'herramientas-pymes.webp',description:'Calculadoras y sistemas prácticos creados con el mismo método para generar ingresos adicionales fuera del horario escolar.',skill:'Oportunidad profesional y monetización',url:'https://nubeparapymes.online/herramientas/',group:'Otros'},
+  {name:'Todo Lima',image:'todo-lima.webp',description:'Directorio digital que demuestra cómo dominar este sistema te abre puertas económicas más allá del aula.',skill:'Proyectos digitales escalables',url:'https://todolima.com/',group:'Otros'}
+];
 
-import { useDelayedCta } from './hooks/useDelayedCta';
-import { vslConfig } from './vslConfig';
+const oldVsNew:[string,string][]=[
+  [
+    'Pasarte media hora dibujando un poliedro con 3 colores de plumón para que al final te digan: «¿Profe, esa raya de atrás está adentro o afuera?».',
+    'Giras el sólido en 3D con un clic, despliegas sus caras en vivo y todo el salón comprende la perspectiva en 10 segundos.'
+  ],
+  [
+    'Darle la espalda a tu salón durante 3 minutos para trazar en la pizarra (el instante exacto en que pierdes el orden y sacan el celular).',
+    'Explicas siempre de frente a tus alumnos, manteniendo el contacto visual, la autoridad escénica y la atención de toda el aula.'
+  ],
+  [
+    'Dictar en 5 secciones de secundaria y dibujar y borrar la misma gráfica 15 veces por semana hasta terminar con el hombro y la garganta destrozados.',
+    'Lo generas una sola vez en minutos, lo llevas en tu USB sin depender de internet y lo reutilizas todo el año en todas tus secciones.'
+  ],
+  [
+    'Pelear con comandos lentos de GeoGebra en plena clase (donde te equivocas en un paréntesis y se te fue la hora) o usar diapositivas que no se mueven.',
+    'Usas nuestras plantillas en español de copiar y pegar: si sabes mandar un WhatsApp y pegar en Word, la IA arma el visualizador por ti en 60 segundos.'
+  ],
+  [
+    'Competir por precio en tus clases particulares cobrando S/ 20 o S/ 30 la hora contra universitarios porque enseñas con un PDF estático.',
+    'Pasas a cobrar entre S/ 60 y S/ 80+ la hora mostrando a los padres simuladores interactivos propios que destraban a sus hijos desde la primera sesión.'
+  ]
+];
 
-// A/B Testing & Conversión Multi-Oferta
-import { type VariantId, VARIANTS, resolveVariantFromPath } from './data/variants';
-import { AbTestingBar } from './components/AbTestingBar';
-import { ComparisonTable } from './components/ComparisonTable';
-import { AntiTrapSection } from './components/AntiTrapSection';
-import { OrderBumpsSection } from './components/OrderBumpsSection';
+const failedAlternatives:[string,string,string][]=[
+  [
+    'Diapositivas de PowerPoint o Canva',
+    'Son imágenes muertas en 2D.',
+    'Si un alumno te pregunta «¿Profe, qué pasa si el coeficiente es negativo o si giramos la figura?», la diapositiva no se mueve y terminas dibujando encima con plumón.'
+  ],
+  [
+    'GeoGebra Manual en Plena Clase',
+    'Fricción técnica frente a un salón inquieto.',
+    'Ponerte a meter comandos algebraicos en vivo frente a 35 o 40 alumnos consume media clase; te equivocas en un paréntesis y perdiste la atención del grupo.'
+  ],
+  [
+    'Videos de YouTube de Otros Profesores',
+    'Te quitan autoridad frente al salón.',
+    'Al poner el video de otro colega, tus alumnos pasan a modo pasivo y no puedes cambiar los datos del video para resolver el ejercicio de tu ficha.'
+  ],
+  [
+    'ChatGPT Básico en Modo Texto',
+    'Ceguera geométrica y fórmulas rotas.',
+    'Pedirle ejercicios en texto libre solo devuelve bloques planos sin interactividad visual. En cambio, nuestro método de Inyección de Plantillas crea pizarras vivas 2D/3D.'
+  ]
+];
 
-const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
-};
+const quickWinTimeline:[string,string,string][]=[
+  [
+    'Minuto 1 · Eliges tu Plantilla en Español',
+    'Recibes tu acceso inmediato tras el pago de US$9 y abres la plantilla del tema que te toca enseñar mañana (secundaria, preuniversitario o cálculo).',
+    'Si sabes usar WhatsApp y Word, ya sabes hacerlo'
+  ],
+  [
+    'Minuto 5 · Copias y Pegas en la IA Gratuita',
+    'Solo cambias entre corchetes el tema de tu clase y lo pegas en el lienzo gratuito de la IA. En 60 segundos construye los deslizadores, gráficos y retos por ti.',
+    'Sin pagar suscripciones de IA · Cero código'
+  ],
+  [
+    'Minuto 15 · A tu USB (Funciona Sin Internet)',
+    'Descargas tu visualizador en un archivo único liviano (.html) que guardas en tu USB y abre sin Wi-Fi en cualquier televisor o proyector de tu colegio.',
+    '100% Offline en el aula · +10 Apps ya listas'
+  ]
+];
 
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
-};
+const teacherProfiles:[string,string,string][]=[
+  [
+    '1. Especialmente en Secundaria (1.° a 5.° Año)',
+    '«Dictar en cinco secciones y dibujar la misma gráfica 15 veces por semana me tenía el hombro y la garganta destrozados. Ahora llevo mi archivo en mi USB, lo abro sin internet en el TV del salón y recupero mis noches y mis domingos.»',
+    'Alivio físico inmediato + Control del salón sin gritar'
+  ],
+  [
+    '2. También en Nivel Preuniversitario y Cálculo',
+    '«Explicar Geometría del Espacio, Trigonometría o Derivadas e Integrales en una pizarra plana 2D era pedirles un acto de fe. Ahora giro el sólido en 3D, muestro el trazo oculto en 3 segundos y resuelvo el doble de problemas por clase.»',
+    'Cero ceguera espacial 2D + Respeto académico total'
+  ],
+  [
+    '3. En tus Clases Particulares (De S/ 25 a S/ 80/h)',
+    '«En clases particulares está lleno de universitarios cobrando S/ 20 la hora. Cuando muestras a los papás que enseñas con tus propios simuladores interactivos y su hijo por fin entiende sin miedo, pagan S/ 60 a S/ 80 la hora sin regatear.»',
+    'Con 1 sola hora de clase recuperas tus US$9'
+  ]
+];
 
-const methodPhases = [
+const valueStack:{title:string;objectionKilled:string;desc:string;value:string;isBonus?:boolean}[]=[
   {
-    step: 'Paso 01',
-    title: 'Estructurar tu Idea en Español',
-    duration: '25 min',
-    desc: 'Sin código. Defines el propósito, tu audiencia, los textos y las secciones clave con el Blueprint visual de 5 bloques.',
-    bullets: ['Plantilla de especificación en 1 página', 'Definición de llamadas a la acción que venden', 'Cero términos técnicos abrumadores']
+    title:'1. El Generador Maestro «Pizarra Viva 3D» (Geometría del Espacio y Sólidos)',
+    objectionKilled:'Elimina el dolor de: «Mis alumnos no ven la perspectiva en 2D y tardo media hora dibujando poliedros»',
+    desc:'Plantilla copiar-y-pegar que ordena a la IA crear un visor 3D rotatorio con el ratón o el dedo, incluyendo botones para desplegar la red plana, ver líneas ocultas y cambiar dimensiones en vivo.',
+    value:'US$47'
   },
   {
-    step: 'Paso 02',
-    title: 'Construir con Asistentes de IA (Vibe Coding)',
-    duration: '45 min',
-    desc: 'Alimentas a la IA con los prompts exactos en español. La IA redacta, diseña y genera el código mientras tú diriges el resultado.',
-    bullets: ['Prompts probados para titulares y layouts', 'Ajuste visual responsivo para móviles', 'Interacción en tiempo real y corrección fluida']
+    title:'2. El Laboratorio Dinámico de Funciones, Trigonometría y Cálculo',
+    objectionKilled:'Elimina el dolor de: «Dibujar y borrar 15 veces por semana la misma curva en 5 secciones distintas»',
+    desc:'Genera planos cartesianos interactivos con deslizadores en tiempo real para parábolas, exponenciales, circunferencia trigonométrica, rectas tangentes (derivadas) y sumas de Riemann.',
+    value:'US$47'
   },
   {
-    step: 'Paso 03',
-    title: 'Publicar Gratis en Servidores Globales',
-    duration: '35 min',
-    desc: 'Conectas a la nube de grado empresarial (Cloudflare Pages / Vercel). Tu web queda en vivo para el mundo con certificado SSL en 1 clic.',
-    bullets: ['Alojamiento 100% gratuito de por vida ($0/mes)', 'Certificado de seguridad HTTPS automático', 'Tu enlace listo para compartir en WhatsApp y redes']
+    title:'3. El Motor «Paso a Paso» Anti-Ansiedad Matemática (Álgebra y Aritmética)',
+    objectionKilled:'Elimina el dolor de: «Ven la pizarra llena de ecuaciones, se bloquean y dicen "Sí entendí, profe" por vergüenza»',
+    desc:'Crea pizarras digitales donde la resolución no aparece de golpe: revelas cada despeje línea por línea con un botón «Siguiente Paso», resaltando en colores qué ocurrió con los signos.',
+    value:'US$37'
+  },
+  {
+    title:'BONO INTENCIONAL #1 · El Clonador de Ejercicios Infinitos en Vivo (Botón «Nuevo Reto»)',
+    objectionKilled:'Rebate la objeción: «Pierdo horas en la noche inventando ejercicios cuyos datos salgan exactos»',
+    desc:'Añade a tus visualizadores un botón que genera al instante nuevos problemas con respuestas exactas (sin raíces ni fracciones feas accidentales) para sacar alumnos a participar.',
+    value:'US$27',
+    isBonus:true
+  },
+  {
+    title:'BONO INTENCIONAL #2 · Guía «De la IA a tu USB Sin Internet en 3 Clics» + Bóveda de 10 Apps Listas',
+    objectionKilled:'Rebate la objeción: «En mi colegio NO hay internet en las aulas y necesito algo listo para mañana a las 8:00 AM»',
+    desc:'Cómo descargar cualquier visualizador en un archivo único liviano que llevas en tu USB y abre sin Wi-Fi en cualquier TV o proyector. Incluye 10 simuladores ya armados listos para mañana.',
+    value:'US$39',
+    isBonus:true
   }
 ];
 
-const inclusions = [
+type OrderBump = {
+  id:string;
+  tag:string;
+  title:string;
+  priceUsd:number;
+  painSolved:string;
+  desc:string;
+};
+
+const orderBumps:OrderBump[]=[
   {
-    title: 'Taller práctico en vivo de 105 minutos',
-    desc: '1 hora y 45 minutos de implementación guiada pura donde construimos y publicamos juntos en tiempo real.'
+    id:'bump-examenes-word',
+    tag:'COMPLEMENTO #1 · AHORRO NOCTURNO',
+    title:'Generador Automático de Exámenes (Fila A y B), Prácticas y Solucionarios Listos para Imprimir',
+    priceUsd:9,
+    painSolved:'Para no quedarte hasta las 11:30 PM peleando con el editor de ecuaciones y gráficos en Word',
+    desc:'Plantillas que generan en 2 minutos fichas de trabajo, exámenes diferenciados anti-copia (Fila A y Fila B) con rúbricas y solucionarios paso a paso listos para imprimir en PDF.'
   },
   {
-    title: 'Sesión en vivo de preguntas y desbloqueo (+45 min)',
-    desc: 'Espacio dedicado para resolver dudas, revisar pantallas y asegurar que nadie se quede atrás.'
+    id:'bump-boveda-50',
+    tag:'COMPLEMENTO #2 · CERO ESFUERZO (TODO EL AÑO LISTO)',
+    title:'Bóveda «Cero Esfuerzo» de 50 Visualizadores Matemáticos Ya Creados para tu USB (Secundaria + Pre)',
+    priceUsd:12,
+    painSolved:'Para el docente con múltiples secciones sin tiempo que quiere todo el año resuelto hoy sin siquiera copiar prompts',
+    desc:'Descarga directa de los 50 simuladores interactivos 2D y 3D más usados del currículo (álgebra, geometría plana y del espacio, trigo, funciones y cálculo) listos para llevar en tu USB.'
   },
   {
-    title: 'Proyecto base profesional prediseñado',
-    desc: 'Comienza con una arquitectura limpia de alta gama para nunca enfrentarte a la pantalla en blanco.'
-  },
-  {
-    title: 'Biblioteca de prompts y comandos en español',
-    desc: 'Instrucciones precisas para guiar a la IA sin errores técnicos ni frustraciones.'
-  },
-  {
-    title: 'Checklist de revisión móvil y despliegue',
-    desc: 'Asegura que tu web se vea perfecta en cualquier teléfono o pantalla antes de compartirla.'
-  },
-  {
-    title: 'Grabación completa y acceso ilimitado de por vida',
-    desc: 'Repasa a tu ritmo tantas veces como necesites para futuras páginas o herramientas.'
-  },
+    id:'bump-admision-minedu',
+    tag:'COMPLEMENTO #3 · COLEGIO MINEDU + NIVEL ADMISIÓN',
+    title:'Pack de Prompts «Situaciones Significativas MINEDU y Problemas Tipo Admisión (UNI / San Marcos / PUCP)»',
+    priceUsd:7,
+    painSolved:'Para cumplir con las situaciones significativas que exige el coordinador en secundaria o el rigor preuniversitario',
+    desc:'Transforma cualquier tema abstracto en problemas contextualizados de la vida real (enfoque por competencias) o en retos de nivel examen de admisión con gráficas integradas.'
+  }
 ];
 
-const ctaClass = 'inline-flex w-full items-center justify-center gap-3 rounded-xl bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia px-6 py-6 text-xl font-bold text-white shadow-[0_0_45px_rgba(217,70,239,0.35)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transform-none sm:w-auto sm:px-12 sm:text-2xl';
+const faq:[string,string][]=[
+  ['"En mi colegio NO hay internet en los salones, apenas un proyector o televisor. ¿Igual me sirve?"', '¡Sí, fue diseñado exactamente para la realidad de los colegios de Perú y Latinoamérica! Con el Bono #2 («De la IA a tu USB Sin Internet en 3 Clics»), tu visualizador se descarga como un archivo único súper liviano (.html) que guardas en tu memoria USB. Llegas al salón, conectas tu laptop al televisor o proyector y funciona al 100% SIN INTERNET.'],
+  ['"Ya probé GeoGebra y cursos de TICs, pero en vivo pierdo media hora metiendo comandos. ¿Por qué esto es distinto?"', 'En GeoGebra tienes que configurar comandos algebraicos manualmente y, si te equivocas en un paréntesis frente a 35 o 40 alumnos inquietos, pierdes toda la clase. Aquí NO configuras software: usas nuestras Plantillas en Español de Copiar y Pegar. La IA construye todo el simulador por ti en 60 segundos y tú en clase solo mueves deslizadores y botones listos.'],
+  ['"Soy profesor de matemáticas, no programador (y tengo más de 45 años). ¿Necesito saber código o pagar una IA cara?"', 'Si sabes escribir un mensaje de WhatsApp y copiar y pegar un texto en Word, ya tienes el 100% de la habilidad técnica necesaria. No tocas ni una línea de programación y todo el método funciona utilizando las versiones 100% GRATUITAS de la Inteligencia Artificial (sin pagar suscripciones de US$20 al mes).'],
+  ['"Tengo 5 secciones en secundaria y dicto más de 35 horas a la semana. ¿Esto me va a quitar tiempo?"', 'Al contrario: está hecho para devolverte tus noches y erradicar el dolor de estómago del domingo a las 5:00 PM. Además, incluye una Bóveda con 10 visualizadores ya armados para que los uses mañana mismo a las 8:00 AM sin crear nada desde cero, y cada recurso nuevo te toma menos de 15 minutos dejándolo listo para todo el año.'],
+  ['"¿Por qué cuesta solo US$9 (aprox. S/ 33 soles)? ¿Hay cobros mensuales ocultos?"', 'No hay ningún cobro mensual ni letra chica: es un único pago de US$9 (exactamente lo que te cuestan dos cajas de plumones acrílicos o lo que cobras en una sola hora de clase particular estándar). Lo fijamos en este precio de entrada para que cualquier docente de Perú y Latinoamérica pueda comprobar el sistema en su aula hoy mismo.'],
+  ['"¿Cómo recupero estos US$9 dando clases particulares o en mi colegio?"', 'En el mercado de clases particulares, quien enseña con un PDF estático pelea por S/ 20 o S/ 30 la hora contra estudiantes universitarios. Cuando le muestras a los padres de familia tus propios simuladores 2D y 3D donde su hijo comprende en 15 minutos lo que no entendió en todo el bimestre, justificas tarifas de S/ 60 a S/ 80+ la hora. Con una sola hora recuperas hasta el doble de tu inversión.'],
+  ['"¿Las plataformas grandes multi-módulo como Sólidos Geométricos completo vienen dentro de los US$9?"', 'Esas plataformas avanzadas te muestran hasta dónde puedes escalar dentro de nuestro ecosistema. En tu acceso hoy de US$9 recibes las 3 plantillas maestras (3D, Funciones/Trigo/Cálculo y Paso a Paso), el Clonador de Ejercicios Infinitos, la Guía USB Sin Internet y las 10 aplicaciones listas para usar mañana mismo.']
+];
 
-interface PurchaseCtaProps {
-  customText?: string;
-  totalPrice?: number;
-  selectedBumps?: string[];
+function Heading({eyebrow,title,body}:{eyebrow:string;title:string;body?:string}){
+ return <div className="max-w-3xl"><p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">{eyebrow}</p><h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.35rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">{title}</h2>{body&&<p className="mt-4 text-base leading-8 text-[#685977] sm:text-lg">{body}</p>}</div>;
 }
 
-function PurchaseCta({ customText, totalPrice = 19, selectedBumps = [] }: PurchaseCtaProps) {
-  const placeholderId = useId();
-  
-  let targetUrl = vslConfig.checkoutUrl;
-  if (targetUrl) {
-    const urlObj = new URL(targetUrl, window.location.origin);
-    urlObj.searchParams.set('total', String(totalPrice));
-    if (selectedBumps.length > 0) {
-      urlObj.searchParams.set('bumps', selectedBumps.join(','));
-    }
-    targetUrl = urlObj.toString();
-  }
-
-  const label = customText || `Asegurar mi plaza de fundador · $${totalPrice} USD`;
-
-  return (
-    <div className="animate-cta-enter motion-reduce:animate-none">
-      {targetUrl ? (
-        <a href={targetUrl} className={ctaClass}>
-          {label} <ArrowUpRight aria-hidden="true" className="size-6" />
-        </a>
-      ) : (
-        <button type="button" disabled className={`${ctaClass} cursor-not-allowed`} aria-describedby={placeholderId}>
-          {label} <ArrowUpRight aria-hidden="true" className="size-6" />
-        </button>
-      )}
-      <p id={!targetUrl ? placeholderId : undefined} className="mt-4 flex items-center justify-center gap-2 text-sm/6 text-slate-400">
-        <ShieldCheck aria-hidden="true" className="size-4 text-emerald-400" />
-        {targetUrl ? 'Garantía incondicional de 7 días · Acceso inmediato a materiales' : 'Inscripciones próximamente abiertas'}
-      </p>
-    </div>
-  );
+function ProjectCard({project}:{project:Project}){
+ return <article className="group flex flex-col overflow-hidden rounded-[22px] border border-[#E7DCF0] bg-white shadow-[0_14px_40px_rgba(68,31,120,.06)]">
+  <div className="aspect-[16/10] overflow-hidden border-b border-[#EFE6F7] bg-[#F5EEFC]"><img src={`/projects/captures/${project.image}`} alt={`Vista previa de ${project.name}`} loading="lazy" decoding="async" className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"/></div>
+  <div className="flex flex-1 flex-col p-6"><span className="text-[10px] font-bold uppercase tracking-[.13em] text-[#8A51C5]">{project.skill}</span><h3 className="mt-2 font-display text-xl font-bold text-[#2C1A40]">{project.name}</h3><p className="mt-3 flex-1 text-sm leading-7 text-[#695B77]">{project.description}</p><a href={project.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#6531C6] hover:underline">Ver resultado en vivo <ExternalLink className="size-4"/></a></div>
+ </article>;
 }
 
-function StickyMobileCta({ showCta, price = 19 }: { showCta: boolean; price?: number }) {
-  if (!showCta) return null;
-  return (
-    <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5, ease: "easeOut" }} className="fixed bottom-0 inset-x-0 z-50 bg-slate-950/90 backdrop-blur-lg border-t border-white/10 p-4 sm:hidden">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-bold text-slate-50">${price} USD</p>
-          <p className="text-xs text-brand-light">82% plazas ocupadas</p>
-        </div>
-        {vslConfig.checkoutUrl ? (
-          <a href={vslConfig.checkoutUrl} className="inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(217,70,239,0.3)]">
-            Asegurar plaza
-          </a>
-        ) : (
-          <button type="button" disabled className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 py-3 text-sm font-bold text-slate-500 cursor-not-allowed">
-            Próximamente
-          </button>
-        )}
-      </div>
-    </motion.div>
-  );
+function InstructorPortrait(){
+ return <div className="mx-auto flex w-full max-w-[320px] flex-col overflow-hidden rounded-[28px] border border-[#CBB0E7] bg-white shadow-[0_20px_50px_rgba(100,50,200,0.12)]">
+   <img src="/instructor/xavier-cabello.webp" alt="Juan Xavier Cabello - Profesor de matemáticas y creador del método" loading="lazy" decoding="async" className="aspect-[4/5] w-full object-cover object-top"/>
+   <div className="border-t border-[#EBDFF5] bg-[#FBF9FD] px-5 py-3.5 text-center">
+     <p className="font-display text-base font-bold text-[#2E1B40]">Juan Xavier Cabello</p>
+     <p className="text-xs font-semibold text-[#7645BA]">Profesor de matemáticas & creador del método</p>
+   </div>
+ </div>;
 }
 
-export default function App() {
-  // Inicialización de la variante según la URL (/webcero, /bycoding, /agencia) o param ?v=
-  const [currentVariant, setCurrentVariant] = useState<VariantId>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return resolveVariantFromPath(window.location.pathname, params.get('v'));
-    }
-    return 'creadores';
-  });
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      setCurrentVariant(resolveVariantFromPath(window.location.pathname, params.get('v')));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const handleSelectVariant = (id: VariantId) => {
-    const targetPath = VARIANTS[id].path;
-    window.history.pushState({}, '', targetPath);
-    setCurrentVariant(id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const activeVariant = VARIANTS[currentVariant];
-
-  const [video, setVideo] = useState<HTMLVideoElement | null>(null);
-  const [videoError, setVideoError] = useState(false);
-  const [selectedShowcase, setSelectedShowcase] = useState<string>('consultoria');
-  const [checkoutTotal, setCheckoutTotal] = useState<number>(19);
-  const [activeBumps, setActiveBumps] = useState<string[]>([]);
-  const { showCta } = useDelayedCta(video, vslConfig.pitchSeconds, `fenix:vsl:${vslConfig.storageVersion}:${vslConfig.videoUrl}:${vslConfig.pitchSeconds}:unlocked`);
-
-  const activeProject = activeVariant.showcaseProjects.find(p => p.id === selectedShowcase) || activeVariant.showcaseProjects[0];
-
-  return (
-    <main className="min-h-screen overflow-x-clip bg-slate-950 font-sans text-slate-300 antialiased selection:bg-brand-purple selection:text-white">
-      <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-slate-900 focus:p-4">Saltar al contenido</a>
-
-      {/* ── 0. BARRA DE CONTROL DE PRUEBAS A/B (Para el Estratega & Campañas) ── */}
-      <AbTestingBar currentVariant={currentVariant} onSelectVariant={handleSelectVariant} />
-
-      {/* ── 1. HEADER / BARRA DE URGENCIA & CONTEXTO ── */}
-      <header className="border-b border-white/5 bg-slate-950/80 px-4 py-3 backdrop-blur-md sticky top-0 sm:top-0 z-40">
-        <div className="mx-auto flex max-w-5xl items-center justify-between text-xs sm:text-sm">
-          <div className="flex items-center gap-2">
-            <span className="flex size-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono font-semibold tracking-wider text-slate-200 uppercase">
-              Taller Fénix · Edición Fundadora
-            </span>
-          </div>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span className="hidden sm:inline">105 min en vivo + 45 min Q&A</span>
-            <span className="rounded-full bg-brand-purple/30 px-2.5 py-0.5 font-medium text-brand-light border border-brand-purple/40">
-              Solo 50 plazas
-            </span>
-          </div>
-        </div>
-      </header>
-
-      {/* ── 2. HERO SECTION CON VSL Y GANCHOS DINÁMICOS SEGÚN OFERTA ── */}
-      <section id="contenido" aria-labelledby="hero-title" className="px-3 pt-2 pb-8 sm:px-6 sm:pt-4 md:pt-4 md:pb-12">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="mx-auto max-w-4xl text-center"
-        >
-          {/* Pre-titular calificador de audiencia */}
-          <motion.div 
-            variants={fadeInUp} 
-            className={`mb-2.5 inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wider transition-colors ${activeVariant.heroTheme.badgeStyle}`}
-          >
-            <Sparkles className="size-3 text-brand-fuchsia" />
-            <span>{activeVariant.preHeadline}</span>
-          </motion.div>
-
-          {/* Titular Principal H1 Dinámico Compacto */}
-          <motion.h1
-            variants={fadeInUp}
-            id="hero-title"
-            className="font-display font-extrabold tracking-tight text-balance text-slate-50
-                       text-2xl sm:text-3xl md:text-4xl lg:text-[2.35rem] lg:leading-[1.14] leading-tight"
-          >
-            {activeVariant.headlineMain}{' '}
-            <span className="bg-linear-to-r/oklch from-purple-200 via-brand-light to-white bg-clip-text text-transparent inline-block">
-              {activeVariant.headlineHighlight}
-            </span>
-          </motion.h1>
-
-          {/* Subtítulo persuasivo conciso */}
-          <motion.p variants={fadeInUp} className="mx-auto mt-2 max-w-xl text-xs sm:text-sm md:text-base leading-relaxed text-slate-400">
-            {activeVariant.subheadline}
-          </motion.p>
-
-          {/* Video VSL: Envoltorio Navegador MacOS / Arc optimizado para Above-the-Fold */}
-          <motion.div variants={fadeInUp} className="relative isolate mx-auto mt-3.5 max-w-2xl lg:max-w-[740px] sm:mt-4">
-            {/* Auras luminosas ambientales dinámicas por oferta */}
-            <div aria-hidden="true" className={`pointer-events-none absolute -top-8 -right-6 -z-10 h-3/4 w-3/4 rounded-full blur-[100px] transition-all duration-500 ${activeVariant.heroTheme.glowFrom}`} />
-            <div aria-hidden="true" className={`pointer-events-none absolute -bottom-8 -left-6 -z-10 h-3/4 w-3/4 rounded-full blur-[100px] transition-all duration-500 ${activeVariant.heroTheme.glowTo}`} />
-
-            {/* Frame de Navegador Premium */}
-            <div className="browser-mockup relative">
-              {/* Barra superior de navegador */}
-              <div className="flex items-center justify-between border-b border-white/10 bg-slate-900/90 px-3 py-2 sm:px-4 sm:py-2.5 backdrop-blur-md">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="size-2.5 sm:size-3 rounded-full bg-rose-500/80 inline-block" />
-                  <span className="size-2.5 sm:size-3 rounded-full bg-amber-500/80 inline-block" />
-                  <span className="size-2.5 sm:size-3 rounded-full bg-emerald-500/80 inline-block" />
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2 rounded-md bg-slate-950/70 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-mono text-slate-400 border border-white/5">
-                  <Lock className="size-2.5 sm:size-3 text-emerald-400" />
-                  <span className="truncate max-w-[200px] sm:max-w-none">{activeVariant.vslUrlBadge}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium text-brand-light">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="hidden sm:inline">105 min en vivo</span>
-                </div>
-              </div>
-
-              {/* Contenedor del Video */}
-              <div className="relative aspect-video overflow-hidden bg-brand-dark">
-                {vslConfig.videoUrl ? (
-                  <video 
-                    ref={setVideo} 
-                    controls 
-                    playsInline 
-                    preload="metadata" 
-                    poster={activeVariant.vslPoster} 
-                    aria-label={`Presentación: ${activeVariant.name}`} 
-                    onError={() => setVideoError(true)} 
-                    className="h-full w-full object-cover"
-                  >
-                    <source src={vslConfig.videoUrl} />
-                    {vslConfig.captionsUrl && <track kind="captions" srcLang="es" label="Español" src={vslConfig.captionsUrl} default />}
-                    Tu navegador no admite video HTML5.
-                  </video>
-                ) : (
-                  <>
-                    <img 
-                      src={activeVariant.vslPoster} 
-                      alt={`Presentación de ${activeVariant.name}`} 
-                      className="h-full w-full object-cover opacity-90 transition-transform duration-300 hover:scale-[1.01]" 
-                      fetchPriority="high" 
-                    />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-slate-950/40 px-4">
-                      <span className="flex size-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_0_35px_rgba(217,70,239,0.35)] transition-transform hover:scale-105 sm:size-16">
-                        <Play aria-hidden="true" className="size-6 text-slate-50 sm:size-7" />
-                      </span>
-                      <p className="text-sm font-semibold text-slate-100 sm:text-base">Haz clic para ver la presentación</p>
-                      <p className="text-[11px] text-slate-300 sm:text-xs">Aprende la metodología paso a paso</p>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </motion.div>
-
-          {videoError && <p role="alert" className="mt-2 text-xs sm:text-sm text-brand-light">No se pudo cargar el video. Intenta recargar la página.</p>}
-
-          {/* CTA gate */}
-          <div className="mt-4 min-h-16 sm:mt-5" aria-live="polite">
-            {showCta ? (
-              <PurchaseCta customText={activeVariant.ctaText} totalPrice={checkoutTotal} selectedBumps={activeBumps} />
-            ) : (
-              <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400 sm:text-sm">
-                <Play aria-hidden="true" className="size-3 sm:size-3.5 text-brand-fuchsia" />
-                El botón de inscripción se habilita al completar la presentación.
-              </p>
-            )}
-          </div>
-
-          {/* Barra de Tecnologías y Autoridad (Tech Trust Bar) */}
-          <motion.div variants={fadeInUp} className="mt-14 sm:mt-16 pt-8 border-t border-white/5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-5">
-              Construirás sobre el stack oficial de IA y desarrollo web moderno
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm font-medium text-slate-300">
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-brand-fuchsia/40 transition-colors">
-                <Sparkles className="size-3.5 text-brand-fuchsia" /> Claude 3.7 & ChatGPT
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-brand-purple/40 transition-colors">
-                <Code2 className="size-3.5 text-purple-300" /> Cursor & Vibe Coding
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-cyan-400/40 transition-colors">
-                <Zap className="size-3.5 text-cyan-400" /> Vite + React
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-teal-400/40 transition-colors">
-                <Layers3 className="size-3.5 text-teal-400" /> Tailwind CSS v4
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/5 px-3.5 py-1.5 border border-white/10 hover:border-amber-400/40 transition-colors">
-                <Cloud className="size-3.5 text-amber-400" /> Cloudflare Pages ($0/mes)
-              </span>
-            </div>
-          </motion.div>
-
-        </motion.div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 3. SECCIÓN DOLOR DINÁMICA (Problema & Agitación PAS según Variante) ── */}
-      <section aria-labelledby="pain-title" className="px-5 py-16 sm:px-6 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-3.5 py-1 text-xs font-semibold text-rose-300 uppercase tracking-wider mb-3">
-              {activeVariant.painBadge}
-            </span>
-            <h2 id="pain-title" className="font-display text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl md:text-5xl">
-              {activeVariant.painTitle}
-            </h2>
-            <p className="mt-4 text-base/7 text-slate-400 max-w-2xl mx-auto sm:text-lg/8">
-              {activeVariant.painSubtitle}
-            </p>
-          </motion.div>
-
-          <div className="mt-12 grid gap-6 sm:mt-16 sm:gap-8 md:grid-cols-3">
-            {activeVariant.pains.map(({ icon: Icon, title, text, highlight }, i) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="glass-panel flex flex-col justify-between"
-              >
-                <div>
-                  <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-brand-purple/20 border border-brand-purple/40 text-brand-light shadow-[0_0_20px_rgba(217,70,239,0.2)]">
-                    <Icon aria-hidden="true" className="size-6 text-brand-fuchsia" />
-                  </div>
-                  {highlight && (
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold block mb-2">
-                      {highlight}
-                    </span>
-                  )}
-                  <h3 className="font-display text-xl font-bold text-slate-50 leading-snug">{title}</h3>
-                  <p className="mt-3 text-sm/6 text-slate-400">{text}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 4. SECCIÓN MÉTODO FÉNIX (El Mecanismo de 3 Fases) ── */}
-      <section aria-labelledby="method-title" className="bg-brand-dark px-5 py-16 sm:px-6 sm:py-20 md:py-28">
-        <div className="mx-auto max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-purple/30 bg-brand-purple/20 px-3.5 py-1 text-xs font-semibold text-brand-light uppercase tracking-wider mb-3">
-              Mecanismo Único Comprobado
-            </span>
-            <h2 id="method-title" className="font-display text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl md:text-5xl">
-              El Método Fénix: 3 pasos hacia tu libertad digital
-            </h2>
-            <p className="mt-4 text-base/7 text-slate-400 max-w-2xl mx-auto sm:text-lg/8">
-              Una estructura diseñada para eliminar la fricción técnica y garantizar que termines el taller con una página real en vivo.
-            </p>
-          </motion.div>
-
-          <div className="mt-12 grid gap-6 sm:mt-16 sm:gap-8 md:grid-cols-3">
-            {methodPhases.map(({ step, title, duration, desc, bullets }, i) => (
-              <motion.article
-                key={step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="glass-panel relative flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
-                    <span className="font-mono text-xs font-bold tracking-widest text-brand-light uppercase">{step}</span>
-                    <span className="rounded-full bg-white/5 px-2.5 py-0.5 text-xs font-medium text-slate-300 border border-white/10">{duration}</span>
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-slate-50 sm:text-2xl">{title}</h3>
-                  <p className="mt-3 text-sm/6 text-slate-400">{desc}</p>
-                </div>
-                <ul className="mt-6 space-y-2 border-t border-white/5 pt-4">
-                  {bullets.map(b => (
-                    <li key={b} className="flex items-center gap-2 text-xs text-slate-300">
-                      <Check className="size-3 text-brand-fuchsia shrink-0" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 5. VITRINA INTERACTIVA DE PROYECTOS (Showcase) ── */}
-      <section aria-labelledby="showcase-title" className="relative px-5 py-16 sm:px-6 sm:py-20 md:py-28 overflow-hidden bg-slate-950">
-        <div className="mx-auto max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-purple/30 bg-brand-purple/20 px-3.5 py-1 text-xs font-semibold text-brand-light uppercase tracking-wider mb-3">
-              <Sparkles className="size-3.5 text-brand-fuchsia" /> Lo que tú mismo podrás construir
-            </span>
-            <h2 id="showcase-title" className="font-display text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl md:text-5xl">
-              {activeVariant.showcaseTitle}
-            </h2>
-            <p className="mt-4 text-base/7 text-slate-400 max-w-2xl mx-auto sm:text-lg/8">
-              {activeVariant.showcaseSubtitle}
-            </p>
-          </motion.div>
-
-          {/* Selector de pestañas */}
-          <div className="mt-10 flex flex-wrap justify-center gap-2 sm:gap-3">
-            {activeVariant.showcaseProjects.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setSelectedShowcase(p.id)}
-                className={`rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all ${
-                  activeProject.id === p.id
-                    ? 'bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia text-white shadow-[0_0_25px_rgba(217,70,239,0.4)] scale-105'
-                    : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200 border border-white/5'
-                }`}
-              >
-                {p.tag}
-              </button>
-            ))}
-          </div>
-
-          {/* Visualizador del Proyecto Activo */}
-          <motion.div
-            key={activeProject.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="mt-8 rounded-3xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-2xl grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center"
-          >
-            {/* Mockup del Navegador con imagen */}
-            <div className="browser-mockup overflow-hidden shadow-2xl border border-white/15">
-              <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-3.5 py-2">
-                <div className="flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-rose-500/70 inline-block" />
-                  <span className="size-2.5 rounded-full bg-amber-500/70 inline-block" />
-                  <span className="size-2.5 rounded-full bg-emerald-500/70 inline-block" />
-                </div>
-                <span className="text-[11px] font-mono text-slate-400 bg-black/40 px-3 py-0.5 rounded border border-white/5">
-                  https://{activeProject.url}
-                </span>
-                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              </div>
-              <div className="relative aspect-video overflow-hidden bg-slate-950">
-                <img src={activeProject.img} alt={activeProject.title} className="h-full w-full object-cover" />
-              </div>
-            </div>
-
-            {/* Ficha descriptiva y estadísticas */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-brand-purple/30 px-2.5 py-0.5 text-xs font-semibold text-brand-light border border-brand-purple/40">
-                  {activeProject.time}
-                </span>
-                <span className="text-xs font-mono text-slate-400">{activeProject.stack}</span>
-              </div>
-              <h3 className="font-display text-2xl font-bold text-slate-50 sm:text-3xl leading-snug">
-                {activeProject.title}
-              </h3>
-              <p className="mt-3 text-sm/6 text-slate-300">
-                {activeProject.description}
-              </p>
-
-              {/* El Prompt Utilizado */}
-              <div className="mt-4 rounded-xl bg-slate-950/80 p-3.5 border border-white/5 font-mono text-xs text-brand-light">
-                <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1 font-sans">Prompt exacto enviado a la IA:</span>
-                <p className="italic text-slate-300">{activeProject.promptSnippet}</p>
-              </div>
-
-              {/* Métricas clave */}
-              <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-4 text-center">
-                {activeProject.stats.map(s => (
-                  <div key={s.label} className="rounded-lg bg-white/[0.02] p-2">
-                    <p className="font-display text-base font-bold text-emerald-400 sm:text-lg">{s.value}</p>
-                    <p className="text-[10px] text-slate-400 sm:text-xs">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 6. TABLA COMPARATIVA DE DEMOLICIÓN ECONÓMICA (Agencia vs WP vs Fénix) ── */}
-      <ComparisonTable />
-
-      <div className="beam-divider" />
-
-      {/* ── 7. SECCIÓN DE TRANSPARENCIA TÉCNICA (Demoliendo la trampa del hosting gratis) ── */}
-      <AntiTrapSection />
-
-      <div className="beam-divider" />
-
-      {/* ── 8. SECCIÓN OFERTA, STACK DE VALOR Y ORDER BUMPS ── */}
-      <section aria-labelledby="offer-title" className="relative bg-slate-950 px-5 py-16 sm:px-6 sm:py-20 md:py-28 overflow-hidden">
-        {/* Luces de fondo */}
-        <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 -z-10 h-96 w-full max-w-4xl rounded-full bg-brand-purple/20 blur-[140px]" />
-
-        <div className="mx-auto max-w-5xl">
-          {/* 8A. Qué te llevas al inscribirte */}
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-purple/30 bg-brand-purple/20 px-3.5 py-1 text-xs font-semibold text-brand-light uppercase tracking-wider mb-4">
-                <Sparkles className="size-3.5 text-brand-fuchsia" /> Lo que recibes al inscribirte
-              </span>
-              <h2 id="offer-title" className="font-display text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl md:text-5xl/14">
-                {activeVariant.offerTitle}
-              </h2>
-              <p className="mt-4 text-base/7 text-slate-400 sm:text-lg/8">
-                {activeVariant.offerSubtitle}
-              </p>
-              <ul className="mt-6 space-y-3.5 sm:space-y-4">
-                {inclusions.map(({ title, desc }) => (
-                  <li key={title} className="flex gap-3 text-base/7 sm:text-lg/8">
-                    <Check aria-hidden="true" className="mt-1 size-5 shrink-0 text-emerald-400" />
-                    <div>
-                      <span className="font-semibold text-slate-100">{title}: </span>
-                      <span className="text-slate-400">{desc}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl sm:rounded-3xl">
-              <img src={workshopStudentVisual} alt="Participante en el taller construyendo su primera web con IA" className="aspect-[4/3] w-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-slate-950 via-slate-950/70 to-transparent p-5 pt-16 sm:p-7 sm:pt-20">
-                <span className="font-mono text-xs font-semibold tracking-widest text-brand-light uppercase">Taller Fénix</span>
-                <p className="mt-1 text-lg font-bold text-slate-50 sm:text-xl">Construye con criterio. Publica con control total.</p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 8B. 3 Bonos de Aceleración con Mockups 3D de Alta Fidelidad */}
-          <div className="mt-20 sm:mt-24">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center mb-12">
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-fuchsia/30 bg-brand-fuchsia/15 px-3.5 py-1 text-xs font-semibold text-brand-light uppercase tracking-wider mb-3">
-                <Gift className="size-3.5 text-brand-fuchsia" /> 3 Bonos Exclusivos Incluidos
-              </span>
-              <h3 className="font-display text-2xl font-bold text-slate-50 sm:text-3xl md:text-4xl">
-                Herramientas que aceleran tu resultado
-              </h3>
-              <p className="mt-3 text-base text-slate-400 max-w-xl mx-auto">
-                Acceso gratuito e ilimitado al asegurar tu plaza durante esta edición fundadora.
-              </p>
-            </motion.div>
-
-            <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
-              {activeVariant.bonuses.map(({ num, badge, title, desc, img, features }) => (
-                <motion.article
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.1 }}
-                  transition={{ duration: 0.5 }}
-                  key={num}
-                  className="glass-panel overflow-hidden flex flex-col p-0 border border-white/10 hover:border-brand-fuchsia/40 transition-all hover:scale-[1.01]"
-                >
-                  <div className="aspect-[4/3] w-full border-b border-white/10 bg-slate-900 relative overflow-hidden group">
-                    <img src={img} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <span className="absolute top-3 left-3 rounded-md bg-slate-950/85 px-2.5 py-1 font-mono text-xs font-bold text-brand-light border border-white/15 backdrop-blur-md shadow-lg">
-                      {badge}
-                    </span>
-                  </div>
-                  <div className="p-5 flex-1 flex flex-col sm:p-7">
-                    <h4 className="text-xl font-bold text-slate-50">{title}</h4>
-                    <p className="mt-2.5 text-sm/6 text-slate-300">{desc}</p>
-
-                    <ul className="mt-4 space-y-2 border-t border-white/5 pt-4 flex-1">
-                      {features.map(f => (
-                        <li key={f} className="flex items-center gap-2 text-xs text-slate-400">
-                          <CheckCircle2 className="size-3.5 text-emerald-400 shrink-0" />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
-                      <span className="text-slate-400">Entrega:</span>
-                      <span className="font-bold text-emerald-400">100% Gratis con tu entrada</span>
-                    </div>
-                  </div>
-                </motion.article>
-              ))}
-            </div>
-          </div>
-
-          {/* 8C. Value Stack + Master Bundle Mockup 3D + Order Bumps + Precio */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto mt-20 max-w-3xl rounded-3xl border border-brand-fuchsia/40 bg-white/5 p-6 shadow-[0_0_70px_rgba(217,70,239,0.18)] sm:mt-24 sm:p-10 relative overflow-hidden"
-          >
-            {/* Halo superior del bundle */}
-            <div aria-hidden="true" className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 -z-10 h-40 w-3/4 rounded-full bg-brand-fuchsia/30 blur-3xl" />
-
-            {/* Master Bundle Image */}
-            <div className="mb-8 overflow-hidden rounded-2xl border border-white/15 shadow-2xl bg-slate-950/80">
-              <img
-                src={imgMasterBundle}
-                alt="Paquete Maestro Taller Fénix con todos los bonos incluidos"
-                className="w-full object-cover aspect-16/9"
-              />
-              <div className="p-3 bg-slate-900/90 border-t border-white/10 text-center">
-                <span className="font-mono text-xs font-bold text-brand-light uppercase tracking-wider">
-                  ★ Paquete Completo de Fundador · Taller en Vivo + 3 Bonos + Grabación de por vida
-                </span>
-              </div>
-            </div>
-
-            <h3 className="text-center font-display text-2xl font-bold text-slate-50 mb-6 sm:text-3xl sm:mb-8">
-              Todo lo que consigues hoy por solo $19 USD
-            </h3>
-
-            {/* Desglose de Valor Percibido */}
-            <ul className="space-y-3.5 mb-6 sm:space-y-4 sm:mb-8">
-              <li className="flex justify-between items-center text-sm sm:text-base border-b border-white/5 pb-2.5">
-                <span className="flex items-center gap-2 sm:gap-3 text-slate-200">
-                  <Check className="size-5 text-emerald-400 shrink-0" /> Taller en Vivo (105 min práctica + 45 min Q&A)
-                </span>
-                <span className="text-slate-500 line-through text-xs sm:text-sm">$97 USD</span>
-              </li>
-              {activeVariant.bonuses.map((b) => (
-                <li key={b.num} className="flex justify-between items-center text-sm sm:text-base border-b border-white/5 pb-2.5">
-                  <span className="flex items-center gap-2 sm:gap-3 text-slate-200">
-                    <Check className="size-5 text-emerald-400 shrink-0" /> Bono {b.num}: {b.title}
-                  </span>
-                  <span className="text-slate-500 line-through text-xs sm:text-sm">
-                    {b.badge.replace(/^.*?Valor\s*/, '')}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="border-t border-white/10 pt-4 mb-6 flex justify-between items-center text-base font-semibold sm:pt-5 sm:mb-8 sm:text-lg">
-              <span className="text-slate-300">Valor real acumulado:</span>
-              <span className="text-slate-400 line-through font-mono text-base sm:text-xl">$190 USD</span>
-            </div>
-
-            {/* 8D. SIMULADOR DE ORDER BUMPS (Incrementador de AOV) */}
-            <OrderBumpsSection
-              basePrice={19}
-              onTotalChange={(newTotal, bumps) => {
-                setCheckoutTotal(newTotal);
-                setActiveBumps(bumps);
-              }}
-            />
-
-            <div className="text-center mt-8">
-              {/* Escasez */}
-              <p className="text-xs font-semibold tracking-widest text-brand-light uppercase mb-2.5 sm:text-sm">
-                Edición fundadora · Solo 50 plazas
-              </p>
-              <div className="mx-auto max-w-xs mb-5 sm:mb-6">
-                <div className="flex justify-between text-xs font-medium text-slate-400 mb-1.5">
-                  <span>Plazas reservadas</span>
-                  <span className="text-brand-fuchsia font-bold">82%</span>
-                </div>
-                <div className="h-2.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-linear-to-r/oklch from-brand-purple to-brand-fuchsia w-[82%] rounded-full shadow-[0_0_12px_rgba(217,70,239,0.6)]"></div>
-                </div>
-              </div>
-
-              {/* Precio anclado */}
-              <p className="font-display text-5xl font-bold text-slate-50 mb-1 sm:text-6xl">
-                ${checkoutTotal} <span className="text-xl font-normal text-slate-400 sm:text-2xl">USD</span>
-              </p>
-              <p className="text-slate-400 text-xs mb-6 sm:text-sm sm:mb-7">
-                {activeVariant.priceComparisonContext}
-              </p>
-
-              {/* Garantía Incondicional de 7 Días */}
-              <div className="mb-6 flex items-start gap-3 rounded-xl bg-brand-purple/15 p-4 border border-brand-purple/30 text-left sm:mb-8 sm:gap-4 sm:rounded-2xl sm:p-5">
-                <ShieldCheck className="size-8 text-emerald-400 shrink-0 mt-0.5 sm:size-10" />
-                <div>
-                  <p className="font-bold text-slate-50 text-sm sm:text-base">Garantía incondicional de 7 días</p>
-                  <p className="mt-1 text-xs/5 text-slate-300 sm:text-sm/6">
-                    Asiste al taller, usa los materiales y si sientes que no fue para ti, me escribes y te devuelvo el 100% de tu dinero al instante. Sin preguntas. Y los bonos te los quedas como agradecimiento.
-                  </p>
-                </div>
-              </div>
-
-              {/* Botón CTA Dinámico */}
-              <div className="min-h-24" aria-live="polite">
-                {showCta ? (
-                  <PurchaseCta customText={activeVariant.ctaText} totalPrice={checkoutTotal} selectedBumps={activeBumps} />
-                ) : (
-                  <p className="text-xs text-slate-500 sm:text-sm">
-                    El botón se habilita al completar la presentación.
-                  </p>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 9. SECCIÓN FILTRO DE AUDIENCIA SEGÚN LA VARIANTE ACTIVA ── */}
-      <section aria-labelledby="filter-title" className="bg-brand-dark px-5 py-16 sm:px-6 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-purple/30 bg-brand-purple/20 px-3.5 py-1 text-xs font-semibold text-brand-light uppercase tracking-wider mb-3">
-              Criterio de Selección
-            </span>
-            <h2 id="filter-title" className="font-display text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl md:text-5xl">
-              ¿Este taller es adecuado para ti?
-            </h2>
-            <p className="mt-4 text-base/7 text-slate-400 max-w-xl mx-auto sm:text-lg/8">
-              Buscamos personas comprometidas que quieran aplicar el método y ver su web publicada esa misma tarde.
-            </p>
-          </motion.div>
-
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
-            {/* Para quién SÍ es */}
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="rounded-2xl border border-emerald-500/30 bg-emerald-950/10 p-6 sm:p-8 backdrop-blur-md">
-              <h3 className="font-display text-xl font-bold text-slate-50 mb-5 flex items-center gap-3 sm:text-2xl">
-                <Check className="size-6 text-emerald-400 shrink-0 sm:size-7" /> Esto SÍ es para ti si:
-              </h3>
-              <ul className="space-y-3.5 sm:space-y-4">
-                {activeVariant.whoIsItFor.map(item => (
-                  <li key={item} className="text-slate-300 text-base/7 flex gap-3 sm:text-lg/7">
-                    <Check className="size-5 text-emerald-400 shrink-0 mt-1" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Para quién NO es */}
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8 backdrop-blur-md">
-              <h3 className="font-display text-xl font-bold text-slate-50 mb-5 flex items-center gap-3 sm:text-2xl">
-                <X className="size-6 text-slate-500 shrink-0 sm:size-7" /> Esto NO es para ti si:
-              </h3>
-              <ul className="space-y-3.5 sm:space-y-4">
-                {activeVariant.whoIsNotFor.map(item => (
-                  <li key={item} className="text-slate-400 text-base/7 flex gap-3 sm:text-lg/7">
-                    <span className="text-slate-500 shrink-0 font-bold">✗</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 10. SECCIÓN MENTOR (Conexión Emocional & Autoridad) ── */}
-      <section aria-labelledby="mentor-title" className="px-5 py-16 sm:px-6 sm:py-20 md:py-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="mx-auto grid max-w-4xl items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
-          <img src={mentorPortraitVisual} alt="Tu instructor del taller Fénix" loading="lazy" className="aspect-square w-full max-w-sm mx-auto rounded-2xl object-cover border border-white/10 shadow-[0_0_40px_rgba(217,70,239,0.15)] sm:rounded-3xl" />
-          <div>
-            <p className="mb-3 text-xs font-semibold tracking-widest text-brand-light uppercase sm:text-sm">Tu instructor</p>
-            <h2 id="mentor-title" className="font-display text-2xl font-bold text-slate-50 sm:text-3xl md:text-4xl/12">
-              Sé lo que es tener una idea<br />bloqueada por meses.
-            </h2>
-            <p className="mt-5 text-base/7 text-slate-300 sm:text-lg/8">
-              Soy profesor de matemáticas y desarrollador web. He acompañado a profesionales, emprendedores y educadores sin experiencia técnica a publicar sus primeras páginas usando IA. Sé con exactitud dónde se producen los bloqueos — y por eso diseñé una ruta paso a paso que los elimina.
-            </p>
-            <ul className="mt-5 space-y-3 sm:mt-7 sm:space-y-4">
-              {[
-                'Sin tecnicismos abrumadores. Todo explicado en español claro.',
-                'Un proyecto concreto y funcional, cero teoría innecesaria.',
-                'Terminas el taller con una URL real lista para compartir con el mundo.'
-              ].map(text => (
-                <li key={text} className="flex gap-3 text-base/7 sm:text-lg/8">
-                  <Check aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-emerald-400 sm:size-5" />
-                  <span className="text-slate-200">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </motion.div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 11. SECCIÓN FAQ (Objeciones Resueltas de Minería de Reseñas) ── */}
-      <section aria-labelledby="faq-title" className="bg-brand-dark px-5 py-16 sm:px-6 sm:py-20 md:py-24">
-        <div className="mx-auto max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="text-center mb-8 sm:mb-12">
-            <p className="mb-3 text-xs font-semibold tracking-widest text-brand-light uppercase sm:text-sm">
-              {activeVariant.faqSubtitle}
-            </p>
-            <h2 id="faq-title" className="font-display text-3xl font-bold text-slate-50 sm:text-4xl md:text-5xl">
-              {activeVariant.faqTitle}
-            </h2>
-          </motion.div>
-          <div className="space-y-3 sm:space-y-4">
-            {activeVariant.faqs.map(([question, answer]) => (
-              <details key={question} className="glass-panel group p-5 sm:p-7">
-                <summary className="flex list-none cursor-pointer items-center justify-between gap-4 text-base font-semibold text-slate-50 [&::-webkit-details-marker]:hidden sm:gap-5 sm:text-lg/8">
-                  {question}
-                  <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-purple-300 transition-transform group-open:rotate-180 motion-reduce:transition-none sm:size-5" />
-                </summary>
-                <p className="mt-4 border-t border-white/10 pt-4 text-sm/6 text-slate-300 sm:mt-5 sm:pt-5 sm:text-base/7">
-                  {answer}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="beam-divider" />
-
-      {/* ── 12. FOOTER CTA (Cierre y Última Oportunidad) ── */}
-      <footer className="px-5 pt-16 pb-24 text-center sm:px-6 sm:pt-20 sm:pb-12 md:pt-24 bg-slate-950">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }}>
-          <p className="mb-3 text-xs font-semibold tracking-widest text-brand-fuchsia uppercase sm:text-sm">
-            Última oportunidad al precio de fundador
-          </p>
-          <h2 className="font-display text-3xl font-bold text-slate-50 sm:text-4xl md:text-5xl/14">
-            Tu URL puede estar en vivo esta misma semana.
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-base/7 text-slate-400 sm:mt-5 sm:text-lg/8">
-            En 105 minutos. Sin programar a mano. Sin depender de nadie.
-          </p>
-          <div className="mt-7 min-h-24" aria-live="polite">
-            {showCta ? (
-              <PurchaseCta customText={activeVariant.ctaText} totalPrice={checkoutTotal} selectedBumps={activeBumps} />
-            ) : (
-              <a href="#contenido" className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-5 py-3.5 text-sm font-semibold text-slate-100 hover:border-white/40 transition-colors sm:px-6 sm:py-4">
-                Ver la presentación <Play aria-hidden="true" className="size-3.5" />
-              </a>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Trust bar mínima */}
-        <div className="mx-auto mt-12 flex max-w-lg flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-slate-500 sm:mt-16">
-          <span>🔒 Pago 100% seguro</span>
-          <span>·</span>
-          <span>Garantía incondicional 7 días</span>
-          <span>·</span>
-          <span>Pago único sin suscripciones</span>
-        </div>
-        <div className="mx-auto mt-8 flex max-w-5xl flex-wrap items-center justify-between gap-4 border-t border-white/5 pt-6 text-xs/6 text-slate-600">
-          <span>© 2026 Fénix · Taller Web con Inteligencia Artificial</span>
-          <span>
-            Desarrollado por{' '}
-            <a
-              href="https://xavier.cabellosalirrosas.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-400 font-medium hover:text-brand-light transition-colors underline decoration-slate-700 underline-offset-4 hover:decoration-brand-light"
-            >
-              Xavier Cabello
-            </a>
+export default function App(){
+ const [more,setMore]=useState(false);
+ const [selectedBumps,setSelectedBumps]=useState<string[]>([]);
+
+ const toggleBump=(id:string)=>{
+   setSelectedBumps(prev=>{
+     const next=prev.includes(id)?prev.filter(x=>x!==id):[...prev,id];
+     try{window.localStorage.setItem('zenit_selected_bumps',JSON.stringify(next));}catch{}
+     return next;
+   });
+ };
+
+ const bumpsTotalUsd=orderBumps
+   .filter(b=>selectedBumps.includes(b.id))
+   .reduce((acc,b)=>acc+b.priceUsd,0);
+ const totalUsd=9+bumpsTotalUsd;
+
+ return <div id="inicio" className="min-h-screen overflow-x-clip bg-[#FCFAFF] font-sans text-[#2D1A42]">
+  <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-4">Saltar al contenido</a>
+  <main id="contenido">
+   {/* BLOQUE 1: HERO DE ULTRA-CONVERSIÓN (CONCISO, FILUDO, ESPECIALMENTE SECUNDARIA + IMAGEN PROTAGONISTA) */}
+   <section className="brand-hero relative px-5 pb-16 pt-8 sm:px-7 sm:pb-20 sm:pt-12">
+    <div className="relative mx-auto max-w-7xl">
+     <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
+      {/* COLUMNA IZQUIERDA: PRE-TITULAR, TITULAR CORTO Y FILUDO, SUBTÍTULO PUNTUAL, 3 CHECKS Y CTA */}
+      <div>
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#D8C4ED] bg-white/95 px-4 py-1.5 text-xs font-extrabold uppercase tracking-[.09em] text-[#7238BF] shadow-sm">
+          <Sparkles className="size-3.5 shrink-0 text-[#9B4DFF]"/>
+          <span>Para profesores de matemáticas · Especialmente si enseñas en secundaria</span>
+        </p>
+
+        <h1 className="mt-5 font-display text-[clamp(2.2rem,4.3vw,4.1rem)] font-bold leading-[1.08] tracking-[-.055em] text-[#25173C]">
+          Deja de perder media hora dibujando en la pizarra mientras tu salón se distrae.{' '}
+          <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">
+            Lleva «Pizarras Vivas en 2D y 3D» en tu USB 100% sin internet.
           </span>
-          <span>De la idea a la nube. Un paso a la vez.</span>
-        </div>
-      </footer>
+        </h1>
 
-      {/* ── 13. STICKY MOBILE CTA ── */}
-      <StickyMobileCta showCta={showCta} price={checkoutTotal} />
-    </main>
-  );
+        <p className="mt-5 max-w-2xl text-base leading-7 text-[#5E4E6E] sm:text-lg sm:leading-8">
+          Sin saber programar ni pelear con comandos de GeoGebra en plena clase. Copias una plantilla en español, la pegas en la IA gratuita y en 60 segundos descargas un visualizador interactivo para el televisor o proyector de tu aula. <strong className="text-[#2B1840]">Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje.</strong>
+        </p>
+
+        <ul className="mt-5 space-y-2 text-sm font-semibold text-[#3C2852]">
+          <li className="flex items-center gap-2.5">
+            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
+            <span>Explicas de frente al aula sin desgastar tu garganta ni tu hombro en 5 secciones</span>
+          </li>
+          <li className="flex items-center gap-2.5">
+            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
+            <span>Abre 100% sin Wi-Fi desde tu USB (incluye 10 apps listas para mañana a las 8:00 AM)</span>
+          </li>
+          <li className="flex items-center gap-2.5">
+            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
+            <span>Ideal para secundaria y adaptable hasta nivel preuniversitario y cálculo</span>
+          </li>
+        </ul>
+
+        <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <a href="#inscripcion" className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-7 py-4 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(101,48,200,.26)] transition hover:scale-[1.01] hover:opacity-95 sm:w-auto">
+            ¡Quiero mi Kit de Pizarras Vivas + 10 Apps · US$9! <ArrowRight className="size-5"/>
+          </a>
+          <a href="#demostracion" className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#D8C4ED] bg-white/90 px-4 py-3.5 text-xs font-extrabold text-[#6630CB] hover:bg-white sm:w-auto">
+            Probar graficador en vivo ↓
+          </a>
+        </div>
+
+        <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-[#66537A]">
+          <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único US$9 (~S/ 33 · Lo que cuestan 2 cajas de plumones)</span>
+          <span>·</span>
+          <span>🛡️ Garantía de 14 días</span>
+        </p>
+      </div>
+
+      {/* COLUMNA DERECHA: IMAGEN PROTAGONISTA QUE CAPTA LA ATENCIÓN Y EXPLICA LA IDEA EN 1 SEGUNDO */}
+      <figure className="overflow-hidden rounded-[28px] border border-[#DCC8F0] bg-white p-2.5 shadow-[0_24px_70px_rgba(68,31,120,0.14)] sm:p-3.5">
+        <div className="mb-2.5 flex items-center justify-between gap-2 px-2 pt-1 text-[11px] font-extrabold text-[#5B3E75]">
+          <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-[#1D896A]"/> El cambio real frente a tus alumnos</span>
+          <span className="rounded-full bg-[#F3EAFF] px-2.5 py-0.5 text-[#6F37C5]">En tu USB · 100% sin internet</span>
+        </div>
+        <img
+          src="/metodo/dolor-pizarra-vs-clase-viva.webp"
+          alt="Contraste en el aula: profesor cansado dibujando en pizarra de espaldas al salón vs. profesor proyectando una Pizarra Viva 2D y 3D con alumnos atentos"
+          width="960"
+          height="600"
+          fetchPriority="high"
+          className="aspect-[16/10] w-full rounded-2xl border border-[#EAE0F5] object-cover"
+        />
+        <figcaption className="mt-2.5 grid gap-2 rounded-xl bg-[#FAF6FF] p-3 text-xs leading-5 sm:grid-cols-2">
+          <div className="font-semibold text-[#9E2F56]">
+            ❌ <strong>Antes:</strong> 2 min de espaldas trazando con plumón = salón en el celular y dibujo 2D estático.
+          </div>
+          <div className="font-semibold text-[#156E55]">
+            ✅ <strong>Ahora:</strong> Giras sólidos 3D y funciones con un clic mirando siempre a tu clase.
+          </div>
+        </figcaption>
+      </figure>
+     </div>
+    </div>
+   </section>
+
+   {/* BLOQUE 1.5: DEMOSTRACIÓN INTERACTIVA EN VIVO (SECUNDARIA, PREUNIVERSITARIO Y UNIVERSIDAD) */}
+   <section id="demostracion" className="border-t border-[#E4D8F0] bg-[#F6F0FC] px-5 py-16 sm:px-7 sm:py-20">
+     <div className="mx-auto max-w-7xl">
+       <div className="mx-auto max-w-3xl text-center">
+         <p className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1 text-xs font-extrabold uppercase tracking-[.14em] text-[#6932C8] shadow-sm">
+           <Zap className="size-3.5 text-[#B93EA3]"/> Tócalo tú mismo ahora en vivo
+         </p>
+         <h2 className="mt-3 font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-bold leading-tight tracking-[-.05em] text-[#25173C]">
+           Cuando un alumno pregunta «¿Profe, qué pasa si ese número es negativo?», ya no borras la pizarra: solo mueves un control.
+         </h2>
+         <p className="mt-3 text-sm leading-7 text-[#625272] sm:text-base">
+           Explora nuestro graficador interactivo en sus 3 niveles (<strong>Secundaria, Preuniversitario y Universidad</strong>). Lo que en la pizarra te toma 20 minutos trazar y borrar, aquí tus estudiantes lo ven cambiar al instante y exclaman <strong className="text-[#2D1A42]">«¡Profe, ahora sí lo vi clarito!»</strong> en 10 segundos:
+         </p>
+       </div>
+
+       <div className="mt-7"><MathStudio/></div>
+       <div className="mx-auto mt-5 flex max-w-5xl flex-wrap items-center justify-center gap-2 text-center text-xs text-[#796A84]">
+         <span className="font-bold text-[#6F39C8]">Resultados reales funcionando hoy en el aula:</span>
+         <a href="https://funciones.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Funciones Lab</a> ·
+         <a href="https://transformacionesgeometricas.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">GeoTransform Pro</a> ·
+         <a href="https://mundossimulados.online/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Mundos Simulados</a>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 2: EL LEAD TSL (VOZ LITERAL DE SALA DE PROFESORES + TRIFECTA DE RESULTADOS) */}
+   <section className="border-t border-[#E4D9ED] px-5 py-24 sm:px-7">
+     <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[1.08fr_0.92fr]">
+       <div className="rounded-[28px] border border-[#E6DAF2] bg-white p-7 shadow-[0_14px_45px_rgba(70,32,120,0.06)] sm:p-10">
+         <p className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">
+           <GraduationCap className="size-4"/> Hablemos con la verdad · De profesor a profesor
+         </p>
+         <h2 className="mt-4 font-display text-[clamp(1.95rem,3.9vw,3.1rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#291840]">
+           «Me paso media hora dibujando con tres colores de plumón para que al final me digan: “¿Profe, esa raya de atrás está adentro o afuera?”…»
+         </h2>
+         <div className="mt-6 space-y-4 text-base leading-8 text-[#645574]">
+           <p>
+             Si enseñas matemáticas —especialmente en secundaria—, conoces este desgaste en el cuerpo: dictar en cuatro o cinco secciones, <strong className="text-[#35204A]">dibujar y borrar la misma gráfica 15 veces por semana</strong> hasta quedarte sin garganta y con el hombro adolorido… y apenas les das la espalda dos minutos para trazar en la pizarra, volteas y la mitad del salón ya está metida en el celular.
+           </p>
+           <p>
+             Les preguntas <em>«¿Todo claro?»</em> y todos te dicen <strong className="text-[#35204A]">«¡Sí, profe!»</strong> calladitos por vergüenza a quedar mal frente a sus compañeros, pero como el dibujo plano en 2D no se mueve, el viernes tomas la práctica y todos jalan. Y lo peor empieza a las <strong className="text-[#35204A]">11:30 PM de un domingo</strong>: cuando ya te duele el estómago pensando en el lunes mientras sigues despierto trabajando gratis en casa cuadrando gráficos y ecuaciones en Word.
+           </p>
+           <p className="rounded-2xl border-l-4 border-[#6E36C9] bg-[#F7F1FE] p-4 font-medium text-[#352049]">
+             No es tu culpa ni la de tus alumnos: una pizarra estática en 2D no puede competir contra la pantalla de un celular, y nadie tiene tiempo para programar ni para meter comandos en GeoGebra frente a 35 o 40 chicos inquietos. Por eso creamos el <strong className="text-[#6932C8]">Método Pizarra Viva IA™ por Inyección de Plantillas</strong>: copias en español, pegas en la IA gratuita y llevas tus propios simuladores 2D y 3D en tu memoria USB <strong className="text-[#6932C8]">sin necesitar internet en tu colegio</strong>.
+           </p>
+         </div>
+       </div>
+
+       <div className="space-y-4">
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#F2E8FF] text-[#6B35C2]"><Clock className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#7C44CE]">Motor #1 · Salud, Voz y Tiempo Libre</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Apaga tu laptop a las 7:00 PM y salva tu garganta</h3>
+             </div>
+           </div>
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Elimina las 12 a 18 horas semanales de trabajo fantasma no remunerado en casa y el «síndrome del domingo a las 5:00 PM». Generas tu pizarra interactiva en 60 segundos, la guardas en tu USB y la reutilizas en tus 5 secciones sin volver a dibujar desde cero.
+           </p>
+         </div>
+
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F8F3] text-[#178568]"><Users className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#178568]">Motor #2 · Autoridad Escénica y Cero Ansiedad</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Explicas siempre de frente y brillas ante el coordinador</h3>
+             </div>
+           </div>
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Sin darle la espalda al grupo, giras poliedros en 3D, mueves deslizadores y revelas despejes paso a paso con un clic. Rompes la ansiedad matemática del salón y dejas boquiabiertos a tus colegas y al director en las observaciones de aula.
+           </p>
+         </div>
+
+         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
+           <div className="flex items-center gap-3">
+             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#FFF2E5] text-[#C85A17]"><Coins className="size-5"/></span>
+             <div>
+               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#C85A17]">Motor #3 · De S/ 25/h a S/ 60–80+/h en Tutorías</span>
+               <h3 className="font-display text-lg font-bold text-[#2B193F]">Con 1 sola hora de clase particular recuperas tus US$9</h3>
+             </div>
+           </div>
+           <p className="mt-3 text-sm leading-7 text-[#675776]">
+             Deja de competir por precio contra universitarios que cobran S/ 20 la hora con un PDF estático. Cuando muestras a los padres tus propios simuladores interactivos 2D/3D con tu nombre, justificas tarifas de S/ 60 a S/ 80+ por hora y llenas tu agenda por recomendación.
+           </p>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 3: POR QUÉ FALLARON LAS SOLUCIONES ANTERIORES + MATRIZ COMPARATIVA */}
+   <section className="border-t border-[#E6DAEF] bg-[#F7F2FC] px-5 py-20 sm:px-7">
+     <div className="mx-auto max-w-6xl">
+       <div className="mx-auto max-w-3xl text-center">
+         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Por qué no es tu culpa · Diagnóstico de aula real</p>
+         <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">
+           Por qué las «soluciones» que te dieron en las capacitaciones fracasan frente a un salón real
+         </h2>
+         <p className="mt-4 text-base leading-8 text-[#685977]">
+           Ya te metieron a cursos teóricos de TICs y probaste de todo. Mira por qué esas herramientas te daban más trabajo en vez de quitártelo:
+         </p>
+       </div>
+
+       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+         {failedAlternatives.map(([name,verdict,reason])=>(
+           <div key={name} className="rounded-2xl border border-[#E7D8F1] bg-white p-5 shadow-sm">
+             <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#C93B6B]">
+               <XCircle className="size-4 shrink-0"/> Solución Fallida
+             </div>
+             <h3 className="mt-2 font-display text-base font-bold text-[#2B1840]">{name}</h3>
+             <p className="mt-1 text-xs font-bold text-[#8E3967]">{verdict}</p>
+             <p className="mt-2 text-xs leading-6 text-[#675876]">{reason}</p>
+           </div>
+         ))}
+       </div>
+
+       <div className="mt-12 overflow-hidden rounded-[28px] border border-[#DECFF0] bg-white shadow-[0_18px_50px_rgba(68,31,120,0.07)]">
+         <div className="grid border-b border-[#EAE0F5] bg-[#FAF6FF] text-xs font-extrabold uppercase tracking-wider sm:grid-cols-2">
+           <div className="flex items-center gap-2 border-b border-[#EAE0F5] px-6 py-4 text-[#8C4366] sm:border-b-0 sm:border-r">
+             <XCircle className="size-4 shrink-0 text-[#D14B72]"/> La Vieja Forma (Desgaste de Garganta, Pizarra 2D y Noches en Vela)
+           </div>
+           <div className="flex items-center gap-2 bg-[#F2E8FF] px-6 py-4 text-[#5F2AB8]">
+             <CheckCircle2 className="size-4 shrink-0 text-[#198768]"/> El Nuevo Vehículo (Método Pizarra Viva IA™ en tu USB)
+           </div>
+         </div>
+         <div className="divide-y divide-[#EDE4F6]">
+           {oldVsNew.map(([oldWay,newWay],idx)=>(
+             <div key={idx} className="grid md:grid-cols-2">
+               <div className="flex items-start gap-3.5 p-6 text-sm leading-7 text-[#6E5E7C] md:border-r md:border-[#EDE4F6]">
+                 <XCircle className="mt-1 size-5 shrink-0 text-[#D14B72]"/>
+                 <span>{oldWay}</span>
+               </div>
+               <div className="flex items-start gap-3.5 bg-[#FCF9FF] p-6 text-sm font-medium leading-7 text-[#342049]">
+                 <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#198768]"/>
+                 <span>{newWay}</span>
+               </div>
+             </div>
+           ))}
+         </div>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 4: PRUEBA DEMOSTRADA #1: TRANSFORMACIONES GEOMÉTRICAS */}
+   <section id="caso-real" className="relative overflow-hidden border-y border-[#E6D9F0] bg-gradient-to-br from-[#F3EBFF] via-[#FFFBFE] to-[#FFF0E6] px-5 py-20 sm:px-7 sm:py-24">
+    <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#CDAEFF]/35 blur-[90px]"/>
+    <div className="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.94fr_1.06fr] lg:gap-16">
+      <div className="order-2 lg:order-1">
+        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#D8BCEC] bg-white px-4 py-2 text-xs font-extrabold text-[#6B36B5]"><CheckCircle2 className="size-4"/> De 25 minutos dibujando a mano a 10 segundos en vivo</div>
+        <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#2B1940]">Enseñar transformaciones geométricas <span className="text-[#7941CE]">sin empezar cada gráfico desde cero.</span></h2>
+        <p className="mt-5 text-base leading-8 text-[#645474]">¿Cuánto tiempo y paciencia pierdes trazando traslaciones, rotaciones o simetrías con regla y plumón en la pizarra para que al primer cambio de ángulo tengas que borrar todo? Ese desgaste innecesario es el que te agota al final del día.</p>
+        <p className="mt-4 text-base leading-8 text-[#645474]">Por eso utilizo <strong className="text-[#332047]">Transformaciones Geométricas</strong> en mis clases de matemáticas: en vez de cansarme dibujando, muevo la figura en tiempo real, conduzco una ruta de aprendizaje que mantiene a todos atentos y descargo materiales imprimibles en segundos sin quedarme trabajando de madrugada.</p>
+        <div className="mt-7 grid gap-3 sm:grid-cols-3">
+          {[
+            ['Cero tiempo perdido','Muestra 10 casos distintos en un minuto sin tocar el borrador.'],
+            ['Atención en el aula','Conduce la ruta de aprendizaje mirando siempre a tus alumnos.'],
+            ['Fichas al instante','Obtén materiales imprimibles listos sin pasar horas diseñando.']
+          ].map(([heading,body])=><div key={heading} className="rounded-2xl border border-[#E4D6F0] bg-white/90 p-4 shadow-[0_8px_26px_rgba(83,44,130,.045)]"><Check className="mb-2 size-5 text-[#7D45D3]"/><h3 className="font-display text-sm font-extrabold text-[#342049]">{heading}</h3><p className="mt-1.5 text-xs leading-5 text-[#6E5D7D]">{body}</p></div>)}
+        </div>
+        <div className="mt-7 flex flex-wrap items-center gap-4">
+          <a href="https://transformacionesgeometricas.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6633C9] px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(102,51,201,.16)] hover:bg-[#5526B7]">Ver cómo funciona en vivo <ExternalLink className="size-4"/></a>
+          <a href="#inscripcion" className="inline-flex items-center gap-2 text-sm font-bold text-[#6331B9] underline-offset-4 hover:underline">Quiero este resultado en mis clases · US$9 <ArrowRight className="size-4"/></a>
+        </div>
+      </div>
+      <div className="order-1 lg:order-2">
+        <div className="overflow-hidden rounded-[26px] border border-[#E5D6F1] bg-white p-2.5 shadow-[0_24px_70px_rgba(80,37,117,.13)] sm:p-4">
+          <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-1 text-[11px] font-semibold text-[#715A83]"><span>Resultado real · Transformaciones Geométricas</span><span className="rounded-full bg-[#EDF7F2] px-2 py-1 text-[#218367]">Ahorro total de pizarra</span></div>
+          <img src="/projects/captures/transformaciones-geometricas.webp" alt="Captura real de la aplicación Transformaciones Geométricas utilizada en clases de matemáticas" loading="lazy" decoding="async" className="aspect-[16/11] w-full rounded-xl border border-[#EBE0F4] bg-[#F8F4FC] object-cover object-top"/>
+          <p className="px-3 pb-1 pt-3 text-xs leading-6 text-[#78668A]">Una sola herramienta lista en el navegador reemplaza cientos de dibujos repetitivos a lo largo del año escolar.</p>
+        </div>
+        <p className="mx-auto mt-4 max-w-xl text-center text-xs leading-6 text-[#7C698B]">Con tu acceso inicial de US$9 logras tu primera victoria rápida con un módulo interactivo propio; sistemas completos como este son parte de la escalera de valor de nuestro ecosistema.</p>
+      </div>
+    </div>
+   </section>
+
+   {/* BLOQUE 5: PRUEBA DEMOSTRADA #2: SÓLIDOS GEOMÉTRICOS */}
+   <section id="caso-solidos" className="border-b border-[#E7DAF1] bg-[#FAF6FE] px-5 py-20 sm:px-7 sm:py-24">
+     <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.04fr_.96fr] lg:gap-16">
+       <div className="overflow-hidden rounded-[26px] border border-[#E4D5F0] bg-white p-2.5 shadow-[0_24px_70px_rgba(80,37,117,.11)] sm:p-4">
+         <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-1 text-[11px] font-semibold text-[#715A83]"><span>Aplicación real en el aula</span><span className="rounded-full bg-[#EFE7FA] px-2.5 py-1 text-[#6834C3]">Secuencia didáctica 3D</span></div>
+         <img src="/projects/captures/solidos-geometricos.webp" alt="Captura real de la aplicación Sólidos Geométricos mostrando modelos tridimensionales interactivos para clases de matemáticas" loading="lazy" decoding="async" className="aspect-[16/10] w-full rounded-xl border border-[#EDE2F6] bg-[#F8F4FC] object-cover object-top"/>
+         <p className="px-3 pb-1 pt-3 text-xs leading-6 text-[#77658A]">Sólidos Geométricos reúne exploración tridimensional, desplegado de la red plana, conceptos clave y retos de verificación.</p>
+       </div>
+       <div>
+         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D8BCEC] bg-white px-4 py-1.5 text-xs font-extrabold text-[#6B36B5]"><CheckCircle2 className="size-4"/> Fin de la ceguera espacial en Geometría del Espacio</div>
+         <h2 className="font-display text-[clamp(1.95rem,3.8vw,3.3rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#2B1940]">Sólidos Geométricos: <span className="text-[#773ECF]">de la intuición visual en 3D a la comprensión matemática.</span></h2>
+         <p className="mt-5 text-base leading-8 text-[#645474]">Intentar que un salón entienda cuerpos tridimensionales dibujando líneas punteadas en una pizarra plana de 2D es agotador para ti y confuso para tus estudiantes. Con <strong className="text-[#332047]">Sólidos Geométricos</strong> lo resuelves en segundos siguiendo una <strong className="text-[#332047]">secuencia didáctica</strong> lista para proyectar.</p>
+         <div className="mt-6 grid gap-3 sm:grid-cols-2">
+           {[
+             ['1. Observa y manipula en 3D','Gira el modelo, explora sus caras, vértices y aristas sin perder ni un minuto dibujando a mano.'],
+             ['2. Despliega la red plana','Abre el desarrollo plano con un clic para que el estudiante conecte el volumen con el área de forma inmediata.'],
+             ['3. Conecta con las fórmulas','Relaciona cada elemento geométrico con sus propiedades sin llenar tres pizarras de texto.'],
+             ['4. Resuelve retos en clase','Verifica de inmediato si tus alumnos comprendieron mediante actividades prácticas integradas.']
+           ].map(([title,desc])=><div key={title} className="rounded-2xl border border-[#E5D8F1] bg-white p-4"><h3 className="font-display text-sm font-extrabold text-[#332048]">{title}</h3><p className="mt-1.5 text-xs leading-6 text-[#6B5A7A]">{desc}</p></div>)}
+         </div>
+         <div className="mt-7 flex flex-wrap items-center gap-4">
+           <a href="https://solidosgeometricos.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6633C9] px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(102,51,201,.16)] hover:bg-[#5526B7]">Explorar Sólidos Geométricos <ExternalLink className="size-4"/></a>
+           <a href="#inscripcion" className="inline-flex items-center gap-2 text-sm font-bold text-[#6331B9] underline-offset-4 hover:underline">Empezar con mi propio visualizador 3D · US$9 <ArrowRight className="size-4"/></a>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 6: EL MECANISMO ÚNICO + LÍNEA DE TIEMPO DE 15 MINUTOS (HORMOZI ZERO EFFORT / TIME DELAY) */}
+   <section id="metodo" className="px-5 py-24 sm:px-7">
+     <div className="mx-auto max-w-6xl">
+       <Heading
+         eyebrow="El Mecanismo Único · Cero programación · 100% en español"
+         title="El Método «Pizarra Viva IA™»: de una plantilla en español a tu memoria USB sin internet en 15 minutos."
+         body="No tienes que aprender código ni pelear con comandos de GeoGebra. Si sabes mandar un WhatsApp y copiar y pegar un texto en Word, ya tienes el 100% de la habilidad técnica necesaria."
+       />
+
+       {/* CRONOGRAMA DE VICTORIA EN 15 MINUTOS */}
+       <div className="mt-8 grid gap-4 rounded-3xl border border-[#DFC9F5] bg-gradient-to-r from-[#F6EFFF] via-white to-[#FFF4FA] p-6 sm:grid-cols-3">
+         {quickWinTimeline.map(([stepTime,stepDesc,badge])=>(
+           <div key={stepTime} className="rounded-2xl border border-[#E7DAF4] bg-white p-5 shadow-sm">
+             <div className="inline-flex items-center gap-1.5 rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">
+               <Timer className="size-3.5"/> {stepTime}
+             </div>
+             <p className="mt-3 text-xs leading-6 text-[#645474]">{stepDesc}</p>
+             <p className="mt-3 border-t border-[#F1E8F9] pt-2.5 text-[11px] font-bold text-[#178568]">✓ {badge}</p>
+           </div>
+         ))}
+       </div>
+
+       <div className="mt-10 grid gap-6 md:grid-cols-3">
+         {[
+           ['01','Eliges el tema de tu clase de mañana','Seleccionas la plantilla en español según tu sesión: Geometría del Espacio 3D, Funciones y Cálculo, o Resolución Paso a Paso Anti-Ansiedad.',Lightbulb,'/metodo/etapa-01-modelo-matematico.webp','Plantillas en español listas para reemplazar el tema entre corchetes'],
+           ['02','Inyectas la plantilla en la IA gratuita','Pegas la instrucción en el lienzo gratuito de la IA y en 60 segundos genera los deslizadores, gráficas interactivas y el botón de «Nuevo Reto».',Wrench,'/metodo/etapa-02-interaccion-ia.webp','Generación automática con controles deslizantes y retos exactos'],
+           ['03','Lo llevas en tu USB sin necesitar internet','Descargas un archivo único liviano (.html) que guardas en tu memoria USB y se abre al instante en cualquier proyector o televisor del colegio.',MonitorPlay,'/metodo/etapa-03-publicacion-web.webp','Aplicación ejecutándose offline desde el USB en el aula']
+         ].map(([n,t,d,Icon,imgSrc,imgAlt])=>{
+           const C=Icon as typeof Lightbulb;
+           return <div key={n as string} className="flex flex-col overflow-hidden rounded-[24px] border border-[#E6DAF1] bg-white shadow-sm">
+             <div className="aspect-[16/10] w-full overflow-hidden border-b border-[#EFE5F8] bg-[#F7F2FC]">
+               <img src={imgSrc as string} alt={imgAlt as string} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 hover:scale-[1.03]"/>
+             </div>
+             <div className="flex flex-1 flex-col p-6">
+               <div className="flex items-center justify-between"><span className="font-mono text-xs font-bold text-[#8A54C5]">ETAPA {n as string}</span><C className="size-5 text-[#753EC9]"/></div>
+               <h3 className="mt-3 font-display text-xl font-bold text-[#2D1A42]">{t as string}</h3>
+               <p className="mt-2.5 text-sm leading-7 text-[#6A5C78]">{d as string}</p>
+             </div>
+           </div>;
+         })}
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 7: ESCALERA DE VALOR COMERCIAL + 3 PERFILES DE ÉXITO DOCENTE */}
+   <section className="border-t border-[#E6DAEF] bg-white px-5 py-24 sm:px-7">
+     <div className="mx-auto max-w-7xl">
+       <Heading
+         eyebrow="De ahorrar tiempo en tu colegio a multiplicar tus ingresos particulares"
+         title="Una habilidad que te devuelve tu vida en casa y duplica lo que cobras por hora."
+         body="Mira cómo cambia la semana laboral para los profesores de matemáticas —especialmente en secundaria, y también en nivel pre y cálculo—:"
+       />
+
+       {/* 3 PERFILES DOCENTES DE IDENTIFICACIÓN INMEDIATA */}
+       <div className="mt-8 grid gap-5 md:grid-cols-3">
+         {teacherProfiles.map(([role,quote,outcome])=>(
+           <div key={role} className="flex flex-col justify-between rounded-2xl border border-[#E3D4F1] bg-[#FCFAFF] p-6 shadow-sm">
+             <div>
+               <span className="inline-block rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">{role}</span>
+               <p className="mt-3.5 text-sm italic leading-7 text-[#534264]">{quote}</p>
+             </div>
+             <p className="mt-4 border-t border-[#EDE3F6] pt-3 text-xs font-extrabold text-[#178568]">✓ {outcome}</p>
+           </div>
+         ))}
+       </div>
+
+       {/* 3 TARJETAS DE RETORNO ECONÓMICO Y PERSONAL */}
+       <div className="mt-6 grid gap-5 md:grid-cols-3">
+         {[
+           ['1. Fin del «Domingo Negro» y Noches en Vela','Apaga tu computadora a las 7:00 PM en vez de quedarte hasta medianoche cuadrando gráficas. Cada visualizador que generas queda guardado en tu biblioteca personal para reutilizarlo año tras año.'],
+           ['2. De S/ 25/h a S/ 60–80+/h en Clases Particulares','Rompe la guerra de precios contra estudiantes universitarios. Cuando el padre de familia ve que tu clase incluye simuladores propios en 2D y 3D que su hijo sí entiende, paga tu tarifa premium sin dudar.'],
+           ['3. Liderazgo en tu Institución y Activos Propios','Brilla en las observaciones de aula frente al director o coordinador académico llevando tus propios simuladores en tu USB, y abre la puerta a comercializar tus recursos digitales a otros colegas.']
+         ].map(([title,desc])=>(
+           <div key={title} className="rounded-2xl border border-[#DFCFEF] bg-[#FAF6FF] p-6">
+             <h3 className="font-display text-lg font-bold text-[#311C47]">{title}</h3>
+             <p className="mt-2.5 text-sm leading-7 text-[#685778]">{desc}</p>
+           </div>
+         ))}
+       </div>
+
+       <div className="mt-10 grid gap-5 md:grid-cols-3">{projects.slice(0,more?6:3).map(p=><ProjectCard key={p.name} project={p}/>)}</div>
+       <div className="mt-7 text-center"><button onClick={()=>setMore(v=>!v)} className="inline-flex items-center gap-2 rounded-xl border border-[#CBB4E2] bg-white px-6 py-3.5 text-sm font-bold text-[#6832BD]">{more?'Ver solo resultados para el aula':'Ver todos los proyectos y oportunidades de monetización'} <ChevronDown className={'size-4 '+(more?'rotate-180':'')}/></button></div>
+     </div>
+   </section>
+
+   {/* BLOQUE 8: PUENTE DE EPIFANÍA DEL INSTRUCTOR (BRUNSON EPIPHANY BRIDGE EN 4 ACTOS) */}
+   <section id="instructor" className="border-y border-[#E6DCEF] bg-[#F7F1FD] px-5 py-24 sm:px-7">
+     <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[.38fr_.62fr]">
+       <InstructorPortrait/>
+       <div>
+         <Heading
+           eyebrow="Por qué hice este cambio (y por qué tú también deberías)"
+           title="Soy Xavier Cabello"
+           body="Voy a serte totalmente sincero: como profesor de matemáticas en el aula, a mí tampoco me interesaba «aprender a crear aplicaciones» por hobby. Yo buscaba una salida al desgaste físico de la pizarra y una forma de hacer valer mejor mi tiempo y mi experiencia docente."
+         />
+         <div className="mt-6 grid gap-3.5 sm:grid-cols-2">
+           {[
+             ['1. El hartazgo en la pizarra','Estaba cansado de perder tiempo y garganta dibujando gráficos que borraba a los 5 minutos en cada sección, lidiando con el desorden del salón y frustrado porque un dibujo plano en 2D no podía moverse.'],
+             ['2. El descubrimiento sin código','Descubrí cómo inyectar plantillas precisas en español dentro de la IA gratuita para que construyera mis visualizadores matemáticos en 60 segundos sin pelear con GeoGebra ni saber programar.'],
+             ['3. El alivio inmediato en clase','Llevé mis herramientas en mi USB sin depender del internet del colegio. Dejé de darle la espalda al salón y mis estudiantes pasaron del bloqueo a decir: «¡Profe, ahora sí lo vi clarito!».'],
+             ['4. El salto económico','Padres de familia, colegas e instituciones vieron la diferencia y empezaron a pagarme mucho mejor por mis clases y por desarrollarles recursos. Hoy te entrego ese mismo atajo por solo US$9.']
+           ].map(([stepTitle,stepBody])=>(
+             <div key={stepTitle} className="rounded-2xl border border-[#E4D6F1] bg-white p-4 shadow-sm">
+               <h3 className="font-display text-sm font-extrabold text-[#38214E]">{stepTitle}</h3>
+               <p className="mt-1.5 text-xs leading-6 text-[#6D5D7C]">{stepBody}</p>
+             </div>
+           ))}
+         </div>
+         <a href="https://xavier.cabellosalirrosas.com/" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-bold text-[#6834C7] hover:underline">Conocer mi portafolio y trayectoria <ExternalLink className="size-4"/></a>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 9: FILTRO DE CALIFICACIÓN DOCENTE (PARA QUIÉN SÍ ES / PARA QUIÉN NO ES) */}
+   <section className="border-b border-[#E7DCF1] bg-white px-5 py-20 sm:px-7">
+     <div className="mx-auto max-w-6xl">
+       <div className="mx-auto max-w-3xl text-center">
+         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Transparencia total antes de dar el paso</p>
+         <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.1rem)] font-bold tracking-[-.05em] text-[#291840]">
+           ¿Para quién es (y para quién NO es) este sistema de US$9?
+         </h2>
+       </div>
+       <div className="mt-10 grid gap-6 md:grid-cols-2">
+         <div className="rounded-[26px] border border-[#CBE8DF] bg-[#F5FBF8] p-7">
+           <h3 className="flex items-center gap-2.5 font-display text-xl font-bold text-[#155E4B]">
+             <CheckCircle2 className="size-6 shrink-0 text-[#198768]"/> SÍ es para ti si…
+           </h3>
+           <ul className="mt-5 space-y-3.5 text-sm leading-7 text-[#2D4D43]">
+             {[
+               'Eres profesor de matemáticas —especialmente en secundaria (1.° a 5.° año), preuniversitario o clases particulares— y quieres dejar de desgastar tu hombro y tu garganta dibujando 15 veces lo mismo.',
+               'En tu colegio no hay buen internet y necesitas recursos que puedas llevar en tu memoria USB y abrir sin conexión en cualquier televisor o proyector.',
+               'No te interesa volverte programador ni perder tiempo con comandos de GeoGebra: quieres plantillas copiar-y-pegar y 10 apps ya listas para usar mañana a las 8:00 AM.',
+               'Te motiva recuperar tus noches y domingos libres, brillar en las observaciones de aula y cobrar S/ 60 a S/ 80+ la hora en tus clases particulares.'
+             ].map(item=>(
+               <li key={item} className="flex items-start gap-2.5">
+                 <Check className="mt-1 size-4 shrink-0 text-[#198768]"/>
+                 <span>{item}</span>
+               </li>
+             ))}
+           </ul>
+         </div>
+
+         <div className="rounded-[26px] border border-[#F0D5DF] bg-[#FFF8FA] p-7">
+           <h3 className="flex items-center gap-2.5 font-display text-xl font-bold text-[#7D2847]">
+             <XCircle className="size-6 shrink-0 text-[#C83E6B]"/> NO es para ti si…
+           </h3>
+           <ul className="mt-5 space-y-3.5 text-sm leading-7 text-[#6B4252]">
+             {[
+               'Buscas un curso teórico de programación informática de 6 meses o quieres aprender código desde cero.',
+               'Disfrutas quedarte hasta las 11:30 PM los domingos peleando con ecuaciones y gráficos estáticos que borrarás en 5 minutos.',
+               'Prefieres seguir compitiendo por precio a S/ 20 la hora en clases particulares enseñando exactamente igual que todos.',
+               'No estás dispuesto a invertir 15 minutos copiando y pegando una plantilla en español para ahorrarte cientos de horas en el año.'
+             ].map(item=>(
+               <li key={item} className="flex items-start gap-2.5">
+                 <XCircle className="mt-1 size-4 shrink-0 text-[#C83E6B]"/>
+                 <span>{item}</span>
+               </li>
+             ))}
+           </ul>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   {/* BLOQUE 10: GRAND SLAM OFFER STACK INTENCIONAL (US$197 -> US$9) + 3 ORDER BUMPS EN CHECKOUT */}
+   <section id="inscripcion" className="px-5 py-24 sm:px-7">
+     <div className="mx-auto max-w-6xl">
+       <div className="mx-auto text-center">
+         <p className="inline-flex items-center gap-1.5 rounded-full border border-[#D8C2EF] bg-[#F6EEFF] px-4 py-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-[#7137C2]">
+           <Sparkles className="size-3.5"/> Oferta de Entrada · Valor Real US$197 → Hoy Solo US$9 (Ahorras US$188)
+         </p>
+         <h2 className="mt-4 font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold tracking-[-.06em] text-[#2C1A43]">Con lo que te cuestan 2 cajas de plumones (o 1 sola hora de clase particular), instalas tu fábrica de pizarras vivas 2D y 3D</h2>
+         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-[#6F607C]">Cada entregable y cada bono gratuito han sido diseñados intencionalmente para que tengas todo resuelto en 15 minutos —incluso si en tu aula no hay internet—.</p>
+       </div>
+
+       <div className="mt-10 grid overflow-hidden rounded-[28px] border border-[#E0D0ED] bg-white shadow-[0_25px_70px_rgba(70,35,113,.09)] lg:grid-cols-[1.12fr_.88fr]">
+         <div className="p-7 sm:p-10">
+           <p className="inline-flex items-center gap-2 rounded-full bg-[#EFE4FD] px-4 py-2 text-xs font-bold text-[#7139C6]"><Sparkles className="size-4"/> Stack Intencional · Todo lo que recibes hoy por US$9</p>
+           <h3 className="mt-5 font-display text-2xl font-bold text-[#2D1945] sm:text-3xl">El Kit «Pizarra Viva IA™» + 2 Bonos Destructores de Objeciones</h3>
+
+           <div className="mt-6 space-y-3.5">
+             {valueStack.map(({title,objectionKilled,desc,value,isBonus})=>(
+               <div key={title} className={`rounded-2xl border p-4 ${isBonus?'border-[#DFC6F7] bg-[#FAF5FF]':'border-[#EAE0F3] bg-white'}`}>
+                 <div className="flex flex-wrap items-start justify-between gap-2">
+                   <h4 className="flex items-center gap-2 font-display text-sm font-extrabold text-[#2F1B44]">
+                     {isBonus ? <Gift className="size-4 shrink-0 text-[#9B35C8]"/> : <CheckCircle2 className="size-4 shrink-0 text-[#178568]"/>}
+                     <span>{title}</span>
+                   </h4>
+                   <span className="shrink-0 rounded-full bg-[#F2EAFA] px-2.5 py-0.5 font-mono text-xs font-extrabold text-[#6E37C5]">Valor: {value}</span>
+                 </div>
+                 <p className="mt-1 pl-6 text-[11px] font-bold text-[#7A3EC8]">{objectionKilled}</p>
+                 <p className="mt-1 pl-6 text-xs leading-6 text-[#685877]">{desc}</p>
+               </div>
+             ))}
+           </div>
+
+           <div className="mt-6 overflow-hidden rounded-2xl border border-[#E6D8F1] bg-[#FAF7FD] p-2.5 sm:p-3.5 shadow-sm">
+             <img src="/workshop/bundle-kit-taller-docente.webp" alt="Kit digital completo Pizarra Viva IA para ahorrar tiempo en clases de matemáticas y llevar en USB sin internet" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-xl object-cover shadow-sm"/>
+             <p className="mt-2.5 flex items-center justify-center gap-1.5 text-center text-[11px] font-bold text-[#7A45C4]">
+               <HardDrive className="size-3.5 shrink-0"/> Incluye: 3 Generadores Maestros + Clonador de Retos + Guía USB Sin Internet + 10 Apps Listas
+             </p>
+           </div>
+
+           <p className="mt-5 border-t border-[#EFE5F4] pt-4 text-xs leading-6 text-[#82738D]">Nota transparente: este acceso inicial de US$9 te entrega el sistema completo de plantillas y tus primeros simuladores listos para el aula. Si deseas exámenes listos en Word o la bóveda de 50 apps pre-creadas, puedes añadirlos abajo en tu orden.</p>
+         </div>
+
+         <div className="flex flex-col justify-between border-t border-[#EDE1F5] bg-gradient-to-br from-[#F6EFFF] to-[#FFF6FA] p-7 sm:p-10 lg:border-l lg:border-t-0">
+           <div>
+             <div className="flex items-center justify-between">
+               <p className="text-xs font-bold uppercase tracking-[.15em] text-[#8754C4]">Paso 1 · Tu Kit Principal Hoy</p>
+               <span className="rounded-full bg-[#E5F7F0] px-3 py-1 text-[11px] font-extrabold text-[#14795D]">AHORRAS 95% HOY</span>
+             </div>
+             <div className="mt-3 rounded-2xl border border-[#E5D5F2] bg-white/95 p-4 shadow-sm">
+               <div className="flex items-center justify-between text-xs font-semibold text-[#7A6889]">
+                 <span>Valor total (3 Módulos + 2 Bonos):</span>
+                 <span className="font-mono text-sm font-bold line-through text-[#B55279]">US$197.00</span>
+               </div>
+               <div className="mt-1.5 flex items-center justify-between text-xs font-semibold text-[#178568]">
+                 <span>Beca de entrada al ecosistema:</span>
+                 <span className="font-mono text-xs font-extrabold">− US$188.00</span>
+               </div>
+               <div className="mt-2.5 flex items-baseline justify-between border-t border-[#EFE6F7] pt-2.5">
+                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#38214E]">Acceso base hoy:</span>
+                 <span className="font-display text-2xl font-extrabold text-[#178568]">US$9.00</span>
+               </div>
+             </div>
+
+             {/* PASO 2: ORDER BUMPS INTENCIONALES EN EL CHECKOUT */}
+             <div className="mt-6">
+               <p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6E36C4]">
+                 ⚡ Paso 2 (Opcional) · Personaliza tu orden con 1 clic:
+               </p>
+               <p className="mt-1 text-[11px] leading-5 text-[#6D5C7E]">
+                 Marca solo si deseas sumar alguno de estos aceleradores exclusivos de lanzamiento a tu pedido:
+               </p>
+               <div className="mt-3 space-y-2.5">
+                 {orderBumps.map(bump=>{
+                   const checked=selectedBumps.includes(bump.id);
+                   return (
+                     <label
+                       key={bump.id}
+                       className={`block cursor-pointer rounded-2xl border-2 border-dashed p-3.5 transition ${
+                         checked
+                           ? 'border-[#178568] bg-[#F2FBF8] shadow-sm'
+                           : 'border-[#D7C2EC] bg-white/90 hover:border-[#9B63E0]'
+                       }`}
+                     >
+                       <div className="flex items-start gap-2.5">
+                         <input
+                           type="checkbox"
+                           checked={checked}
+                           onChange={()=>toggleBump(bump.id)}
+                           className="mt-1 size-4 shrink-0 accent-[#178568]"
+                         />
+                         <div className="min-w-0 flex-1">
+                           <div className="flex flex-wrap items-center justify-between gap-1">
+                             <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7A3EC8]">{bump.tag}</span>
+                             <span className="rounded-full bg-[#ECFBF5] px-2 py-0.5 font-mono text-xs font-extrabold text-[#14795D]">+US${bump.priceUsd}</span>
+                           </div>
+                           <p className="mt-1 font-display text-xs font-bold leading-5 text-[#2C1942]">{bump.title}</p>
+                           <p className="mt-1 text-[11px] font-semibold text-[#8E3967]">{bump.painSolved}</p>
+                           <p className="mt-1 text-[11px] leading-5 text-[#675776]">{bump.desc}</p>
+                         </div>
+                       </div>
+                     </label>
+                   );
+                 })}
+               </div>
+             </div>
+
+             <div className="mt-6 flex items-baseline justify-between rounded-2xl border border-[#DFC9F2] bg-white px-4 py-3">
+               <div>
+                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Total de tu orden hoy:</span>
+                 <span className="text-[11px] font-semibold text-[#178568]">
+                   {selectedBumps.length===0
+                     ? 'Kit Principal + 2 Bonos (Sin mensualidades)'
+                     : `Kit Principal + ${selectedBumps.length} complemento(s) seleccionado(s)`}
+                 </span>
+               </div>
+               <div className="text-right">
+                 <span className="font-display text-4xl font-extrabold tracking-tight text-[#25173D]">US${totalUsd}</span>
+                 <span className="block text-[11px] font-bold text-[#6E5C7E]">≈ S/ {totalUsd * 3.7} PEN · Pago único</span>
+               </div>
+             </div>
+
+             <div className="mt-5"><PeruCheckoutButton/></div>
+             <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-[11px] font-semibold text-[#6E5C7E]">
+               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago 100% Seguro (Yape / Tarjetas)</span>
+               <span>·</span>
+               <span>⚡ Acceso Inmediato 24/7</span>
+             </div>
+           </div>
+
+           {/* CAJA DE GARANTÍA BLINDADA DE 14 DÍAS ANTI-RIESGO */}
+           <div className="mt-6 space-y-3 border-t border-[#E6D8F2] pt-5">
+             <div className="rounded-2xl border border-[#CBE8DF] bg-[#F5FBF8] p-4 text-xs leading-6 text-[#2C4E44] shadow-sm">
+               <div className="flex items-center gap-2 font-display text-sm font-extrabold text-[#145E4B]">
+                 <ShieldCheck className="size-5 shrink-0 text-[#178568]"/>
+                 <span>Garantía Incondicional de 14 Días «Victoria en 15 Minutos»</span>
+               </div>
+               <p className="mt-1.5">
+                 Entra hoy por US$9, descarga las 10 aplicaciones listas para tu USB y prueba las plantillas copiar-y-pegar durante 14 días. Si no logras tener tu primer visualizador funcionando en 15 minutos o no te ahorra horas de pizarra en tu primera semana, te devolvemos el 100% de tu dinero sin preguntas.
+               </p>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div className="mx-auto mt-8 max-w-3xl"><WaitlistForm/></div>
+     </div>
+   </section>
+
+   {/* BLOQUE 11: PREGUNTAS FRECUENTES INTENCIONALES (REBATEN LAS 7 OBJECIONES FORENSES) */}
+   <section id="faq" className="border-t border-[#E8DFF2] bg-[#F8F4FD] px-5 py-24 sm:px-7">
+     <div className="mx-auto max-w-3xl">
+       <Heading eyebrow="Cero dudas · Cero excusas técnicas" title="Respuestas directas a lo que todo profesor de matemáticas pregunta antes de entrar."/>
+       <div className="mt-10 space-y-3">{faq.map(([q,a])=><details key={q} className="group rounded-2xl border border-[#E5D9EF] bg-white p-5 open:border-[#C6A6E7]"><summary className="flex list-none items-center justify-between gap-3 font-bold text-[#332146] [&::-webkit-details-marker]:hidden">{q}<ChevronDown className="size-5 shrink-0 text-[#8D53C5] transition group-open:rotate-180"/></summary><p className="mt-3 text-sm leading-7 text-[#6F617B]">{a}</p></details>)}</div>
+     </div>
+   </section>
+
+   {/* BLOQUE 12: CIERRE DE ENCRUCIJADA (EL LUNES A LAS 8:00 AM) */}
+   <section className="px-5 py-20 text-center sm:px-7">
+     <div className="mx-auto max-w-4xl">
+       <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">El próximo lunes a las 8:00 AM tienes dos caminos frente al salón</p>
+       <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.35rem)] font-bold leading-tight tracking-[-.055em] text-[#29193F]">
+         Menos tiempo escribiendo y dibujando en la pizarra.<br/>
+         <span className="text-[#713BC9]">Más tiempo guiando el aprendizaje, cuidando tu garganta y cotizándote mejor como docente.</span>
+       </h2>
+       <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#695879]">
+         Puedes seguir entrando al aula a darle la espalda al grupo, repetir el mismo dibujo 15 veces por semana y quedarte hasta las 11:30 PM haciendo fichas… o puedes invertir <strong className="text-[#2B1840]">US$9 hoy</strong> (lo que cuestan dos cajas de plumones), llevar tus pizarras vivas en tu USB sin internet y convertirte en el profesor que todos respetan, entienden y recomiendan.
+       </p>
+       <a href="#inscripcion" className="mt-8 inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_15px_32px_rgba(104,50,208,.25)] transition hover:scale-[1.01] hover:opacity-95 sm:text-lg">
+         ¡Sí, quiero ahorrar tiempo en pizarra y elevar mis clases · US$9! <ArrowRight className="size-5"/>
+       </a>
+       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Pago único de US$9 (Valor real US$197) · Funciona sin internet en tu USB · Garantía de 14 días</p>
+     </div>
+   </section>
+  </main>
+  <footer className="border-t border-[#E4D9EF] bg-white px-5 py-9 pb-24 sm:pb-9"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-xs leading-6 text-[#7D6D8A] sm:flex-row"><p>© 2026 · Matemáticas × IA · Menos pizarra estática, más impacto, tiempo libre y crecimiento para el docente</p><a href="/privacidad" className="font-semibold hover:underline">Privacidad</a><p>Contacto: <a href="mailto:xavier@cabellosalirrosas.com" className="underline">xavier@cabellosalirrosas.com</a></p></div></footer>
+  <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between border-t border-[#E0D2ED] bg-white/95 px-4 py-3 shadow-[0_-8px_25px_rgba(66,33,95,.1)] sm:hidden"><span className="font-display text-sm font-extrabold text-[#352047]">Pizarras Vivas en tu USB <span className="text-[#7640C9]">· US$9</span></span><a href="#inscripcion" className="rounded-lg bg-[#6832D0] px-4 py-3 text-xs font-bold text-white">Empezar hoy</a></div>
+ </div>;
 }

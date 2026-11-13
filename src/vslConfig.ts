@@ -1,9 +1,9 @@
-// Replace these placeholders with your workshop assets before publishing.
+// Configuración del contenido multimedia opcional para la TSL.
+// Los pagos NO se configuran aquí: se gestionan por Pages Functions y
+// variables/secretos privados descritos en PAGOS_PERU.md.
 export const vslConfig = {
-  videoUrl: '', // Direct MP4/WebM URL; embedded platforms need their player SDK.
-  captionsUrl: '', // Optional Spanish WebVTT subtitles.
-  checkoutUrl: '', // Real checkout URL.
-  mentorPhoto: '', // Genuine mentor photograph.
-  pitchSeconds: 180, // Placeholder: replace with the exact second the final VSL states the $19 offer.
-  storageVersion: 'v1', // Change when replacing the VSL to reset its unlock state.
+  videoUrl: '', // URL MP4/WebM de una demo real cuando exista.
+  captionsUrl: '', // Subtítulos WebVTT opcionales.
+  mentorPhoto: '', // Foto auténtica opcional; no se usa automáticamente.
+  // La inscripción no está bloqueada por la reproducción de un video.
 };
