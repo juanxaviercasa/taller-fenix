@@ -1,24 +1,62 @@
-# Fénix · Taller Web
+# Fénix · Matemáticas × IA
 
-Landing VSL en React, TypeScript y Tailwind CSS v4. El diseño sigue el documento `Diseño VSL y Reglas Tailwind.md` de la raíz.
+Landing educativa dirigida a **docentes de matemáticas** de secundaria, preparación preuniversitaria y cursos universitarios iniciales. Muestra ejemplos reales de aplicaciones interactivas usadas en sesiones de aprendizaje y presenta un taller introductorio para crear un primer módulo matemático con ayuda de IA.
 
-La propuesta, el guion revisado, el diseño del taller y las siguientes fases del embudo están documentados en `Estrategia Maestra Fenix - Oferta VSL y Embudo.md`.
+**Rama de producción prevista:** `main`.
+**Dominio previsto:** https://vibecoding.sistemazenit.com/
+
+## Tecnologías
+
+- React 19, TypeScript, Vite y Tailwind CSS v4.
+- Math Studio: demostraciones matemáticas interactivas con React/SVG y KaTeX.
+- Cloudflare Pages Functions para checkout y registro de interesados; Cloudflare D1 opcional para el registro.
+- GitHub Actions para pruebas, análisis estático y compilación.
 
 ## Desarrollo
 
-- `npm run dev`: servidor local en el puerto 8080.
-- `npm run build`: comprobación de TypeScript y compilación de producción.
-- `npm run lint`: análisis de código.
-- `node --test tests/delayed-cta.test.mjs`: pruebas del desbloqueo y SSR.
+```bash
+npm ci
+npm run dev
+npm test
+npm run lint
+npm run build
+```
 
-## Placeholders
+El servidor de desarrollo usa el puerto 8080. La compilación estática se genera en `dist/`.
 
-Edita `src/vslConfig.ts` para reemplazar el video (MP4/WebM), subtítulos WebVTT, foto del mentor, enlace de pago y el segundo real en que se pronuncia la oferta. El valor de 180 segundos es provisional y no debe fijarse hasta editar el VSL. La miniatura existente se conserva.
+## Oferta y alcance
 
-Sin video se muestra una vista previa; no se simula reproducción. Sin enlace de pago, el CTA desbloqueado es un botón deshabilitado. Para YouTube, Vimeo u otra plataforma, integrar su SDK y conectar sus eventos de reproducción al hook.
+El producto piloto se comunica a **US$9**, con cobro en soles cuando se configure Mercado Pago Perú. La página enseña demostraciones de varios niveles; **el taller introductorio no incluye las aplicaciones avanzadas completas**.
 
-Los CTA de arriba y del pie están fuera del DOM hasta que el video alcanza el pitch. El hook usa un temporizador solo mientras reproduce, verifica el tiempo real del reproductor y limpia eventos/temporizadores al desmontarse. Pausar o esperar por buffering no consume tiempo del pitch. La marca de desbloqueo persiste en localStorage y se sincroniza entre pestañas. Si el almacenamiento está bloqueado, funciona en memoria. Cambiar storageVersion reinicia el desbloqueo para una nueva edición.
+La disponibilidad del checkout no debe suponerse: el código del servidor exige `MP_CHECKOUT_ENABLED=true`, credenciales privadas válidas, precio explícito en PEN y configuración de entorno. **No activar cobros hasta probar el flujo en la cuenta real, los webhooks, la conciliación y la entrega del acceso.** Actualmente la entrega de acceso es manual. No se debe deducir que una redirección de éxito confirma el pago.
 
-El primer render no accede a window ni localStorage: el estado persistido se recupera dentro de useEffect después del montaje. El proyecto es una SPA Vite; el hook es compatible con SSR.
+El formulario de interesados requiere `WAITLIST_ENABLED=true` y el binding D1 `LEADS_DB`. Sin estas configuraciones, debe permanecer deshabilitado y mostrar la alternativa de contacto. Consultar `PAGOS_PERU.md` y `docs/WAITLIST_SETUP.md`.
 
-Los tokens OKLCH, familias tipográficas y ancho del VSL están en @theme; el vidrio reutilizable usa @utility. Inter y Clash Display tienen fallback del sistema hasta incorporar sus archivos de fuente. Sustituir la fotografía provisional y revisar los textos finales antes de publicar.
+No colocar tokens o secretos en el repositorio. Usar variables y secretos de Cloudflare.
+
+## Despliegue y verificación
+
+1. Confirmar en la cuenta **correcta** de Cloudflare que el proyecto de `vibecoding.sistemazenit.com` está conectado a `juanxaviercasa/taller-fenix`.
+2. Verificar que la rama de producción sea `main`, el comando de compilación sea `npm run build` y el directorio de salida `dist`.
+3. Revisar los logs del despliegue y comprobar la landing, los enlaces, Math Studio, las rutas `/pago` y `/privacidad` y los formularios.
+4. Ejecutar las pruebas E2E y las pruebas reales de pagos antes de habilitar ventas.
+
+No interpretar el resultado de GitHub Actions como una confirmación de despliegue en Cloudflare.
+
+## Ramas históricas
+
+Las tres propuestas comerciales anteriores se conservaron para desarrollo futuro en:
+
+- `ofertas/web-costo-cero`
+- `ofertas/vibe-coding-creadores`
+- `ofertas/microagencia`
+
+Estas ramas son **copias del estado previo** con las tres ofertas aún combinadas. No representan productos individuales ya separados. También existe `backup/main-pre-docentes-2026-11-12` como respaldo anterior a la integración educativa.
+
+## Documentos de referencia
+
+- `docs/AVATAR_Y_OFERTA_PRIORITARIA.md`: perfil y propuesta docente principal.
+- `PAGOS_PERU.md`: preparación segura de Mercado Pago.
+- `docs/WAITLIST_SETUP.md`: lista de interesados con D1.
+- `Investigacion_Profesores_de_Matematicas.md`: investigación de audiencia.
+- Los documentos de estrategia y VSL de la raíz pueden contener ideas de las **ofertas anteriores**; no deben tomarse automáticamente como especificaciones de producción para `main`.
