@@ -21,12 +21,13 @@ export function WaitlistForm() {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!available || busy) return;
+    const honeypot = new FormData(event.currentTarget).get('website');
     setError(''); setBusy(true);
     try {
       const res = await fetch('/api/waitlist', {
         method:'POST',
         headers:{'content-type':'application/json'},
-        body:JSON.stringify({email,consent,website:'',source:'landing'}),
+        body:JSON.stringify({email,consent,website:typeof honeypot === 'string' ? honeypot : '',source:'landing'}),
       });
       const data = await res.json() as {ok?:boolean;error?:string};
       if(!res.ok || !data.ok) throw new Error(data.error || 'No se pudo registrar.');
