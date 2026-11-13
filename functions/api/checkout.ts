@@ -16,9 +16,16 @@ const headers = { "Content-Type": "application/json; charset=utf-8", "Cache-Cont
 const reply = (body: object, status = 200) => new Response(JSON.stringify(body), { status, headers });
 const priceOf = (env: Env) => Number(env.MP_PRICE_PEN || "34");
 const validPrice = (price: number) => Number.isFinite(price) && price > 0 && price <= 1000;
+const validSite = (value?: string) => {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password && !url.search && !url.hash;
+  } catch { return false; }
+};
 const ready = (env: Env) => env.MP_CHECKOUT_ENABLED === "true" &&
   Boolean(env.MP_ACCESS_TOKEN?.trim()) && Boolean(env.MP_WEBHOOK_SECRET?.trim()) &&
-  validPrice(priceOf(env)) && Boolean(env.MP_PRICE_PEN) && Boolean(env.SITE_URL) &&
+  validPrice(priceOf(env)) && Boolean(env.MP_PRICE_PEN) && validSite(env.SITE_URL) &&
   (env.MP_ENVIRONMENT === "test" || env.MP_ENVIRONMENT === "production");
 
 export const onRequestGet = ({ env }: Context): Response => reply({

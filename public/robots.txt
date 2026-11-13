@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /pago
 
-Sitemap: https://bycoding.systems.mx.com/sitemap.xml
+Sitemap: https://vibecoding.sistemazenit.com/sitemap.xml

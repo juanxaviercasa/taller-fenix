@@ -12,7 +12,7 @@ export default function PaymentReturn() {
         {failed ? 'Puedes volver al entrenamiento e intentarlo nuevamente.' :
           'El retorno a esta página no es una confirmación de pago. La inscripción será validada en Mercado Pago antes de entregar el acceso.'}
       </p>
-      <a href="/bycoding" className="mt-7 inline-block rounded-lg bg-fuchsia-600 px-6 py-3 font-semibold text-white">Volver al entrenamiento</a>
+      <a href="/" className="mt-7 inline-block rounded-lg bg-fuchsia-600 px-6 py-3 font-semibold text-white">Volver al entrenamiento</a>
     </section>
   </main>;
 }
