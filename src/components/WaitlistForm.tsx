@@ -58,12 +58,12 @@ export function WaitlistForm() {
     <div className="waitlist-shell rounded-[24px] border border-[#D8E2DC] bg-white p-5 shadow-[0_14px_45px_rgba(22,54,42,0.06)] sm:p-7">
       <div className="mb-3 flex items-center gap-2 font-display text-lg font-bold text-[#193E36]">
         <Mail className="size-5 text-[#286F5A]" />
-        ¿Quieres enterarte apenas conectemos Skool o hacer una consulta?
+        ¿Quieres que te avise cuando abran las inscripciones?
       </div>
       {complete ? (
         <p role="status" className="flex items-center gap-2 text-sm font-semibold text-[#1E6B52]">
           <CheckCircle2 className="size-5 shrink-0" />
-          ¡Registro recibido! Te avisaremos cuando conectemos el checkout oficial en Skool. Esto no constituye una compra ni genera ningún cobro.
+          ¡Listo! Te avisaremos cuando abran las inscripciones en Skool. Esto no es una compra ni genera ningún cobro.
         </p>
       ) : available ? (
         <form onSubmit={submit} className="grid gap-3">
@@ -105,7 +105,7 @@ export function WaitlistForm() {
               required
             />
             <span>
-              Acepto recibir un aviso cuando conectemos el acceso oficial del taller en Skool. Puedo solicitar la eliminación de mis datos cuando quiera.{' '}
+              Acepto recibir un correo cuando abran las inscripciones del taller. Puedo solicitar la eliminación de mis datos cuando quiera.{' '}
               <a href="/privacidad" className="font-semibold underline">
                 Privacidad
               </a>
@@ -121,18 +121,18 @@ export function WaitlistForm() {
       ) : (
         <div>
           <p className="text-sm leading-6 text-[#5E7267]">
-            Mientras terminamos de conectar el botón oficial hacia la comunidad de Skool, no se procesa ningún cobro automático. Si quieres consultar fechas, resolver dudas o pedir aviso por correo:
+            Escríbeme y te aviso apenas abran las inscripciones. También puedes preguntarme cualquier duda sobre el taller.
           </p>
           <a
             href={
               'mailto:' +
               CONTACT_EMAIL +
               '?subject=' +
-              encodeURIComponent('Consulta sobre el taller de aplicaciones web con IA (US$9 · Skool)')
+              encodeURIComponent('Quiero información del taller de apps educativas con IA (US$9)')
             }
             className="mt-4 inline-flex items-center gap-2 rounded-xl border border-[#89B7A0] px-5 py-3 text-sm font-bold text-[#205C49] transition hover:bg-[#ECF5EE]"
           >
-            Consultar sobre el taller <ArrowRight className="size-4" />
+            Escribirme por correo <ArrowRight className="size-4" />
           </a>
         </div>
       )}

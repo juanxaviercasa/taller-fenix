@@ -16,8 +16,9 @@ test('se establece US$9 como precio oficial único sin Mercado Pago, Whop ni ord
   );
 });
 
-test('no promete acceso automático ni cobros activos mientras Skool es placeholder', () => {
+test('no promete acceso automático ni cobros activos mientras la inscripción en Skool no está abierta', () => {
   assert.doesNotMatch(app, /⚡ Acceso Inmediato 24\/7|Garantía Incondicional de 14 Días|Acceso inmediato tras el pago/);
-  assert.match(app, /placeholder mientras lo conectamos/i);
-  assert.match(app, /no se realiza ningún cobro/i);
+  assert.match(app, /Estamos terminando de abrir las inscripciones en Skool/);
+  assert.match(skool, /Todavía no se realiza ningún cobro/);
+  assert.doesNotMatch(app, /placeholder|checkout/);
 });

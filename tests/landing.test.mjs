@@ -21,14 +21,22 @@ test('estructura editorial completa abierta a profesionales en la industria de l
   ]) {
     assert.ok(app.includes('id="' + id + '"'), 'Falta el bloque ' + id);
   }
-  assert.match(app, /TALLER PRÁCTICO · IA PARA PROFESIONALES DE LA EDUCACIÓN/);
-  assert.match(app, /profesionales innovadores en la industria de la educación/i);
-  assert.match(app, /aplicaciones web interactivas con IA/i);
-  assert.match(app, /¿El taller es solo para profesores de matemáticas\?/);
+  assert.match(app, /TALLER PRÁCTICO · IA PARA QUIENES TRABAJAN EN EDUCACIÓN/);
+  assert.match(app, /Crea tus propias apps educativas con IA/);
+  assert.match(app, /sin saber programar/);
+  assert.match(app, /profesor, tutor, coordinador o trabajas en educación/);
+  assert.match(app, /¿Es solo para profesores de matemáticas\?/);
   assert.match(app, /US\$9/);
   assert.match(app, /SkoolCheckoutButton/);
   assert.match(app, /WaitlistForm/);
   assert.doesNotMatch(app, /Microagencia|AbTestingBar|82% plazas ocupadas/i);
+});
+
+test('el copy usa lenguaje sencillo y evita la jerga y las repeticiones de la versión anterior', () => {
+  assert.doesNotMatch(app, /industria de la educación|soberanía|escalable|LaTeX|SVG|prototipo|precisión visual/i);
+  const mentions2023 = (app.match(/2023/g) || []).length;
+  assert.ok(mentions2023 <= 6, '2023 aparece ' + mentions2023 + ' veces');
+  assert.ok((app.match(/pruebas? y error/gi) || []).length <= 2);
 });
 
 test('demo hero real tiene tres modos y dos sliders por modo', () => {
@@ -45,7 +53,7 @@ test('demo hero real tiene tres modos y dos sliders por modo', () => {
 test('el graficador avanzado Math Studio se conserva intacto con sus tres niveles académicos', () => {
   const studio = read('src/components/MathStudio.tsx');
   assert.match(app, /lazy\(\(\) => import\('\.\/components\/MathStudio'\)\)/);
-  assert.match(app, /Explorar Math Studio/);
+  assert.match(app, /Abrir Math Studio/);
   for (const level of ['secundaria', 'preuni', 'universidad']) {
     assert.match(studio, new RegExp(level));
   }
@@ -63,7 +71,7 @@ test('autoridad del fundador respaldada con fotografía y trayectoria real desde
 });
 
 test('SEO corresponde a la oferta oficial de US$9 y al dominio vibecoding', () => {
-  assert.match(html, /Aplicaciones web interactivas con IA para educación \| US\$9/);
+  assert.match(html, /Crea tus propias apps educativas con IA, sin saber programar/);
   assert.match(html, /https:\/\/vibecoding\.sistemazenit\.com\//);
   assert.match(html, /Precio oficial: US\$9/);
   assert.match(html, /og-matematicas-ia\.png/);

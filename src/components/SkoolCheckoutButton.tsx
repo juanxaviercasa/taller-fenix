@@ -18,7 +18,7 @@ interface SkoolCheckoutButtonProps {
 
 /** Placeholder del botón de inscripción hasta conectar el checkout oficial en Skool. */
 export function SkoolCheckoutButton({
-  label = 'Ir al checkout en Skool · US$9',
+  label = 'Inscribirme en Skool · US$9',
 }: SkoolCheckoutButtonProps) {
   const skoolUrl = parseSkoolUrl(import.meta.env.VITE_SKOOL_CHECKOUT_URL);
 
@@ -34,7 +34,7 @@ export function SkoolCheckoutButton({
           {label} <ArrowUpRight className="size-4" />
         </a>
         <p className="text-center text-xs leading-5 text-[#537265]">
-          Checkout oficial de pago único (US$9) dentro de nuestra comunidad en Skool.
+          Te llevará a nuestra comunidad en Skool para completar el pago de US$9.
         </p>
       </div>
     );
@@ -49,10 +49,10 @@ export function SkoolCheckoutButton({
         className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-dashed border-[#8FB6A0] bg-[#E5F0E9] px-6 py-4 text-sm font-bold text-[#245345] opacity-85 sm:text-base"
       >
         <Lock className="size-4 shrink-0" />
-        Checkout en Skool · Próximamente (US$9)
+        Inscripciones en Skool · Muy pronto
       </button>
       <p className="text-center text-xs leading-5 text-[#587467]">
-        Botón reservado para conectar el enlace oficial del checkout en la comunidad de Skool. Todavía no se realiza ningún cobro.
+        Todavía no se realiza ningún cobro.
       </p>
     </div>
   );

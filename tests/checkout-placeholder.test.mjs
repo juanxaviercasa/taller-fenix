@@ -17,7 +17,7 @@ test('el botón de Skool funciona como placeholder honesto y valida dominios sko
   assert.match(button, /skool\\\.com\$\/i/);
   assert.match(button, /protocol !== 'https:'/);
   assert.match(button, /disabled/);
-  assert.match(button, /Checkout en Skool · Próximamente \(US\$9\)/);
+  assert.match(button, /Inscripciones en Skool · Muy pronto/);
   assert.match(button, /Todavía no se realiza ningún cobro/);
 });
 
