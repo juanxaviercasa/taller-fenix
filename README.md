@@ -2,7 +2,7 @@
 
 Landing educativa dirigida a **docentes de matemáticas** de secundaria, preparación preuniversitaria y cursos universitarios iniciales. Muestra ejemplos reales de aplicaciones interactivas usadas en sesiones de aprendizaje y presenta un taller introductorio para crear un primer módulo matemático con ayuda de IA.
 
-**Rama de producción prevista:** `main`.
+**Rama de producción configurada en Cloudflare Pages:** `main` (verificada el 12 de noviembre de 2026).
 **Dominio previsto:** https://vibecoding.sistemazenit.com/
 
 ## Tecnologías
@@ -36,7 +36,7 @@ No colocar tokens o secretos en el repositorio. Usar variables y secretos de Clo
 
 ## Despliegue y verificación
 
-1. Confirmar en la cuenta **correcta** de Cloudflare que el proyecto de `vibecoding.sistemazenit.com` está conectado a `juanxaviercasa/taller-fenix`.
+1. Confirmado: el proyecto `taller-fenix` de Cloudflare Pages está conectado a `juanxaviercasa/taller-fenix` y al dominio `vibecoding.sistemazenit.com`.
 2. Verificar que la rama de producción sea `main`, el comando de compilación sea `npm run build` y el directorio de salida `dist`.
 3. Revisar los logs del despliegue y comprobar la landing, los enlaces, Math Studio, las rutas `/pago` y `/privacidad` y los formularios.
 4. Ejecutar las pruebas E2E y las pruebas reales de pagos antes de habilitar ventas.
