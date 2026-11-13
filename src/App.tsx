@@ -98,21 +98,21 @@ const projects: ProjectItem[] = [
 const steps = [
   {
     number: '01',
-    image: '/docentes/ruta-01-idea-guardada-a-app.webp',
+    image: '/taller/ruta-01-idea-guardada-a-app.webp',
     alt: 'Cuaderno con el boceto de una app educativa junto a la misma app funcionando en pantalla',
     title: 'Eliges tu idea',
     description: 'Defines qué problema quieres resolver, para quién es y qué tiene que hacer tu app.',
   },
   {
     number: '02',
-    image: '/docentes/ruta-02-construccion-ia-sin-codigo.webp',
+    image: '/taller/ruta-02-construccion-ia-sin-codigo.webp',
     alt: 'Educador construyendo su app con ayuda de la inteligencia artificial',
     title: 'La construyes con IA',
     description: 'Le pides a la IA cada parte, revisas lo que te entrega y lo ajustas hasta que quede como quieres.',
   },
   {
     number: '03',
-    image: '/docentes/ruta-03-automatizacion-tiempo-libre.webp',
+    image: '/taller/ruta-03-automatizacion-tiempo-libre.webp',
     alt: 'Escritorio ordenado con un panel de evaluaciones ya resueltas automáticamente',
     title: 'La usas en tu clase o en tu trabajo',
     description:
@@ -347,7 +347,7 @@ export default function App() {
               <div className="rounded-[24px] border border-[#E1E6EB] bg-white p-6 shadow-sm sm:p-8">
                 <div className="overflow-hidden rounded-2xl border border-[#E3E8EE] bg-[#16202C]">
                   <img
-                    src="/docentes/dolor-dependencia-madrugada.webp"
+                    src="/taller/dolor-dependencia-madrugada.webp"
                     width="1280"
                     height="720"
                     loading="lazy"
@@ -382,7 +382,7 @@ export default function App() {
               <div className="rounded-[24px] border border-[#CBDED2] bg-[#EAF4ED] p-6 shadow-sm sm:p-8">
                 <div className="overflow-hidden rounded-2xl border border-[#BAD5C4] bg-white">
                   <img
-                    src="/docentes/deseo-soberania-aula.webp"
+                    src="/taller/deseo-soberania-aula.webp"
                     width="1280"
                     height="720"
                     loading="lazy"
@@ -450,7 +450,7 @@ export default function App() {
 
             <figure className="overflow-hidden rounded-[26px] border border-[#DAE7DF] bg-[#F6FAF7] p-3 shadow-[0_18px_50px_rgba(22,54,42,.08)]">
               <img
-                src="/docentes/taller-ruta-2023-mockup.webp"
+                src="/taller/taller-ruta-2023-mockup.webp"
                 width="1280"
                 height="720"
                 loading="lazy"

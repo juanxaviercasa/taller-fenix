@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, feat/checkout-mercadopago-yape-peru]
+    branches: [main]
 permissions:
   contents: read
 jobs:

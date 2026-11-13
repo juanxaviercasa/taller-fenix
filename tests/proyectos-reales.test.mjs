@@ -43,9 +43,10 @@ test('no depende de HTML triviales de ejemplo ni promete acceso automático inac
 
 test('activos editoriales hiperrealistas existen en WebP optimizado e incluyen carga diferida', () => {
   for (const file of editorialAssets) {
-    assert.ok(existsSync(new URL('../public/docentes/' + file, import.meta.url)), 'Falta activo ' + file);
-    assert.ok(app.includes('/docentes/' + file), 'Falta referencia en App.tsx a ' + file);
+    assert.ok(existsSync(new URL('../public/taller/' + file, import.meta.url)), 'Falta activo ' + file);
+    assert.ok(app.includes('/taller/' + file), 'Falta referencia en App.tsx a ' + file);
   }
+  assert.doesNotMatch(app, /\/docentes\//);
   assert.match(app, /width="1280"/);
   assert.match(app, /height="720"/);
 });
