@@ -72,7 +72,9 @@ test('payment CTA remains disabled for missing or invalid secrets and URLs', asy
   const valid = { MP_CHECKOUT_ENABLED: 'true', MP_ACCESS_TOKEN: 'placeholder', MP_WEBHOOK_SECRET: 'placeholder',
     MP_PRICE_PEN: '34', MP_ENVIRONMENT: 'test', SITE_URL: 'https://vibecoding.sistemazenit.com/' };
   const getReady = (env) => checkoutStatus({ env }).json();
-  assert.equal((await getReady({})).ready, false);
+  const inactive = await getReady({});
+  assert.equal(inactive.ready, false);
+  assert.equal(inactive.amount, null);
   assert.equal((await getReady({ ...valid, SITE_URL: 'http://vibecoding.sistemazenit.com/' })).ready, false);
   assert.equal((await getReady({ ...valid, SITE_URL: 'not-a-url' })).ready, false);
   assert.equal((await getReady(valid)).ready, true);

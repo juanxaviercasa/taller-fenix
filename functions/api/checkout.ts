@@ -29,7 +29,7 @@ const ready = (env: Env) => env.MP_CHECKOUT_ENABLED === "true" &&
   (env.MP_ENVIRONMENT === "test" || env.MP_ENVIRONMENT === "production");
 
 export const onRequestGet = ({ env }: Context): Response => reply({
-  ready: ready(env), currency: "PEN", amount: validPrice(priceOf(env)) ? priceOf(env) : null,
+  ready: ready(env), currency: "PEN", amount: ready(env) ? priceOf(env) : null,
   offerUsd: 9, paymentProvider: "Mercado Pago",
 });
 
