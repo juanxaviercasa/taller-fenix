@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /pago
 
 Sitemap: https://vibecoding.sistemazenit.com/sitemap.xml

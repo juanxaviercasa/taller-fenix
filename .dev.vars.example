@@ -1,7 +1,4 @@
 # PLACEHOLDER LOCAL — no contiene credenciales activas.
-MP_CHECKOUT_ENABLED="false"
-MP_ENVIRONMENT="test"
-MP_PRICE_PEN="34"
-SITE_URL="https://bycoding.systems.mx.com"
-MP_ACCESS_TOKEN=""
-MP_WEBHOOK_SECRET=""
+WAITLIST_ENABLED="false"
+# Conectar cuando el checkout en la comunidad de Skool esté listo:
+# VITE_SKOOL_CHECKOUT_URL="https://www.skool.com/tu-comunidad"

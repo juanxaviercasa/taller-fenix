@@ -1,62 +1,37 @@
-# Fénix · Matemáticas × IA
+# Sistema Zénit · Aplicaciones web interactivas con IA para educación
 
-Landing educativa dirigida a **docentes de matemáticas** de secundaria, preparación preuniversitaria y cursos universitarios iniciales. Muestra ejemplos reales de aplicaciones interactivas usadas en sesiones de aprendizaje y presenta un taller introductorio para crear un primer módulo matemático con ayuda de IA.
+Landing editorial alojada en **Cloudflare Pages** (`taller-fenix`, rama `main`): React 19, TypeScript, Tailwind CSS v4 y Cloudflare Pages Functions (para la lista de aviso opcional en D1).
 
-**Rama de producción configurada en Cloudflare Pages:** `main` (verificada el 12 de noviembre de 2026).
-**Dominio previsto:** https://vibecoding.sistemazenit.com/
+**Dominio de producción:** https://vibecoding.sistemazenit.com/
 
-## Tecnologías
+## Propuesta y oferta oficial
 
-- React 19, TypeScript, Vite y Tailwind CSS v4.
-- Math Studio: demostraciones matemáticas interactivas con React/SVG y KaTeX.
-- Cloudflare Pages Functions para checkout y registro de interesados; Cloudflare D1 opcional para el registro.
-- GitHub Actions para pruebas, análisis estático y compilación.
+Taller práctico abierto a **profesionales en la industria de la educación** (docentes, capacitadores, coordinadores y creadores educativos) que desean transformar ideas guardadas en **aplicaciones web y herramientas interactivas reales con IA**, sin saber programación ni contratar programadores:
 
-## Desarrollo
+- **Precio oficial único:** **US$9**
+- **Canal de checkout:** botón en placeholder para conectar el checkout dentro de nuestra comunidad en **Skool** (`VITE_SKOOL_CHECKOUT_URL`).
+- **Alcance práctico:** desde aplicaciones para enseñar matemáticas y ciencias (conservando el graficador en vivo y **Math Studio** de tres niveles académicos) hasta herramientas para automatizar tareas y resolver necesidades reales en la industria educativa.
+- **Respaldo:** ruta condensada desde la experiencia aplicada construyendo soluciones con IA desde **2023**.
+
+## Proyectos reales publicados
+
+1. `Funciones Lab` (`https://funciones.sistemazenit.com/`)
+2. `Transformaciones Geométricas` (`https://transformacionesgeometricas.sistemazenit.com/`)
+3. `Sólidos Geométricos` (`https://solidosgeometricos.sistemazenit.com/`)
+4. `Mundos Simulados` (`https://mundossimulados.online/`)
+5. `Test vocacional RALE` (`https://raletest.sistemazenit.com/`)
+6. `Herramientas para Pymes` (`https://nubeparapymes.online/herramientas/`)
+7. `Todo Lima` (`https://todolima.com/`)
+
+## Comandos locales
 
 ```bash
 npm ci
-npm run dev
 npm test
 npm run lint
 npm run build
 ```
 
-El servidor de desarrollo usa el puerto 8080. La compilación estática se genera en `dist/`.
+## Registro de aviso
 
-## Oferta y alcance
-
-El producto piloto se comunica a **US$9**, con cobro en soles cuando se configure Mercado Pago Perú. La página enseña demostraciones de varios niveles; **el taller introductorio no incluye las aplicaciones avanzadas completas**.
-
-La disponibilidad del checkout no debe suponerse: el código del servidor exige `MP_CHECKOUT_ENABLED=true`, credenciales privadas válidas, precio explícito en PEN y configuración de entorno. **No activar cobros hasta probar el flujo en la cuenta real, los webhooks, la conciliación y la entrega del acceso.** Actualmente la entrega de acceso es manual. No se debe deducir que una redirección de éxito confirma el pago.
-
-El formulario de interesados requiere `WAITLIST_ENABLED=true` y el binding D1 `LEADS_DB`. Sin estas configuraciones, debe permanecer deshabilitado y mostrar la alternativa de contacto. Consultar `PAGOS_PERU.md` y `docs/WAITLIST_SETUP.md`.
-
-No colocar tokens o secretos en el repositorio. Usar variables y secretos de Cloudflare.
-
-## Despliegue y verificación
-
-1. Confirmado: el proyecto `taller-fenix` de Cloudflare Pages está conectado a `juanxaviercasa/taller-fenix` y al dominio `vibecoding.sistemazenit.com`.
-2. Verificar que la rama de producción sea `main`, el comando de compilación sea `npm run build` y el directorio de salida `dist`.
-3. Revisar los logs del despliegue y comprobar la landing, los enlaces, Math Studio, las rutas `/pago` y `/privacidad` y los formularios.
-4. Ejecutar las pruebas E2E y las pruebas reales de pagos antes de habilitar ventas.
-
-No interpretar el resultado de GitHub Actions como una confirmación de despliegue en Cloudflare.
-
-## Ramas históricas
-
-Las tres propuestas comerciales anteriores se conservaron para desarrollo futuro en:
-
-- `ofertas/web-costo-cero`
-- `ofertas/vibe-coding-creadores`
-- `ofertas/microagencia`
-
-Estas ramas son **copias del estado previo** con las tres ofertas aún combinadas. No representan productos individuales ya separados. También existe `backup/main-pre-docentes-2026-11-12` como respaldo anterior a la integración educativa.
-
-## Documentos de referencia
-
-- `docs/AVATAR_Y_OFERTA_PRIORITARIA.md`: perfil y propuesta docente principal.
-- `PAGOS_PERU.md`: preparación segura de Mercado Pago.
-- `docs/WAITLIST_SETUP.md`: lista de interesados con D1.
-- `Investigacion_Profesores_de_Matematicas.md`: investigación de audiencia.
-- Los documentos de estrategia y VSL de la raíz pueden contener ideas de las **ofertas anteriores**; no deben tomarse automáticamente como especificaciones de producción para `main`.
+El formulario de interesados (`functions/api/waitlist.ts`) solo guarda correos cuando `WAITLIST_ENABLED=true`, hay consentimiento explícito y existe el binding D1 `LEADS_DB`. Mientras tanto muestra el canal directo por correo. Ver `docs/WAITLIST_SETUP.md`.

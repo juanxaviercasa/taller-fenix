@@ -1,17 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const app = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
-const pay = readFileSync(new URL('../functions/api/checkout.ts', import.meta.url), 'utf8');
 
-test('optional upsells are not selectable while checkout charges only the core workshop', () => {
-  assert.match(app, /Complementos opcionales · En preparación/);
-  assert.match(app, /type="checkbox"\s+disabled\s+checked=\{false\}/);
-  assert.match(pay, /quantity: 1, currency_id: "PEN", unit_price: priceOf\(env\)/);
+const app = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
+const skool = readFileSync(new URL('../src/components/SkoolCheckoutButton.tsx', import.meta.url), 'utf8');
+const privacy = readFileSync(new URL('../src/PrivacyPolicy.tsx', import.meta.url), 'utf8');
+
+test('se establece US$9 como precio oficial único sin Mercado Pago, Whop ni order bumps', () => {
+  assert.match(app, /OFFICIAL_PRICE = 'US\$9'/);
+  assert.match(app, /Precio oficial/);
+  assert.match(app, /SkoolCheckoutButton/);
+  assert.doesNotMatch(
+    app + skool + privacy,
+    /Mercado\s*Pago|Mercado\s*Libre|mercadopago|Whop|Yape|S\/\s*34|S\/\s*35|orderBumps|selectedBumps|US\$197/i,
+  );
 });
 
-test('page does not advertise instant fulfillment or unconfigured payment methods', () => {
-  assert.doesNotMatch(app, /⚡ Acceso Inmediato 24\/7|Pago 100% Seguro \(Yape \/ Tarjetas\)|Recibes tu acceso inmediato tras el pago/);
-  assert.match(app, /Entrega coordinada después de verificar el pago/);
-  assert.doesNotMatch(app, /Garantía Incondicional de 14 Días|Política de devolución garantizada/);
+test('no promete acceso automático ni cobros activos mientras Skool es placeholder', () => {
+  assert.doesNotMatch(app, /⚡ Acceso Inmediato 24\/7|Garantía Incondicional de 14 Días|Acceso inmediato tras el pago/);
+  assert.match(app, /placeholder mientras lo conectamos/i);
+  assert.match(app, /no se realiza ningún cobro/i);
 });

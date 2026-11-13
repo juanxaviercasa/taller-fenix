@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { onRequestGet, onRequestPost } from '../functions/api/waitlist.ts';
-import { onRequestGet as checkoutStatus } from '../functions/api/checkout.ts';
 
 const endpoint = 'https://vibecoding.sistemazenit.com/api/waitlist';
 const request = (body, origin = 'https://vibecoding.sistemazenit.com') =>
@@ -13,7 +12,12 @@ function mockDB() {
     prepare(sql) {
       return {
         bind(...values) {
-          return { run: async () => { writes.push({ sql, values }); return { success: true }; } };
+          return {
+            run: async () => {
+              writes.push({ sql, values });
+              return { success: true };
+            },
+          };
         },
       };
     },
@@ -66,16 +70,4 @@ test('consented valid interest is persisted with normalized email', async () => 
   assert.equal(writes.length, 1);
   assert.equal(writes[0].values[0], 'docente@example.com');
   assert.equal(writes[0].values[1], 'landing');
-});
-
-test('payment CTA remains disabled for missing or invalid secrets and URLs', async () => {
-  const valid = { MP_CHECKOUT_ENABLED: 'true', MP_ACCESS_TOKEN: 'placeholder', MP_WEBHOOK_SECRET: 'placeholder',
-    MP_PRICE_PEN: '34', MP_ENVIRONMENT: 'test', SITE_URL: 'https://vibecoding.sistemazenit.com/' };
-  const getReady = (env) => checkoutStatus({ env }).json();
-  const inactive = await getReady({});
-  assert.equal(inactive.ready, false);
-  assert.equal(inactive.amount, null);
-  assert.equal((await getReady({ ...valid, SITE_URL: 'http://vibecoding.sistemazenit.com/' })).ready, false);
-  assert.equal((await getReady({ ...valid, SITE_URL: 'not-a-url' })).ready, false);
-  assert.equal((await getReady(valid)).ready, true);
 });

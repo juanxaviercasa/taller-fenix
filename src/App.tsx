@@ -1,851 +1,838 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import {
-  ArrowRight, Check, CheckCircle2, ChevronDown, Clock, Coins,
-  ExternalLink, Gift, GraduationCap, HardDrive, Lightbulb, Lock, MonitorPlay,
-  ShieldCheck, Sparkles, Timer, Users, Wrench, XCircle, Zap
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  ExternalLink,
+  GraduationCap,
+  ShieldCheck,
+  Sparkles,
+  Users,
 } from 'lucide-react';
-import { PeruCheckoutButton } from './components/PeruCheckoutButton';
+import HeroMathPreview from './components/HeroMathPreview';
+import { SkoolCheckoutButton } from './components/SkoolCheckoutButton';
 import { WaitlistForm } from './components/WaitlistForm';
-import MathStudio from './components/MathStudio';
 
-type Project = {name:string;image:string;description:string;skill:string;url:string;group:'Educación'|'Otros'};
-const projects:Project[]=[
-  {name:'Funciones Lab',image:'funciones-lab.webp',description:'Olvídate de trazar y borrar ejes 15 veces por semana: mueve deslizadores en vivo y haz que el salón comprenda funciones en minutos.',skill:'Cero desgaste en pizarra · Comprensión rápida',url:'https://funciones.sistemazenit.com/',group:'Educación'},
-  {name:'Transformaciones Geométricas',image:'transformaciones-geometricas.webp',description:'Visualiza traslaciones, rotaciones y simetrías en tiempo real, sigue una ruta de aprendizaje y descarga fichas imprimibles listas.',skill:'Ahorra horas de dibujo · Material imprimible',url:'https://transformacionesgeometricas.sistemazenit.com/',group:'Educación'},
-  {name:'Sólidos Geométricos',image:'solidos-geometricos.webp',description:'Modelos 3D interactivos, desarrollos planos, teoría y retos al servicio de tus clases de matemáticas sin sufrir dibujando en 2D.',skill:'Impacto visual 3D · Secuencia didáctica lista',url:'https://solidosgeometricos.sistemazenit.com/',group:'Educación'},
-  {name:'Mundos Simulados',image:'mundos-simulados.webp',description:'Modelos visuales de física y sistemas dinámicos listos para proyectar y capturar la atención de toda el aula.',skill:'Atención inmediata · Pensamiento matemático',url:'https://mundossimulados.online/',group:'Educación'},
-  {name:'Test vocacional RALE',image:'rale-test-vocacional.webp',description:'Evaluaciones y formularios automatizados que ahorran horas de revisión manual y abren servicios educativos adicionales.',skill:'Automatización y flujos de evaluación',url:'https://raletest.sistemazenit.com/',group:'Otros'},
-  {name:'Herramientas para Pymes',image:'herramientas-pymes.webp',description:'Calculadoras y sistemas prácticos creados con el mismo método para generar ingresos adicionales fuera del horario escolar.',skill:'Oportunidad profesional y monetización',url:'https://nubeparapymes.online/herramientas/',group:'Otros'},
-  {name:'Todo Lima',image:'todo-lima.webp',description:'Directorio digital que demuestra cómo dominar este sistema te abre puertas económicas más allá del aula.',skill:'Proyectos digitales escalables',url:'https://todolima.com/',group:'Otros'}
-];
+const MathStudio = lazy(() => import('./components/MathStudio'));
+const OFFICIAL_PRICE = 'US$9';
 
-const oldVsNew:[string,string][]=[
-  [
-    'Pasarte media hora dibujando un poliedro con 3 colores de plumón para que al final te digan: «¿Profe, esa raya de atrás está adentro o afuera?».',
-    'Giras el sólido en 3D con un clic, despliegas sus caras en vivo y todo el salón comprende la perspectiva en 10 segundos.'
-  ],
-  [
-    'Darle la espalda a tu salón durante 3 minutos para trazar en la pizarra (el instante exacto en que pierdes el orden y sacan el celular).',
-    'Explicas siempre de frente a tus alumnos, manteniendo el contacto visual, la autoridad escénica y la atención de toda el aula.'
-  ],
-  [
-    'Dictar en 5 secciones de secundaria y dibujar y borrar la misma gráfica 15 veces por semana hasta terminar con el hombro y la garganta destrozados.',
-    'Lo generas una sola vez en minutos, lo llevas en tu USB sin depender de internet y lo reutilizas todo el año en todas tus secciones.'
-  ],
-  [
-    'Pelear con comandos lentos de GeoGebra en plena clase (donde te equivocas en un paréntesis y se te fue la hora) o usar diapositivas que no se mueven.',
-    'Usas nuestras plantillas en español de copiar y pegar: si sabes mandar un WhatsApp y pegar en Word, la IA arma el visualizador por ti en 60 segundos.'
-  ],
-  [
-    'Competir por precio en tus clases particulares cobrando S/ 20 o S/ 30 la hora contra universitarios porque enseñas con un PDF estático.',
-    'Pasas a cobrar entre S/ 60 y S/ 80+ la hora mostrando a los padres simuladores interactivos propios que destraban a sus hijos desde la primera sesión.'
-  ]
-];
+type ProjectCategory = 'Matemáticas y Ciencias' | 'Automatización y Soluciones';
+type FilterOption = 'Todos' | ProjectCategory;
 
-const failedAlternatives:[string,string,string][]=[
-  [
-    'Diapositivas de PowerPoint o Canva',
-    'Son imágenes muertas en 2D.',
-    'Si un alumno te pregunta «¿Profe, qué pasa si el coeficiente es negativo o si giramos la figura?», la diapositiva no se mueve y terminas dibujando encima con plumón.'
-  ],
-  [
-    'GeoGebra Manual en Plena Clase',
-    'Fricción técnica frente a un salón inquieto.',
-    'Ponerte a meter comandos algebraicos en vivo frente a 35 o 40 alumnos consume media clase; te equivocas en un paréntesis y perdiste la atención del grupo.'
-  ],
-  [
-    'Videos de YouTube de Otros Profesores',
-    'Te quitan autoridad frente al salón.',
-    'Al poner el video de otro colega, tus alumnos pasan a modo pasivo y no puedes cambiar los datos del video para resolver el ejercicio de tu ficha.'
-  ],
-  [
-    'ChatGPT Básico en Modo Texto',
-    'Ceguera geométrica y fórmulas rotas.',
-    'Pedirle ejercicios en texto libre solo devuelve bloques planos sin interactividad visual. En cambio, nuestro método de Inyección de Plantillas crea pizarras vivas 2D/3D.'
-  ]
-];
-
-const quickWinTimeline:[string,string,string][]=[
-  [
-    'Minuto 1 · Eliges tu Plantilla en Español',
-    'Cuando se confirme tu inscripción, recibirás las instrucciones para acceder al material correspondiente al taller.',
-    'Si sabes usar WhatsApp y Word, ya sabes hacerlo'
-  ],
-  [
-    'Minuto 5 · Copias y Pegas en la IA Gratuita',
-    'Solo cambias entre corchetes el tema de tu clase y lo pegas en el lienzo gratuito de la IA. En 60 segundos construye los deslizadores, gráficos y retos por ti.',
-    'Sin pagar suscripciones de IA · Cero código'
-  ],
-  [
-    'Minuto 15 · A tu USB (Funciona Sin Internet)',
-    'Descargas tu visualizador en un archivo único liviano (.html) que guardas en tu USB y abre sin Wi-Fi en cualquier televisor o proyector de tu colegio.',
-    '100% Offline en el aula · +10 Apps ya listas'
-  ]
-];
-
-const teacherProfiles:[string,string,string][]=[
-  [
-    '1. Especialmente en Secundaria (1.° a 5.° Año)',
-    '«Dictar en cinco secciones y dibujar la misma gráfica 15 veces por semana me tenía el hombro y la garganta destrozados. Ahora llevo mi archivo en mi USB, lo abro sin internet en el TV del salón y recupero mis noches y mis domingos.»',
-    'Alivio físico inmediato + Control del salón sin gritar'
-  ],
-  [
-    '2. También en Nivel Preuniversitario y Cálculo',
-    '«Explicar Geometría del Espacio, Trigonometría o Derivadas e Integrales en una pizarra plana 2D era pedirles un acto de fe. Ahora giro el sólido en 3D, muestro el trazo oculto en 3 segundos y resuelvo el doble de problemas por clase.»',
-    'Cero ceguera espacial 2D + Respeto académico total'
-  ],
-  [
-    '3. En tus Clases Particulares (De S/ 25 a S/ 80/h)',
-    '«En clases particulares está lleno de universitarios cobrando S/ 20 la hora. Cuando muestras a los papás que enseñas con tus propios simuladores interactivos y su hijo por fin entiende sin miedo, pagan S/ 60 a S/ 80 la hora sin regatear.»',
-    'Con 1 sola hora de clase recuperas tus US$9'
-  ]
-];
-
-const valueStack:{title:string;objectionKilled:string;desc:string;value:string;isBonus?:boolean}[]=[
-  {
-    title:'1. El Generador Maestro «Pizarra Viva 3D» (Geometría del Espacio y Sólidos)',
-    objectionKilled:'Elimina el dolor de: «Mis alumnos no ven la perspectiva en 2D y tardo media hora dibujando poliedros»',
-    desc:'Plantilla copiar-y-pegar que ordena a la IA crear un visor 3D rotatorio con el ratón o el dedo, incluyendo botones para desplegar la red plana, ver líneas ocultas y cambiar dimensiones en vivo.',
-    value:'US$47'
-  },
-  {
-    title:'2. El Laboratorio Dinámico de Funciones, Trigonometría y Cálculo',
-    objectionKilled:'Elimina el dolor de: «Dibujar y borrar 15 veces por semana la misma curva en 5 secciones distintas»',
-    desc:'Genera planos cartesianos interactivos con deslizadores en tiempo real para parábolas, exponenciales, circunferencia trigonométrica, rectas tangentes (derivadas) y sumas de Riemann.',
-    value:'US$47'
-  },
-  {
-    title:'3. El Motor «Paso a Paso» Anti-Ansiedad Matemática (Álgebra y Aritmética)',
-    objectionKilled:'Elimina el dolor de: «Ven la pizarra llena de ecuaciones, se bloquean y dicen "Sí entendí, profe" por vergüenza»',
-    desc:'Crea pizarras digitales donde la resolución no aparece de golpe: revelas cada despeje línea por línea con un botón «Siguiente Paso», resaltando en colores qué ocurrió con los signos.',
-    value:'US$37'
-  },
-  {
-    title:'BONO INTENCIONAL #1 · El Clonador de Ejercicios Infinitos en Vivo (Botón «Nuevo Reto»)',
-    objectionKilled:'Rebate la objeción: «Pierdo horas en la noche inventando ejercicios cuyos datos salgan exactos»',
-    desc:'Añade a tus visualizadores un botón que genera al instante nuevos problemas con respuestas exactas (sin raíces ni fracciones feas accidentales) para sacar alumnos a participar.',
-    value:'US$27',
-    isBonus:true
-  },
-  {
-    title:'BONO INTENCIONAL #2 · Guía «De la IA a tu USB Sin Internet en 3 Clics» + Bóveda de 10 Apps Listas',
-    objectionKilled:'Rebate la objeción: «En mi colegio NO hay internet en las aulas y necesito algo listo para mañana a las 8:00 AM»',
-    desc:'Cómo descargar cualquier visualizador en un archivo único liviano que llevas en tu USB y abre sin Wi-Fi en cualquier TV o proyector. Incluye 10 simuladores ya armados listos para mañana.',
-    value:'US$39',
-    isBonus:true
-  }
-];
-
-type OrderBump = {
-  id:string;
-  tag:string;
-  title:string;
-  priceUsd:number;
-  painSolved:string;
-  desc:string;
-};
-
-const orderBumps:OrderBump[]=[
-  {
-    id:'bump-examenes-word',
-    tag:'COMPLEMENTO #1 · AHORRO NOCTURNO',
-    title:'Generador Automático de Exámenes (Fila A y B), Prácticas y Solucionarios Listos para Imprimir',
-    priceUsd:9,
-    painSolved:'Para no quedarte hasta las 11:30 PM peleando con el editor de ecuaciones y gráficos en Word',
-    desc:'Plantillas que generan en 2 minutos fichas de trabajo, exámenes diferenciados anti-copia (Fila A y Fila B) con rúbricas y solucionarios paso a paso listos para imprimir en PDF.'
-  },
-  {
-    id:'bump-boveda-50',
-    tag:'COMPLEMENTO #2 · CERO ESFUERZO (TODO EL AÑO LISTO)',
-    title:'Bóveda «Cero Esfuerzo» de 50 Visualizadores Matemáticos Ya Creados para tu USB (Secundaria + Pre)',
-    priceUsd:12,
-    painSolved:'Para el docente con múltiples secciones sin tiempo que quiere todo el año resuelto hoy sin siquiera copiar prompts',
-    desc:'Descarga directa de los 50 simuladores interactivos 2D y 3D más usados del currículo (álgebra, geometría plana y del espacio, trigo, funciones y cálculo) listos para llevar en tu USB.'
-  },
-  {
-    id:'bump-admision-minedu',
-    tag:'COMPLEMENTO #3 · COLEGIO MINEDU + NIVEL ADMISIÓN',
-    title:'Pack de Prompts «Situaciones Significativas MINEDU y Problemas Tipo Admisión (UNI / San Marcos / PUCP)»',
-    priceUsd:7,
-    painSolved:'Para cumplir con las situaciones significativas que exige el coordinador en secundaria o el rigor preuniversitario',
-    desc:'Transforma cualquier tema abstracto en problemas contextualizados de la vida real (enfoque por competencias) o en retos de nivel examen de admisión con gráficas integradas.'
-  }
-];
-
-const faq:[string,string][]=[
-  ['"En mi colegio NO hay internet en los salones, apenas un proyector o televisor. ¿Igual me sirve?"', '¡Sí, fue diseñado exactamente para la realidad de los colegios de Perú y Latinoamérica! Con el Bono #2 («De la IA a tu USB Sin Internet en 3 Clics»), tu visualizador se descarga como un archivo único súper liviano (.html) que guardas en tu memoria USB. Llegas al salón, conectas tu laptop al televisor o proyector y funciona al 100% SIN INTERNET.'],
-  ['"Ya probé GeoGebra y cursos de TICs, pero en vivo pierdo media hora metiendo comandos. ¿Por qué esto es distinto?"', 'En GeoGebra tienes que configurar comandos algebraicos manualmente y, si te equivocas en un paréntesis frente a 35 o 40 alumnos inquietos, pierdes toda la clase. Aquí NO configuras software: usas nuestras Plantillas en Español de Copiar y Pegar. La IA construye todo el simulador por ti en 60 segundos y tú en clase solo mueves deslizadores y botones listos.'],
-  ['"Soy profesor de matemáticas, no programador (y tengo más de 45 años). ¿Necesito saber código o pagar una IA cara?"', 'Si sabes escribir un mensaje de WhatsApp y copiar y pegar un texto en Word, ya tienes el 100% de la habilidad técnica necesaria. No tocas ni una línea de programación y todo el método funciona utilizando las versiones 100% GRATUITAS de la Inteligencia Artificial (sin pagar suscripciones de US$20 al mes).'],
-  ['"Tengo 5 secciones en secundaria y dicto más de 35 horas a la semana. ¿Esto me va a quitar tiempo?"', 'Al contrario: está hecho para devolverte tus noches y erradicar el dolor de estómago del domingo a las 5:00 PM. Además, incluye una Bóveda con 10 visualizadores ya armados para que los uses mañana mismo a las 8:00 AM sin crear nada desde cero, y cada recurso nuevo te toma menos de 15 minutos dejándolo listo para todo el año.'],
-  ['"¿Por qué cuesta solo US$9 (aprox. S/ 33 soles)? ¿Hay cobros mensuales ocultos?"', 'No hay ningún cobro mensual ni letra chica: es un único pago de US$9 (exactamente lo que te cuestan dos cajas de plumones acrílicos o lo que cobras en una sola hora de clase particular estándar). Lo fijamos en este precio de entrada para que cualquier docente de Perú y Latinoamérica pueda comprobar el sistema en su aula hoy mismo.'],
-  ['"¿Cómo recupero estos US$9 dando clases particulares o en mi colegio?"', 'En el mercado de clases particulares, quien enseña con un PDF estático pelea por S/ 20 o S/ 30 la hora contra estudiantes universitarios. Cuando le muestras a los padres de familia tus propios simuladores 2D y 3D donde su hijo comprende en 15 minutos lo que no entendió en todo el bimestre, justificas tarifas de S/ 60 a S/ 80+ la hora. Con una sola hora recuperas hasta el doble de tu inversión.'],
-  ['"¿Las plataformas grandes multi-módulo como Sólidos Geométricos completo vienen dentro de los US$9?"', 'Esas plataformas avanzadas te muestran hasta dónde puedes escalar dentro de nuestro ecosistema. En tu acceso hoy de US$9 recibes las 3 plantillas maestras (3D, Funciones/Trigo/Cálculo y Paso a Paso), el Clonador de Ejercicios Infinitos, la Guía USB Sin Internet y las 10 aplicaciones listas para usar mañana mismo.']
-];
-
-function Heading({eyebrow,title,body}:{eyebrow:string;title:string;body?:string}){
- return <div className="max-w-3xl"><p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">{eyebrow}</p><h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.35rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">{title}</h2>{body&&<p className="mt-4 text-base leading-8 text-[#685977] sm:text-lg">{body}</p>}</div>;
+interface ProjectItem {
+  name: string;
+  image: string;
+  category: ProjectCategory;
+  highlight: string;
+  description: string;
+  url: string;
 }
 
-function ProjectCard({project}:{project:Project}){
- return <article className="group flex flex-col overflow-hidden rounded-[22px] border border-[#E7DCF0] bg-white shadow-[0_14px_40px_rgba(68,31,120,.06)]">
-  <div className="aspect-[16/10] overflow-hidden border-b border-[#EFE6F7] bg-[#F5EEFC]"><img src={`/projects/captures/${project.image}`} alt={`Vista previa de ${project.name}`} loading="lazy" decoding="async" className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"/></div>
-  <div className="flex flex-1 flex-col p-6"><span className="text-[10px] font-bold uppercase tracking-[.13em] text-[#8A51C5]">{project.skill}</span><h3 className="mt-2 font-display text-xl font-bold text-[#2C1A40]">{project.name}</h3><p className="mt-3 flex-1 text-sm leading-7 text-[#695B77]">{project.description}</p><a href={project.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#6531C6] hover:underline">Ver resultado en vivo <ExternalLink className="size-4"/></a></div>
- </article>;
+const projects: ProjectItem[] = [
+  {
+    name: 'Funciones Lab',
+    image: 'funciones-lab.webp',
+    category: 'Matemáticas y Ciencias',
+    highlight: 'Visualización interactiva en tiempo real',
+    description:
+      'Mueve parámetros y deslizadores en vivo para que tus estudiantes comprendan funciones sin trazar y borrar ejes una y otra vez.',
+    url: 'https://funciones.sistemazenit.com/',
+  },
+  {
+    name: 'Transformaciones Geométricas',
+    image: 'transformaciones-geometricas.webp',
+    category: 'Matemáticas y Ciencias',
+    highlight: 'Geometría dinámica + material imprimible',
+    description:
+      'Explora traslaciones, rotaciones y simetrías paso a paso siguiendo una ruta didáctica lista para proyectar y trabajar en clase.',
+    url: 'https://transformacionesgeometricas.sistemazenit.com/',
+  },
+  {
+    name: 'Sólidos Geométricos',
+    image: 'solidos-geometricos.webp',
+    category: 'Matemáticas y Ciencias',
+    highlight: 'Modelos 3D y desarrollos planos',
+    description:
+      'Gira cuerpos en 3D, abre su red plana en un clic y conecta áreas, volúmenes y retos sin depender de dibujos estáticos en pizarra.',
+    url: 'https://solidosgeometricos.sistemazenit.com/',
+  },
+  {
+    name: 'Mundos Simulados',
+    image: 'mundos-simulados.webp',
+    category: 'Matemáticas y Ciencias',
+    highlight: 'Física y sistemas dinámicos en vivo',
+    description:
+      'Modelos visuales interactivos para explicar fenómenos científicos y sistemas dinámicos capturando la atención de todo el salón.',
+    url: 'https://mundossimulados.online/',
+  },
+  {
+    name: 'Test vocacional RALE',
+    image: 'rale-test-vocacional.webp',
+    category: 'Automatización y Soluciones',
+    highlight: 'Evaluaciones y flujos automatizados',
+    description:
+      'Instrumento web interactivo que automatiza la aplicación y entrega de resultados vocacionales, ahorrando horas de revisión manual.',
+    url: 'https://raletest.sistemazenit.com/',
+  },
+  {
+    name: 'Herramientas para Pymes',
+    image: 'herramientas-pymes.webp',
+    category: 'Automatización y Soluciones',
+    highlight: 'Calculadoras y utilidades prácticas',
+    description:
+      'Suite de herramientas web prácticas construidas con el mismo método para agilizar procesos de trabajo y crear soluciones reales.',
+    url: 'https://nubeparapymes.online/herramientas/',
+  },
+  {
+    name: 'Todo Lima',
+    image: 'todo-lima.webp',
+    category: 'Automatización y Soluciones',
+    highlight: 'Plataforma web escalable publicada',
+    description:
+      'Directorio digital completo que demuestra cómo la misma ruta permite resolver necesidades reales fuera y dentro de tu institución.',
+    url: 'https://todolima.com/',
+  },
+];
+
+const steps = [
+  {
+    number: '01',
+    image: '/docentes/ruta-01-idea-guardada-a-app.webp',
+    alt: 'Cuaderno con boceto de aplicación educativa transformándose en una interfaz web interactiva en pantalla',
+    title: 'Define la idea que llevabas años guardando',
+    description:
+      'Aclaras qué problema concreto quieres resolver para tus estudiantes, tu institución o tu sector y trazas el alcance real de tu aplicación sin enredos técnicos.',
+  },
+  {
+    number: '02',
+    image: '/docentes/ruta-02-construccion-ia-sin-codigo.webp',
+    alt: 'Profesional de la educación dirigiendo la construcción paso a paso de módulos web con inteligencia artificial',
+    title: 'Construye con IA paso a paso sin código',
+    description:
+      'Aplicas la ruta estructurada para dirigir, revisar y ajustar cada pantalla e interacción de tu herramienta web sin depender de un programador externo.',
+  },
+  {
+    number: '03',
+    image: '/docentes/ruta-03-automatizacion-tiempo-libre.webp',
+    alt: 'Escritorio ordenado con panel de herramientas y evaluaciones educativas automatizadas completadas',
+    title: 'Ponla en marcha para enseñar o automatizar',
+    description:
+      'Llevas tu aplicación web interactiva al aula, a tu equipo o a tu industria: desde simuladores didácticos hasta evaluaciones y flujos que ahorran horas de trabajo.',
+  },
+];
+
+const included = [
+  'Ruta práctica paso a paso para convertir tu idea educativa en una aplicación web o herramienta interactiva real, aunque no sepas programar.',
+  'Estrategia probada desde 2023 que condensa años de aprendizajes, pruebas y errores para ahorrar tiempo de vida y dinero.',
+  'Criterios, flujo de trabajo y prompts guiados para dirigir a la IA sobre tu propio proyecto sin contratar un programador.',
+  'Aplicable desde apps para enseñar matemáticas y ciencias hasta automatización de tareas y soluciones aún no resueltas en tu institución o industria.',
+  'Referencia viva de 7 aplicaciones reales publicadas y acceso interactivo a nuestro graficador Math Studio.',
+];
+
+const filterTabs: { id: FilterOption; label: string }[] = [
+  { id: 'Todos', label: 'Las 7 aplicaciones' },
+  { id: 'Matemáticas y Ciencias', label: 'Matemáticas y ciencias' },
+  { id: 'Automatización y Soluciones', label: 'Automatización y soluciones' },
+];
+
+const FAQ: [string, string][] = [
+  [
+    '¿El taller es solo para profesores de matemáticas?',
+    'No. Está abierto a docentes de cualquier área y a profesionales en la industria de la educación (coordinación, capacitación, tutorías, orientación o gestión). Conservamos y mostramos nuestro graficador y apps de matemáticas y ciencias como prueba de nivel, pero la ruta aplica exactamente igual para crear simuladores de otras áreas, evaluaciones, tableros, automatizaciones y herramientas web para resolver problemas reales.',
+  ],
+  [
+    '¿Necesito saber programar o haber usado código antes?',
+    'No. La ruta está diseñada para trabajar sin conocimientos previos de programación. Tú aportas tu criterio profesional y educativo, y aprendes cómo dirigir paso a paso a la inteligencia artificial para construir y ajustar tus aplicaciones web sin contratar un programador.',
+  ],
+  [
+    '¿Qué tipo de aplicaciones web y herramientas puedo crear?',
+    'Desde aplicaciones interactivas para enseñar conceptos de matemáticas y ciencias hasta herramientas que automatizan tareas repetitivas, evaluaciones diagnósticas, calculadoras personalizadas o soluciones web para necesidades concretas de tu institución o industria.',
+  ],
+  [
+    '¿Cómo funciona el precio oficial de US$9 y el acceso en Skool?',
+    'El precio oficial único del taller es US$9 y el acceso se gestionará dentro de nuestra comunidad en Skool. El botón hacia el checkout de Skool está actualmente en modo placeholder mientras conectamos el enlace oficial, por lo que todavía no se realiza ningún cobro desde esta página.',
+  ],
+  [
+    '¿Por qué enfatizas la experiencia desde 2023?',
+    'Estudiar y construir aplicaciones reales con IA desde el inicio de su auge en 2023 implicó cientos de horas de pruebas y errores. Condensar esa estrategia en una sola ruta clara te permite ir directo a lo que funciona y evitar años de intentos dispersos.',
+  ],
+];
+
+function SectionHeading({ label, title, body }: { label: string; title: string; body?: string }) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#43685B]">{label}</p>
+      <h2 className="mt-4 font-display text-[clamp(1.95rem,3.7vw,3.35rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#18283C]">
+        {title}
+      </h2>
+      {body && <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#57687B]">{body}</p>}
+    </div>
+  );
 }
 
-function InstructorPortrait(){
- return <div className="mx-auto flex w-full max-w-[320px] flex-col overflow-hidden rounded-[28px] border border-[#CBB0E7] bg-white shadow-[0_20px_50px_rgba(100,50,200,0.12)]">
-   <img src="/instructor/xavier-cabello.webp" alt="Juan Xavier Cabello - Profesor de matemáticas y creador del método" loading="lazy" decoding="async" className="aspect-[4/5] w-full object-cover object-top"/>
-   <div className="border-t border-[#EBDFF5] bg-[#FBF9FD] px-5 py-3.5 text-center">
-     <p className="font-display text-base font-bold text-[#2E1B40]">Juan Xavier Cabello</p>
-     <p className="text-xs font-semibold text-[#7645BA]">Profesor de matemáticas & creador del método</p>
-   </div>
- </div>;
+function Brand() {
+  return (
+    <a href="#inicio" className="inline-flex items-center gap-3" aria-label="Sistema Zénit, ir al inicio">
+      <span className="flex size-9 items-center justify-center rounded-xl bg-[#183F3C] font-display text-xl font-black text-white">
+        Z
+      </span>
+      <span className="flex flex-col leading-none">
+        <strong className="font-display text-[15px] tracking-tight text-[#18283B]">SISTEMA ZÉNIT</strong>
+        <span className="mt-1 text-[9px] font-bold uppercase tracking-[.16em] text-[#5B7268]">
+          Educación × Inteligencia Artificial
+        </span>
+      </span>
+    </a>
+  );
 }
 
-export default function App(){
- const [more,setMore]=useState(false);
- const [selectedBumps,setSelectedBumps]=useState<string[]>([]);
+function PurchaseCTA({ compact = false }: { compact?: boolean }) {
+  return (
+    <a
+      href="#comprar"
+      className={`inline-flex items-center justify-center gap-2.5 rounded-xl bg-[#193F39] font-bold text-white shadow-[0_10px_25px_rgba(25,63,57,.16)] transition hover:bg-[#286957] ${
+        compact ? 'px-4 py-2.5 text-xs sm:text-sm' : 'px-7 py-4 text-sm sm:text-base'
+      }`}
+    >
+      Ver taller por {OFFICIAL_PRICE} <ArrowRight className="size-5" />
+    </a>
+  );
+}
 
- const toggleBump=(id:string)=>{
-   setSelectedBumps(prev=>{
-     const next=prev.includes(id)?prev.filter(x=>x!==id):[...prev,id];
-     try{window.localStorage.setItem('zenit_selected_bumps',JSON.stringify(next));}catch{}
-     return next;
-   });
- };
-
- const bumpsTotalUsd=orderBumps
-   .filter(b=>selectedBumps.includes(b.id))
-   .reduce((acc,b)=>acc+b.priceUsd,0);
- const totalUsd=9+bumpsTotalUsd;
-
- return <div id="inicio" className="min-h-screen overflow-x-clip bg-[#FCFAFF] font-sans text-[#2D1A42]">
-  <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-4">Saltar al contenido</a>
-  <main id="contenido">
-   {/* BLOQUE 1: HERO DE ULTRA-CONVERSIÓN (CONCISO, FILUDO, ESPECIALMENTE SECUNDARIA + IMAGEN PROTAGONISTA) */}
-   <section className="brand-hero relative px-5 pb-16 pt-8 sm:px-7 sm:pb-20 sm:pt-12">
-    <div className="relative mx-auto max-w-7xl">
-     <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
-      {/* COLUMNA IZQUIERDA: PRE-TITULAR, TITULAR CORTO Y FILUDO, SUBTÍTULO PUNTUAL, 3 CHECKS Y CTA */}
-      <div>
-        <p className="inline-flex items-center gap-2 rounded-full border border-[#D8C4ED] bg-white/95 px-4 py-1.5 text-xs font-extrabold uppercase tracking-[.09em] text-[#7238BF] shadow-sm">
-          <Sparkles className="size-3.5 shrink-0 text-[#9B4DFF]"/>
-          <span>Para profesores de matemáticas · Especialmente si enseñas en secundaria</span>
-        </p>
-
-        <h1 className="mt-5 font-display text-[clamp(2.2rem,4.3vw,4.1rem)] font-bold leading-[1.08] tracking-[-.055em] text-[#25173C]">
-          Deja de perder media hora dibujando en la pizarra mientras tu salón se distrae.{' '}
-          <span className="bg-gradient-to-r from-[#6535D5] to-[#DA468B] bg-clip-text text-transparent">
-            Lleva «Pizarras Vivas en 2D y 3D» en tu USB 100% sin internet.
-          </span>
-        </h1>
-
-        <p className="mt-5 max-w-2xl text-base leading-7 text-[#5E4E6E] sm:text-lg sm:leading-8">
-          Sin saber programar ni pelear con comandos de GeoGebra en plena clase. Copias una plantilla en español, la pegas en la IA gratuita y en 60 segundos descargas un visualizador interactivo para el televisor o proyector de tu aula. <strong className="text-[#2B1840]">Menos tiempo escribiendo y dibujando en la pizarra. Más tiempo guiando el aprendizaje.</strong>
-        </p>
-
-        <ul className="mt-5 space-y-2 text-sm font-semibold text-[#3C2852]">
-          <li className="flex items-center gap-2.5">
-            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
-            <span>Explicas de frente al aula sin desgastar tu garganta ni tu hombro en 5 secciones</span>
-          </li>
-          <li className="flex items-center gap-2.5">
-            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
-            <span>Abre 100% sin Wi-Fi desde tu USB (incluye 10 apps listas para mañana a las 8:00 AM)</span>
-          </li>
-          <li className="flex items-center gap-2.5">
-            <CheckCircle2 className="size-4 shrink-0 text-[#1D896A]"/>
-            <span>Ideal para secundaria y adaptable hasta nivel preuniversitario y cálculo</span>
-          </li>
-        </ul>
-
-        <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-          <a href="#inscripcion" className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-7 py-4 text-base font-extrabold text-white shadow-[0_18px_38px_rgba(101,48,200,.26)] transition hover:scale-[1.01] hover:opacity-95 sm:w-auto">
-            ¡Quiero mi Kit de Pizarras Vivas + 10 Apps · US$9! <ArrowRight className="size-5"/>
-          </a>
-          <a href="#demostracion" className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-[#D8C4ED] bg-white/90 px-4 py-3.5 text-xs font-extrabold text-[#6630CB] hover:bg-white sm:w-auto">
-            Probar graficador en vivo ↓
-          </a>
-        </div>
-
-        <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-[#66537A]">
-          <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único US$9 (~S/ 33 · Lo que cuestan 2 cajas de plumones)</span>
-          <span>·</span>
-          <span>Condiciones de inscripción antes de pagar</span>
-        </p>
-      </div>
-
-      {/* COLUMNA DERECHA: IMAGEN PROTAGONISTA QUE CAPTA LA ATENCIÓN Y EXPLICA LA IDEA EN 1 SEGUNDO */}
-      <figure className="overflow-hidden rounded-[28px] border border-[#DCC8F0] bg-white p-2.5 shadow-[0_24px_70px_rgba(68,31,120,0.14)] sm:p-3.5">
-        <div className="mb-2.5 flex items-center justify-between gap-2 px-2 pt-1 text-[11px] font-extrabold text-[#5B3E75]">
-          <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-[#1D896A]"/> El cambio real frente a tus alumnos</span>
-          <span className="rounded-full bg-[#F3EAFF] px-2.5 py-0.5 text-[#6F37C5]">En tu USB · 100% sin internet</span>
-        </div>
+function ProjectCard({ project }: { project: ProjectItem }) {
+  return (
+    <article className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#DFEAE3] bg-white shadow-[0_14px_38px_rgba(22,54,42,.06)] transition hover:border-[#9BBFAC]">
+      <div className="aspect-[16/10] overflow-hidden border-b border-[#E5EEE8] bg-[#F2F7F4]">
         <img
-          src="/metodo/dolor-pizarra-vs-clase-viva.webp"
-          alt="Contraste en el aula: profesor cansado dibujando en pizarra de espaldas al salón vs. profesor proyectando una Pizarra Viva 2D y 3D con alumnos atentos"
-          width="960"
-          height="600"
-          fetchPriority="high"
-          className="aspect-[16/10] w-full rounded-2xl border border-[#EAE0F5] object-cover"
+          src={`/projects/captures/${project.image}`}
+          alt={`Captura real de ${project.name}`}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.02]"
         />
-        <figcaption className="mt-2.5 grid gap-2 rounded-xl bg-[#FAF6FF] p-3 text-xs leading-5 sm:grid-cols-2">
-          <div className="font-semibold text-[#9E2F56]">
-            ❌ <strong>Antes:</strong> 2 min de espaldas trazando con plumón = salón en el celular y dibujo 2D estático.
-          </div>
-          <div className="font-semibold text-[#156E55]">
-            ✅ <strong>Ahora:</strong> Giras sólidos 3D y funciones con un clic mirando siempre a tu clase.
-          </div>
-        </figcaption>
-      </figure>
-     </div>
-    </div>
-   </section>
-
-   {/* BLOQUE 1.5: DEMOSTRACIÓN INTERACTIVA EN VIVO (SECUNDARIA, PREUNIVERSITARIO Y UNIVERSIDAD) */}
-   <section id="demostracion" className="border-t border-[#E4D8F0] bg-[#F6F0FC] px-5 py-16 sm:px-7 sm:py-20">
-     <div className="mx-auto max-w-7xl">
-       <div className="mx-auto max-w-3xl text-center">
-         <p className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1 text-xs font-extrabold uppercase tracking-[.14em] text-[#6932C8] shadow-sm">
-           <Zap className="size-3.5 text-[#B93EA3]"/> Tócalo tú mismo ahora en vivo
-         </p>
-         <h2 className="mt-3 font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-bold leading-tight tracking-[-.05em] text-[#25173C]">
-           Cuando un alumno pregunta «¿Profe, qué pasa si ese número es negativo?», ya no borras la pizarra: solo mueves un control.
-         </h2>
-         <p className="mt-3 text-sm leading-7 text-[#625272] sm:text-base">
-           Explora nuestro graficador interactivo en sus 3 niveles (<strong>Secundaria, Preuniversitario y Universidad</strong>). Lo que en la pizarra te toma 20 minutos trazar y borrar, aquí tus estudiantes lo ven cambiar al instante y exclaman <strong className="text-[#2D1A42]">«¡Profe, ahora sí lo vi clarito!»</strong> en 10 segundos:
-         </p>
-       </div>
-
-       <div className="mt-7"><MathStudio/></div>
-       <div className="mx-auto mt-5 flex max-w-5xl flex-wrap items-center justify-center gap-2 text-center text-xs text-[#796A84]">
-         <span className="font-bold text-[#6F39C8]">Resultados reales funcionando hoy en el aula:</span>
-         <a href="https://funciones.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Funciones Lab</a> ·
-         <a href="https://transformacionesgeometricas.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">GeoTransform Pro</a> ·
-         <a href="https://mundossimulados.online/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Mundos Simulados</a>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 2: EL LEAD TSL (VOZ LITERAL DE SALA DE PROFESORES + TRIFECTA DE RESULTADOS) */}
-   <section className="border-t border-[#E4D9ED] px-5 py-24 sm:px-7">
-     <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[1.08fr_0.92fr]">
-       <div className="rounded-[28px] border border-[#E6DAF2] bg-white p-7 shadow-[0_14px_45px_rgba(70,32,120,0.06)] sm:p-10">
-         <p className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">
-           <GraduationCap className="size-4"/> Hablemos con la verdad · De profesor a profesor
-         </p>
-         <h2 className="mt-4 font-display text-[clamp(1.95rem,3.9vw,3.1rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#291840]">
-           «Me paso media hora dibujando con tres colores de plumón para que al final me digan: “¿Profe, esa raya de atrás está adentro o afuera?”…»
-         </h2>
-         <div className="mt-6 space-y-4 text-base leading-8 text-[#645574]">
-           <p>
-             Si enseñas matemáticas —especialmente en secundaria—, conoces este desgaste en el cuerpo: dictar en cuatro o cinco secciones, <strong className="text-[#35204A]">dibujar y borrar la misma gráfica 15 veces por semana</strong> hasta quedarte sin garganta y con el hombro adolorido… y apenas les das la espalda dos minutos para trazar en la pizarra, volteas y la mitad del salón ya está metida en el celular.
-           </p>
-           <p>
-             Les preguntas <em>«¿Todo claro?»</em> y todos te dicen <strong className="text-[#35204A]">«¡Sí, profe!»</strong> calladitos por vergüenza a quedar mal frente a sus compañeros, pero como el dibujo plano en 2D no se mueve, el viernes tomas la práctica y todos jalan. Y lo peor empieza a las <strong className="text-[#35204A]">11:30 PM de un domingo</strong>: cuando ya te duele el estómago pensando en el lunes mientras sigues despierto trabajando gratis en casa cuadrando gráficos y ecuaciones en Word.
-           </p>
-           <p className="rounded-2xl border-l-4 border-[#6E36C9] bg-[#F7F1FE] p-4 font-medium text-[#352049]">
-             No es tu culpa ni la de tus alumnos: una pizarra estática en 2D no puede competir contra la pantalla de un celular, y nadie tiene tiempo para programar ni para meter comandos en GeoGebra frente a 35 o 40 chicos inquietos. Por eso creamos el <strong className="text-[#6932C8]">Método Pizarra Viva IA™ por Inyección de Plantillas</strong>: copias en español, pegas en la IA gratuita y llevas tus propios simuladores 2D y 3D en tu memoria USB <strong className="text-[#6932C8]">sin necesitar internet en tu colegio</strong>.
-           </p>
-         </div>
-       </div>
-
-       <div className="space-y-4">
-         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
-           <div className="flex items-center gap-3">
-             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#F2E8FF] text-[#6B35C2]"><Clock className="size-5"/></span>
-             <div>
-               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#7C44CE]">Motor #1 · Salud, Voz y Tiempo Libre</span>
-               <h3 className="font-display text-lg font-bold text-[#2B193F]">Apaga tu laptop a las 7:00 PM y salva tu garganta</h3>
-             </div>
-           </div>
-           <p className="mt-3 text-sm leading-7 text-[#675776]">
-             Elimina las 12 a 18 horas semanales de trabajo fantasma no remunerado en casa y el «síndrome del domingo a las 5:00 PM». Generas tu pizarra interactiva en 60 segundos, la guardas en tu USB y la reutilizas en tus 5 secciones sin volver a dibujar desde cero.
-           </p>
-         </div>
-
-         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
-           <div className="flex items-center gap-3">
-             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#E8F8F3] text-[#178568]"><Users className="size-5"/></span>
-             <div>
-               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#178568]">Motor #2 · Autoridad Escénica y Cero Ansiedad</span>
-               <h3 className="font-display text-lg font-bold text-[#2B193F]">Explicas siempre de frente y brillas ante el coordinador</h3>
-             </div>
-           </div>
-           <p className="mt-3 text-sm leading-7 text-[#675776]">
-             Sin darle la espalda al grupo, giras poliedros en 3D, mueves deslizadores y revelas despejes paso a paso con un clic. Rompes la ansiedad matemática del salón y dejas boquiabiertos a tus colegas y al director en las observaciones de aula.
-           </p>
-         </div>
-
-         <div className="rounded-[24px] border border-[#E5D8F1] bg-white p-6 shadow-sm">
-           <div className="flex items-center gap-3">
-             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#FFF2E5] text-[#C85A17]"><Coins className="size-5"/></span>
-             <div>
-               <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#C85A17]">Motor #3 · De S/ 25/h a S/ 60–80+/h en Tutorías</span>
-               <h3 className="font-display text-lg font-bold text-[#2B193F]">Con 1 sola hora de clase particular recuperas tus US$9</h3>
-             </div>
-           </div>
-           <p className="mt-3 text-sm leading-7 text-[#675776]">
-             Deja de competir por precio contra universitarios que cobran S/ 20 la hora con un PDF estático. Cuando muestras a los padres tus propios simuladores interactivos 2D/3D con tu nombre, justificas tarifas de S/ 60 a S/ 80+ por hora y llenas tu agenda por recomendación.
-           </p>
-         </div>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 3: POR QUÉ FALLARON LAS SOLUCIONES ANTERIORES + MATRIZ COMPARATIVA */}
-   <section className="border-t border-[#E6DAEF] bg-[#F7F2FC] px-5 py-20 sm:px-7">
-     <div className="mx-auto max-w-6xl">
-       <div className="mx-auto max-w-3xl text-center">
-         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Por qué no es tu culpa · Diagnóstico de aula real</p>
-         <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.2rem)] font-bold leading-[1.1] tracking-[-.055em] text-[#291840]">
-           Por qué las «soluciones» que te dieron en las capacitaciones fracasan frente a un salón real
-         </h2>
-         <p className="mt-4 text-base leading-8 text-[#685977]">
-           Ya te metieron a cursos teóricos de TICs y probaste de todo. Mira por qué esas herramientas te daban más trabajo en vez de quitártelo:
-         </p>
-       </div>
-
-       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-         {failedAlternatives.map(([name,verdict,reason])=>(
-           <div key={name} className="rounded-2xl border border-[#E7D8F1] bg-white p-5 shadow-sm">
-             <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#C93B6B]">
-               <XCircle className="size-4 shrink-0"/> Solución Fallida
-             </div>
-             <h3 className="mt-2 font-display text-base font-bold text-[#2B1840]">{name}</h3>
-             <p className="mt-1 text-xs font-bold text-[#8E3967]">{verdict}</p>
-             <p className="mt-2 text-xs leading-6 text-[#675876]">{reason}</p>
-           </div>
-         ))}
-       </div>
-
-       <div className="mt-12 overflow-hidden rounded-[28px] border border-[#DECFF0] bg-white shadow-[0_18px_50px_rgba(68,31,120,0.07)]">
-         <div className="grid border-b border-[#EAE0F5] bg-[#FAF6FF] text-xs font-extrabold uppercase tracking-wider sm:grid-cols-2">
-           <div className="flex items-center gap-2 border-b border-[#EAE0F5] px-6 py-4 text-[#8C4366] sm:border-b-0 sm:border-r">
-             <XCircle className="size-4 shrink-0 text-[#D14B72]"/> La Vieja Forma (Desgaste de Garganta, Pizarra 2D y Noches en Vela)
-           </div>
-           <div className="flex items-center gap-2 bg-[#F2E8FF] px-6 py-4 text-[#5F2AB8]">
-             <CheckCircle2 className="size-4 shrink-0 text-[#198768]"/> El Nuevo Vehículo (Método Pizarra Viva IA™ en tu USB)
-           </div>
-         </div>
-         <div className="divide-y divide-[#EDE4F6]">
-           {oldVsNew.map(([oldWay,newWay],idx)=>(
-             <div key={idx} className="grid md:grid-cols-2">
-               <div className="flex items-start gap-3.5 p-6 text-sm leading-7 text-[#6E5E7C] md:border-r md:border-[#EDE4F6]">
-                 <XCircle className="mt-1 size-5 shrink-0 text-[#D14B72]"/>
-                 <span>{oldWay}</span>
-               </div>
-               <div className="flex items-start gap-3.5 bg-[#FCF9FF] p-6 text-sm font-medium leading-7 text-[#342049]">
-                 <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#198768]"/>
-                 <span>{newWay}</span>
-               </div>
-             </div>
-           ))}
-         </div>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 4: PRUEBA DEMOSTRADA #1: TRANSFORMACIONES GEOMÉTRICAS */}
-   <section id="caso-real" className="relative overflow-hidden border-y border-[#E6D9F0] bg-gradient-to-br from-[#F3EBFF] via-[#FFFBFE] to-[#FFF0E6] px-5 py-20 sm:px-7 sm:py-24">
-    <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#CDAEFF]/35 blur-[90px]"/>
-    <div className="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.94fr_1.06fr] lg:gap-16">
-      <div className="order-2 lg:order-1">
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#D8BCEC] bg-white px-4 py-2 text-xs font-extrabold text-[#6B36B5]"><CheckCircle2 className="size-4"/> De 25 minutos dibujando a mano a 10 segundos en vivo</div>
-        <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#2B1940]">Enseñar transformaciones geométricas <span className="text-[#7941CE]">sin empezar cada gráfico desde cero.</span></h2>
-        <p className="mt-5 text-base leading-8 text-[#645474]">¿Cuánto tiempo y paciencia pierdes trazando traslaciones, rotaciones o simetrías con regla y plumón en la pizarra para que al primer cambio de ángulo tengas que borrar todo? Ese desgaste innecesario es el que te agota al final del día.</p>
-        <p className="mt-4 text-base leading-8 text-[#645474]">Por eso utilizo <strong className="text-[#332047]">Transformaciones Geométricas</strong> en mis clases de matemáticas: en vez de cansarme dibujando, muevo la figura en tiempo real, conduzco una ruta de aprendizaje que mantiene a todos atentos y descargo materiales imprimibles en segundos sin quedarme trabajando de madrugada.</p>
-        <div className="mt-7 grid gap-3 sm:grid-cols-3">
-          {[
-            ['Cero tiempo perdido','Muestra 10 casos distintos en un minuto sin tocar el borrador.'],
-            ['Atención en el aula','Conduce la ruta de aprendizaje mirando siempre a tus alumnos.'],
-            ['Fichas al instante','Obtén materiales imprimibles listos sin pasar horas diseñando.']
-          ].map(([heading,body])=><div key={heading} className="rounded-2xl border border-[#E4D6F0] bg-white/90 p-4 shadow-[0_8px_26px_rgba(83,44,130,.045)]"><Check className="mb-2 size-5 text-[#7D45D3]"/><h3 className="font-display text-sm font-extrabold text-[#342049]">{heading}</h3><p className="mt-1.5 text-xs leading-5 text-[#6E5D7D]">{body}</p></div>)}
-        </div>
-        <div className="mt-7 flex flex-wrap items-center gap-4">
-          <a href="https://transformacionesgeometricas.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6633C9] px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(102,51,201,.16)] hover:bg-[#5526B7]">Ver cómo funciona en vivo <ExternalLink className="size-4"/></a>
-          <a href="#inscripcion" className="inline-flex items-center gap-2 text-sm font-bold text-[#6331B9] underline-offset-4 hover:underline">Quiero este resultado en mis clases · US$9 <ArrowRight className="size-4"/></a>
-        </div>
       </div>
-      <div className="order-1 lg:order-2">
-        <div className="overflow-hidden rounded-[26px] border border-[#E5D6F1] bg-white p-2.5 shadow-[0_24px_70px_rgba(80,37,117,.13)] sm:p-4">
-          <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-1 text-[11px] font-semibold text-[#715A83]"><span>Resultado real · Transformaciones Geométricas</span><span className="rounded-full bg-[#EDF7F2] px-2 py-1 text-[#218367]">Ahorro total de pizarra</span></div>
-          <img src="/projects/captures/transformaciones-geometricas.webp" alt="Captura real de la aplicación Transformaciones Geométricas utilizada en clases de matemáticas" loading="lazy" decoding="async" className="aspect-[16/11] w-full rounded-xl border border-[#EBE0F4] bg-[#F8F4FC] object-cover object-top"/>
-          <p className="px-3 pb-1 pt-3 text-xs leading-6 text-[#78668A]">Una sola herramienta lista en el navegador reemplaza cientos de dibujos repetitivos a lo largo del año escolar.</p>
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="rounded-full bg-[#EAF4ED] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.1em] text-[#24634F]">
+            {project.category}
+          </span>
+          <span className="text-[11px] font-semibold text-[#5E7469]">{project.highlight}</span>
         </div>
-        <p className="mx-auto mt-4 max-w-xl text-center text-xs leading-6 text-[#7C698B]">Con tu acceso inicial de US$9 logras tu primera victoria rápida con un módulo interactivo propio; sistemas completos como este son parte de la escalera de valor de nuestro ecosistema.</p>
+        <h3 className="mt-3 font-display text-xl font-bold leading-snug text-[#1C3442]">{project.name}</h3>
+        <p className="mt-2.5 flex-1 text-sm leading-7 text-[#5A6C78]">{project.description}</p>
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-[#193F39] underline-offset-4 hover:text-[#286F5A] hover:underline"
+        >
+          Abrir aplicación en vivo <ExternalLink className="size-4" />
+        </a>
       </div>
+    </article>
+  );
+}
+
+function InstructorPortrait() {
+  return (
+    <figure className="mx-auto w-full max-w-[390px] overflow-hidden rounded-[25px] border border-[#C9DBD0] bg-white p-3 shadow-[0_22px_55px_rgba(22,54,42,.09)]">
+      <img
+        src="/instructor/xavier-cabello.webp"
+        width="420"
+        height="540"
+        loading="lazy"
+        decoding="async"
+        alt="Juan Xavier Cabello, docente y constructor de aplicaciones educativas con IA"
+        className="aspect-[4/5] w-full rounded-[18px] object-cover object-top"
+      />
+      <figcaption className="px-3 pb-3 pt-5 text-center">
+        <strong className="font-display text-lg text-[#193B38]">Juan Xavier Cabello</strong>
+        <p className="mt-1 text-xs text-[#607A6D]">
+          Educador y constructor de aplicaciones web con IA desde 2023 · Sistema Zénit
+        </p>
+      </figcaption>
+    </figure>
+  );
+}
+
+export default function App() {
+  const [studioOpen, setStudioOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<FilterOption>('Todos');
+  const visibleProjects =
+    activeFilter === 'Todos' ? projects : projects.filter(project => project.category === activeFilter);
+  const eduProjects = visibleProjects.filter(project => project.category === 'Matemáticas y Ciencias');
+  const toolProjects = visibleProjects.filter(project => project.category === 'Automatización y Soluciones');
+
+  return (
+    <div id="inicio" className="min-h-screen bg-[#F8F9F7] font-sans text-[#1B2D40]">
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3"
+      >
+        Saltar al contenido
+      </a>
+
+      <header className="sticky top-0 z-40 border-b border-[#E5E9E7] bg-[#FBFCFA]/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+          <Brand />
+          <nav aria-label="Navegación principal" className="hidden items-center gap-7 text-sm font-semibold text-[#4D6072] md:flex">
+            <a href="#incluye" className="hover:text-[#176655]">
+              Qué incluye
+            </a>
+            <a href="#proyectos" className="hover:text-[#176655]">
+              Proyectos y graficador
+            </a>
+            <a href="#metodo" className="hover:text-[#176655]">
+              Cómo funciona
+            </a>
+            <a href="#preguntas" className="hover:text-[#176655]">
+              Preguntas
+            </a>
+          </nav>
+          <PurchaseCTA compact />
+        </div>
+      </header>
+
+      <main id="contenido">
+        {/* 1. HERO: PROPUESTA AMPLIA EN EDUCACIÓN + GRAFICADOR VIVO */}
+        <section
+          id="demostracion"
+          className="relative overflow-hidden border-b border-[#E5EAE8] bg-[radial-gradient(ellipse_65%_55%_at_92%_0%,rgba(202,235,216,.48),transparent_70%),linear-gradient(180deg,#F9FBFA_0%,#F4F8F5_100%)] px-5 py-14 sm:px-8 sm:py-20"
+        >
+          <div className="mx-auto grid max-w-7xl items-center gap-10 xl:grid-cols-[.94fr_1.06fr] xl:gap-14">
+            <div className="max-w-2xl">
+              <p className="inline-flex flex-wrap items-center gap-2 rounded-full border border-[#DDE9E1] bg-white px-3.5 py-2 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#285F51] sm:text-xs">
+                <GraduationCap className="size-4" />
+                TALLER PRÁCTICO · IA PARA PROFESIONALES DE LA EDUCACIÓN
+              </p>
+              <h1 className="mt-7 font-display text-[clamp(2.2rem,3.95vw,4rem)] font-bold leading-[1.09] tracking-[-.06em] text-[#18283C]">
+                Crea tus propias aplicaciones web interactivas con IA{' '}
+                <span className="text-[#286F5A]">sin saber programar.</span>
+              </h1>
+              <p className="mt-6 text-base leading-8 text-[#4F6174] sm:text-lg">
+                Ayudo a profesionales innovadores en la industria de la educación a plasmar esa idea que llevan años guardando en aplicaciones web reales para sus estudiantes o su institución —sin contratar a un programador ni desperdiciar tiempo y dinero en pruebas y errores, apoyado en experiencia aplicada con IA desde 2023.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-2.5 text-xs font-semibold text-[#3C5852]">
+                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+                  Cero programación previa
+                </span>
+                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+                  Enseñanza y automatización
+                </span>
+                <span className="rounded-full border border-[#C6DFD1] bg-[#EBF6EF] px-3.5 py-2 font-bold text-[#1D5543]">
+                  Precio oficial: {OFFICIAL_PRICE}
+                </span>
+              </div>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <PurchaseCTA />
+                <a
+                  href="#proyectos"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2B665A] underline-offset-4 hover:underline"
+                >
+                  Ver 7 apps reales y graficador <ChevronRight className="size-4" />
+                </a>
+              </div>
+              <p className="mt-4 text-xs leading-6 text-[#5E7282]">
+                Acceso oficial único de {OFFICIAL_PRICE} en nuestra comunidad de Skool (botón en placeholder mientras conectamos el checkout).
+              </p>
+            </div>
+
+            <div className="min-w-0">
+              <HeroMathPreview />
+              <p className="mt-3 text-center text-xs leading-6 text-[#607384]">
+                Graficador interactivo real creado con este enfoque: prueba cómo responden parámetros y curvas al instante (y debajo explora Math Studio completo y apps de automatización).
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. CONTRASTE DOLOR VS. SOBERANÍA TECNOLÓGICA */}
+        <section id="problema" className="px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              label="Deja de postergar esa herramienta que ya sabes que hace falta"
+              title="Tienes la idea y el criterio educativo. Te faltaba la ruta para construirla por ti mismo."
+              body="Desde aplicaciones interactivas para enseñar matemáticas y ciencias hasta herramientas que automatizan tareas y resuelven problemas en tu institución o industria, ya no necesitas contratar desarrolladores externos para volver real tu proyecto."
+            />
+            <div className="mt-11 grid gap-5 lg:grid-cols-2">
+              <div className="rounded-[24px] border border-[#E1E6EB] bg-white p-6 shadow-sm sm:p-8">
+                <div className="overflow-hidden rounded-2xl border border-[#E3E8EE] bg-[#16202C]">
+                  <img
+                    src="/docentes/dolor-dependencia-madrugada.webp"
+                    width="1280"
+                    height="720"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Profesional educativo trabajando de madrugada frente a bocetos y presupuestos costosos para una aplicación"
+                    className="aspect-video w-full object-cover"
+                  />
+                </div>
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#657489]">
+                  Lo que hoy frena tus ideas
+                </p>
+                <div className="mt-6 space-y-6">
+                  <div>
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      Guardar durante años un proyecto que ya deberías estar usando
+                    </h3>
+                    <p className="mt-2 text-sm leading-7 text-[#69798C]">
+                      Conoces exactamente qué aplicación o recurso interactivo necesitan tus alumnos o tu equipo, pero lo postergas pensando que primero debes aprender a programar desde cero.
+                    </p>
+                  </div>
+                  <div className="border-t border-[#EBEFF1] pt-5">
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      Contratar un programador consume tiempo, dinero y esfuerzo
+                    </h3>
+                    <p className="mt-2 text-sm leading-7 text-[#69798C]">
+                      Explicar tu enfoque pedagógico a terceros, esperar semanas y pagar por cada cambio termina encareciendo tu idea antes de validar su impacto real.
+                    </p>
+                  </div>
+                  <div className="border-t border-[#EBEFF1] pt-5">
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      Perder tiempo en pruebas y errores con prompts sueltos
+                    </h3>
+                    <p className="mt-2 text-sm leading-7 text-[#69798C]">
+                      Probar herramientas de IA aisladas te da resultados incompletos que no se sostienen cuando quieres una aplicación web funcional y útil en tu trabajo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-[#CBDED2] bg-[#EAF4ED] p-6 shadow-sm sm:p-8">
+                <div className="overflow-hidden rounded-2xl border border-[#BAD5C4] bg-white">
+                  <img
+                    src="/docentes/deseo-soberania-aula.webp"
+                    width="1280"
+                    height="720"
+                    loading="lazy"
+                    decoding="async"
+                    alt="Educador mostrando con seguridad su propia aplicación web interactiva en el aula"
+                    className="aspect-video w-full object-cover"
+                  />
+                </div>
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#2B6E5D]">
+                  Lo que cambia con esta ruta práctica
+                </p>
+                <div className="mt-6 space-y-6">
+                  <div>
+                    <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
+                      <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                      Tomas el control total sin saber programación
+                    </h3>
+                    <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
+                      Aprendes paso a paso cómo guiar a la IA para dar vida a tu proyecto web, modificarlo al instante y decidir cómo evolucionarlo sin intermediarios.
+                    </p>
+                  </div>
+                  <div className="border-t border-[#D0E3D7] pt-5">
+                    <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
+                      <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                      Ahorras años de aprendizajes, pruebas y errores
+                    </h3>
+                    <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
+                      Recorres la estrategia de alguien que estudia y aplica IA desde el inicio del boom en 2023, ahorrándote tiempo de vida y gastos innecesarios.
+                    </p>
+                  </div>
+                  <div className="border-t border-[#D0E3D7] pt-5">
+                    <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
+                      <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                      Creas herramientas didácticas o soluciones para tu sector
+                    </h3>
+                    <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
+                      Construye desde simuladores interactivos de matemáticas y ciencias hasta automatizaciones, calculadoras y soluciones a problemas aún no resueltos en tu industria.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. QUÉ INCLUYE POR US$9 */}
+        <section id="incluye" className="border-y border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+            <div>
+              <SectionHeading
+                label={`Qué recibes por ${OFFICIAL_PRICE} (precio oficial)`}
+                title="Sales con claridad para desarrollar de forma completa esa idea que estabas guardando."
+                body="No es un catálogo de prompts aislados. Es un taller práctico orientado a que avances tu propia aplicación o herramienta interactiva con IA sin saber código."
+              />
+              <ul className="mx-auto mt-9 max-w-2xl space-y-4">
+                {included.map(item => (
+                  <li key={item} className="flex gap-3 text-sm leading-7 text-[#4E6473]">
+                    <Check className="mt-1 size-5 shrink-0 rounded-full bg-[#E4F1E8] p-1 text-[#267754]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-9 text-center lg:text-left">
+                <PurchaseCTA />
+              </div>
+            </div>
+
+            <figure className="overflow-hidden rounded-[26px] border border-[#DAE7DF] bg-[#F6FAF7] p-3 shadow-[0_18px_50px_rgba(22,54,42,.08)]">
+              <img
+                src="/docentes/taller-ruta-2023-mockup.webp"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+                alt="Laptop ejecutando aplicaciones educativas junto a cuaderno y tarjetas de la ruta práctica Sistema Zénit desde 2023"
+                className="aspect-video w-full rounded-2xl object-cover"
+              />
+              <figcaption className="px-2 pb-2 pt-3 text-center text-xs font-semibold text-[#3B5F52]">
+                Ruta condensada desde 2023: de tu idea guardada durante años a aplicaciones web interactivas funcionando.
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        {/* 4. CÓMO FUNCIONA EN 3 PASOS */}
+        <section id="metodo" className="px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              label="El método paso a paso"
+              title="Una ruta práctica en tres pasos"
+              body="No empiezas estudiando sintaxis ni meses de programación teórica. Empiezas por un problema educativo o institucional real y diriges a la IA con criterio."
+            />
+            <div className="mt-12 grid gap-5 md:grid-cols-3">
+              {steps.map(step => (
+                <article
+                  key={step.number}
+                  className="group flex flex-col overflow-hidden rounded-[24px] border border-[#DCE7E0] bg-white shadow-[0_12px_34px_rgba(22,54,42,.05)]"
+                >
+                  <div className="aspect-video overflow-hidden border-b border-[#E5EEE8] bg-[#F2F7F4]">
+                    <img
+                      src={step.image}
+                      width="1280"
+                      height="720"
+                      loading="lazy"
+                      decoding="async"
+                      alt={step.alt}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-7">
+                    <span className="font-display text-4xl font-bold tracking-tight text-[#B5D2C1]">
+                      {step.number}
+                    </span>
+                    <h3 className="mt-4 font-display text-xl font-bold leading-snug text-[#203D39]">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-[#647487]">{step.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-3 rounded-2xl border border-[#D6E6DC] bg-[#EFF7F0] p-5 text-sm leading-7 text-[#37584C]">
+              <ShieldCheck className="size-6 shrink-0" />
+              Estrategia construida desde 2023 al inicio del auge de la IA para ahorrarte años de aprendizajes, pruebas y errores que hoy cuestan tiempo y dinero.
+            </div>
+          </div>
+        </section>
+
+        {/* 5. PROYECTOS REALES + GRAFICADOR MATH STUDIO */}
+        <section id="proyectos" className="border-y border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-7xl">
+            <SectionHeading
+              label="Prueba real antes de inscribirte"
+              title="No son simples páginas de juguete: explora 7 aplicaciones reales y nuestro graficador."
+              body="Estos proyectos están publicados y muestran el abanico real del método: desde aplicaciones interactivas para enseñar matemáticas y ciencias hasta automatización de evaluaciones y herramientas para problemas concretos."
+            />
+
+            <div role="tablist" aria-label="Filtrar proyectos reales por categoría" className="mt-9 flex flex-wrap justify-center gap-2.5">
+              {filterTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeFilter === tab.id}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition sm:text-sm ${
+                    activeFilter === tab.id
+                      ? 'bg-[#183F3C] text-white shadow-sm'
+                      : 'border border-[#CFE0D6] bg-[#F8FAF8] text-[#2D584B] hover:bg-[#EAF4ED]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {eduProjects.length > 0 && (
+              <div className="mt-11">
+                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
+                  Aplicaciones interactivas para enseñar matemáticas y ciencias
+                </p>
+                <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {eduProjects.map(project => (
+                    <ProjectCard key={project.name} project={project} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {toolProjects.length > 0 && (
+              <div className="mt-11">
+                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
+                  Automatización de tareas y soluciones en tu institución o industria
+                </p>
+                <div className="mt-5 grid gap-5 md:grid-cols-3">
+                  {toolProjects.map(project => (
+                    <ProjectCard key={project.name} project={project} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-12 rounded-[24px] border border-[#CFE0D6] bg-[#F5FAF7] p-6 sm:p-8">
+              <div className="flex flex-wrap items-center justify-between gap-5">
+                <div className="max-w-2xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#193F39] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-white">
+                      <Sparkles className="size-3.5" /> Graficador interactivo en vivo
+                    </span>
+                    <span className="rounded-full border border-[#C6DDD0] bg-white px-2.5 py-1 text-[11px] font-bold text-[#2C5C4E]">
+                      Secundaria · Preuniversitario · Universidad
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-display text-2xl font-bold text-[#193B36]">
+                    Math Studio: prueba nuestro graficador y simuladores matemáticos completos
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-[#536B63]">
+                    Mantén intacta la precisión visual: explora 9 familias de funciones, trigonometría directa e inversa y cálculo diferencial con tipografía LaTeX y SVG interactivo.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStudioOpen(v => !v)}
+                  aria-expanded={studioOpen}
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#193F39] px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#286957]"
+                >
+                  {studioOpen ? 'Cerrar Math Studio' : 'Explorar Math Studio'}
+                  <ArrowUpRight className="size-4" />
+                </button>
+              </div>
+              {studioOpen && (
+                <div className="mt-7" id="studio-completo">
+                  <Suspense
+                    fallback={
+                      <p role="status" className="py-8 text-center text-sm text-[#56746B]">
+                        Preparando el graficador Math Studio…
+                      </p>
+                    }
+                  >
+                    <MathStudio />
+                  </Suspense>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* 6. DOCENTE FUNDADOR · EXPERIENCIA DESDE 2023 */}
+        <section id="fundador" className="border-y border-[#DDE6E0] bg-[#EDF4EE] px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[.75fr_1.25fr]">
+            <InstructorPortrait />
+            <div>
+              <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.17em] text-[#366F5C]">
+                <Users className="size-4" /> Quién te guía
+              </p>
+              <h2 className="mt-5 font-display text-[clamp(2rem,3.8vw,3.35rem)] font-bold leading-[1.12] tracking-[-.05em] text-[#1E3938]">
+                Aprende con la experiencia de quien estudia e implementa con IA desde 2023.
+              </h2>
+              <p className="mt-7 text-lg leading-9 text-[#40584F]">
+                Soy Juan Xavier Cabello. Desde 2023 —en el inicio del auge de la inteligencia artificial— estudio, pruebo y construyo aplicaciones web interactivas reales para educación y productividad. Toda esa curva de aprendizaje, pruebas y errores la condenso en una ruta práctica para ahorrarte años de intentos dispersos y ayudarte a completar por fin ese proyecto que vienes postergando.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a
+                  className="inline-flex items-center gap-2 rounded-xl border border-[#BED6C7] bg-white px-4 py-3 text-xs font-bold text-[#2B6654] transition hover:bg-[#F6FAF6]"
+                  href="https://xavier.cabellosalirrosas.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver portafolio <ExternalLink className="size-4" />
+                </a>
+                <a
+                  className="inline-flex items-center gap-2 rounded-xl border border-[#BED6C7] bg-white px-4 py-3 text-xs font-bold text-[#2B6654] transition hover:bg-[#F6FAF6]"
+                  href="https://funciones.sistemazenit.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Probar Funciones Lab <ExternalLink className="size-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. PRECIO OFICIAL US$9 + CHECKOUT EN SKOOL (PLACEHOLDER) */}
+        <section id="comprar" className="bg-[#F8F9F7] px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              label="Inscripción oficial"
+              title="Empieza a construir tu propia aplicación web con IA por US$9."
+              body="Un único precio oficial para que aprendas la ruta paso a paso y transformes tu idea educativa en una herramienta web interactiva real."
+            />
+
+            <div className="mx-auto mt-12 grid max-w-5xl overflow-hidden rounded-[26px] border border-[#D8E2DC] bg-white shadow-[0_20px_65px_rgba(22,54,42,.08)] lg:grid-cols-[1.08fr_.92fr]">
+              <div className="p-7 sm:p-10">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#EDF6F0] px-3 py-2 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#2D7358]">
+                  <BookOpen className="size-4" /> Taller práctico · IA para educación
+                </div>
+                <h3 className="mt-6 font-display text-[clamp(1.6rem,2.5vw,2.3rem)] font-bold leading-[1.18] text-[#203744]">
+                  De una idea educativa guardada a aplicaciones web interactivas reales, sin saber programar.
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-[#647587]">
+                  Abierto a docentes de todas las áreas y profesionales del sector educativo que buscan enseñar mejor con herramientas propias o automatizar procesos en su institución.
+                </p>
+
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-[#F7FAF8] p-4">
+                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Qué obtienes</p>
+                    <p className="mt-2 text-sm leading-6 text-[#526675]">
+                      Ruta práctica paso a paso, criterios de IA desde 2023 y referencia de proyectos reales.
+                    </p>
+                  </div>
+                  <div className="rounded-xl bg-[#F7FAF8] p-4">
+                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Abierto a</p>
+                    <p className="mt-2 text-sm leading-6 text-[#526675]">
+                      Profesores, formadores, coordinadores y profesionales en la industria de la educación.
+                    </p>
+                  </div>
+                </div>
+
+                <p className="mt-7 rounded-xl border border-[#E5EBE7] bg-[#F8FAF8] p-4 text-xs leading-6 text-[#5E7280]">
+                  El taller te guía paso a paso para que tú mismo crees tus aplicaciones web y herramientas interactivas con IA; no incluye servicio de desarrollo hecho por encargo.
+                </p>
+              </div>
+
+              <div className="border-t border-[#E2E9E3] bg-[#F0F6F1] p-7 sm:p-10 lg:border-l lg:border-t-0">
+                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#537968]">Precio oficial</p>
+                <div className="mt-3 flex items-end gap-3">
+                  <strong className="font-display text-[clamp(3.3rem,6vw,5.1rem)] font-bold leading-none tracking-[-.09em] text-[#193E36]">
+                    {OFFICIAL_PRICE}
+                  </strong>
+                  <span className="pb-2 text-sm font-semibold text-[#60796A]">pago único</span>
+                </div>
+                <p className="mt-4 text-sm leading-7 text-[#607768]">
+                  Inversión única y oficial para acceder al taller dentro de nuestra comunidad en Skool, sin cargos ocultos ni pasarelas adicionales en esta página.
+                </p>
+
+                <div className="my-7 border-t border-[#D6E4DA]" />
+
+                <div className="rounded-2xl border border-[#D4E3D9] bg-white p-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#286F5A]">
+                      Acceso en comunidad de Skool
+                    </p>
+                    <span className="rounded-full bg-[#EAF4ED] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#266B56]">
+                      En preparación
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-[#5D7368]">
+                    El checkout oficial funcionará directamente dentro de Skool. Hemos dejado el botón listo en modo placeholder mientras lo conectamos.
+                  </p>
+                  <div className="mt-4">
+                    <SkoolCheckoutButton />
+                  </div>
+                </div>
+
+                <p className="mt-5 flex items-start gap-2 text-xs leading-6 text-[#62796C]">
+                  <ShieldCheck className="mt-0.5 size-4 shrink-0" />
+                  Mientras el checkout en Skool esté en placeholder, no se realiza ningún cobro. Antes de pagar en Skool verás todas las condiciones de acceso.
+                </p>
+              </div>
+            </div>
+
+            <div className="mx-auto mt-8 max-w-5xl">
+              <WaitlistForm />
+            </div>
+          </div>
+        </section>
+
+        {/* 8. FILTRO HONESTAMENTE SEGMENTADO */}
+        <section id="para-quien" className="px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
+            <div className="rounded-[24px] border border-[#CBDED2] bg-[#EAF4ED] p-7 sm:p-9">
+              <h2 className="font-display text-2xl font-bold text-[#193C35]">Este taller es para ti si...</h2>
+              <ul className="mt-6 space-y-4 text-sm leading-7 text-[#466458]">
+                <li className="flex gap-3">
+                  <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                  Trabajas en educación (docencia, capacitación, tutoría o gestión) y guardas hace años una idea de herramienta útil.
+                </li>
+                <li className="flex gap-3">
+                  <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                  Quieres construir aplicaciones web interactivas para enseñar o automatizar tareas sin saber programar ni contratar programador.
+                </li>
+                <li className="flex gap-3">
+                  <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                  Prefieres seguir una estrategia aplicada desde 2023 en vez de perder años en ensayo y error por tu cuenta.
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-[24px] border border-[#E1E6EB] bg-white p-7 sm:p-9">
+              <h2 className="font-display text-2xl font-bold text-[#26374B]">No es para ti si...</h2>
+              <ul className="mt-6 space-y-4 text-sm leading-7 text-[#69798C]">
+                <li className="flex gap-3">
+                  <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
+                  Buscas delegar por completo la construcción a una agencia sin involucrarte en el diseño de tu idea.
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
+                  Quieres un curso universitario largo de programación tradicional desde cero antes de probar una solución real.
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
+                  Esperas una promesa mágica sin definir qué problema educativo o laboral quieres resolver.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* 9. PREGUNTAS FRECUENTES */}
+        <section id="preguntas" className="border-t border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-4xl">
+            <SectionHeading label="Preguntas frecuentes" title="Resuelve todas tus dudas con transparencia" />
+            <div className="mt-10 divide-y divide-[#E4EBE6] rounded-2xl border border-[#DDE7E0] bg-white">
+              {FAQ.map(([question, answer]) => (
+                <details key={question} className="group p-5 sm:p-6">
+                  <summary className="cursor-pointer list-none pr-8 font-display text-lg font-bold text-[#203D39] marker:hidden">
+                    {question}
+                    <ChevronRight className="float-right mt-1 size-5 transition group-open:rotate-90" />
+                  </summary>
+                  <p className="mt-3 max-w-3xl text-sm leading-7 text-[#647487]">{answer}</p>
+                </details>
+              ))}
+            </div>
+            <div className="mt-10 text-center">
+              <PurchaseCTA />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t border-[#DFE7E1] bg-white px-5 py-8 sm:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-5">
+          <Brand />
+          <div className="flex flex-wrap items-center gap-5 text-xs font-semibold text-[#627486]">
+            <a href="/privacidad" className="hover:text-[#245C4B]">
+              Privacidad
+            </a>
+            <a href="mailto:xavier@cabellosalirrosas.com" className="hover:text-[#245C4B]">
+              Contacto
+            </a>
+            <a href="#inicio" className="hover:text-[#245C4B]">
+              Volver arriba
+            </a>
+          </div>
+          <p className="text-xs text-[#738195]">© 2026 Sistema Zénit · Aplicaciones web interactivas con IA para educación</p>
+        </div>
+      </footer>
     </div>
-   </section>
-
-   {/* BLOQUE 5: PRUEBA DEMOSTRADA #2: SÓLIDOS GEOMÉTRICOS */}
-   <section id="caso-solidos" className="border-b border-[#E7DAF1] bg-[#FAF6FE] px-5 py-20 sm:px-7 sm:py-24">
-     <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.04fr_.96fr] lg:gap-16">
-       <div className="overflow-hidden rounded-[26px] border border-[#E4D5F0] bg-white p-2.5 shadow-[0_24px_70px_rgba(80,37,117,.11)] sm:p-4">
-         <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-1 text-[11px] font-semibold text-[#715A83]"><span>Aplicación real en el aula</span><span className="rounded-full bg-[#EFE7FA] px-2.5 py-1 text-[#6834C3]">Secuencia didáctica 3D</span></div>
-         <img src="/projects/captures/solidos-geometricos.webp" alt="Captura real de la aplicación Sólidos Geométricos mostrando modelos tridimensionales interactivos para clases de matemáticas" loading="lazy" decoding="async" className="aspect-[16/10] w-full rounded-xl border border-[#EDE2F6] bg-[#F8F4FC] object-cover object-top"/>
-         <p className="px-3 pb-1 pt-3 text-xs leading-6 text-[#77658A]">Sólidos Geométricos reúne exploración tridimensional, desplegado de la red plana, conceptos clave y retos de verificación.</p>
-       </div>
-       <div>
-         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D8BCEC] bg-white px-4 py-1.5 text-xs font-extrabold text-[#6B36B5]"><CheckCircle2 className="size-4"/> Fin de la ceguera espacial en Geometría del Espacio</div>
-         <h2 className="font-display text-[clamp(1.95rem,3.8vw,3.3rem)] font-bold leading-[1.12] tracking-[-.055em] text-[#2B1940]">Sólidos Geométricos: <span className="text-[#773ECF]">de la intuición visual en 3D a la comprensión matemática.</span></h2>
-         <p className="mt-5 text-base leading-8 text-[#645474]">Intentar que un salón entienda cuerpos tridimensionales dibujando líneas punteadas en una pizarra plana de 2D es agotador para ti y confuso para tus estudiantes. Con <strong className="text-[#332047]">Sólidos Geométricos</strong> lo resuelves en segundos siguiendo una <strong className="text-[#332047]">secuencia didáctica</strong> lista para proyectar.</p>
-         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-           {[
-             ['1. Observa y manipula en 3D','Gira el modelo, explora sus caras, vértices y aristas sin perder ni un minuto dibujando a mano.'],
-             ['2. Despliega la red plana','Abre el desarrollo plano con un clic para que el estudiante conecte el volumen con el área de forma inmediata.'],
-             ['3. Conecta con las fórmulas','Relaciona cada elemento geométrico con sus propiedades sin llenar tres pizarras de texto.'],
-             ['4. Resuelve retos en clase','Verifica de inmediato si tus alumnos comprendieron mediante actividades prácticas integradas.']
-           ].map(([title,desc])=><div key={title} className="rounded-2xl border border-[#E5D8F1] bg-white p-4"><h3 className="font-display text-sm font-extrabold text-[#332048]">{title}</h3><p className="mt-1.5 text-xs leading-6 text-[#6B5A7A]">{desc}</p></div>)}
-         </div>
-         <div className="mt-7 flex flex-wrap items-center gap-4">
-           <a href="https://solidosgeometricos.sistemazenit.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6633C9] px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(102,51,201,.16)] hover:bg-[#5526B7]">Explorar Sólidos Geométricos <ExternalLink className="size-4"/></a>
-           <a href="#inscripcion" className="inline-flex items-center gap-2 text-sm font-bold text-[#6331B9] underline-offset-4 hover:underline">Empezar con mi propio visualizador 3D · US$9 <ArrowRight className="size-4"/></a>
-         </div>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 6: EL MECANISMO ÚNICO + LÍNEA DE TIEMPO DE 15 MINUTOS (HORMOZI ZERO EFFORT / TIME DELAY) */}
-   <section id="metodo" className="px-5 py-24 sm:px-7">
-     <div className="mx-auto max-w-6xl">
-       <Heading
-         eyebrow="El Mecanismo Único · Cero programación · 100% en español"
-         title="El Método «Pizarra Viva IA™»: de una plantilla en español a tu memoria USB sin internet en 15 minutos."
-         body="No tienes que aprender código ni pelear con comandos de GeoGebra. Si sabes mandar un WhatsApp y copiar y pegar un texto en Word, ya tienes el 100% de la habilidad técnica necesaria."
-       />
-
-       {/* CRONOGRAMA DE VICTORIA EN 15 MINUTOS */}
-       <div className="mt-8 grid gap-4 rounded-3xl border border-[#DFC9F5] bg-gradient-to-r from-[#F6EFFF] via-white to-[#FFF4FA] p-6 sm:grid-cols-3">
-         {quickWinTimeline.map(([stepTime,stepDesc,badge])=>(
-           <div key={stepTime} className="rounded-2xl border border-[#E7DAF4] bg-white p-5 shadow-sm">
-             <div className="inline-flex items-center gap-1.5 rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">
-               <Timer className="size-3.5"/> {stepTime}
-             </div>
-             <p className="mt-3 text-xs leading-6 text-[#645474]">{stepDesc}</p>
-             <p className="mt-3 border-t border-[#F1E8F9] pt-2.5 text-[11px] font-bold text-[#178568]">✓ {badge}</p>
-           </div>
-         ))}
-       </div>
-
-       <div className="mt-10 grid gap-6 md:grid-cols-3">
-         {[
-           ['01','Eliges el tema de tu clase de mañana','Seleccionas la plantilla en español según tu sesión: Geometría del Espacio 3D, Funciones y Cálculo, o Resolución Paso a Paso Anti-Ansiedad.',Lightbulb,'/metodo/etapa-01-modelo-matematico.webp','Plantillas en español listas para reemplazar el tema entre corchetes'],
-           ['02','Inyectas la plantilla en la IA gratuita','Pegas la instrucción en el lienzo gratuito de la IA y en 60 segundos genera los deslizadores, gráficas interactivas y el botón de «Nuevo Reto».',Wrench,'/metodo/etapa-02-interaccion-ia.webp','Generación automática con controles deslizantes y retos exactos'],
-           ['03','Lo llevas en tu USB sin necesitar internet','Descargas un archivo único liviano (.html) que guardas en tu memoria USB y se abre al instante en cualquier proyector o televisor del colegio.',MonitorPlay,'/metodo/etapa-03-publicacion-web.webp','Aplicación ejecutándose offline desde el USB en el aula']
-         ].map(([n,t,d,Icon,imgSrc,imgAlt])=>{
-           const C=Icon as typeof Lightbulb;
-           return <div key={n as string} className="flex flex-col overflow-hidden rounded-[24px] border border-[#E6DAF1] bg-white shadow-sm">
-             <div className="aspect-[16/10] w-full overflow-hidden border-b border-[#EFE5F8] bg-[#F7F2FC]">
-               <img src={imgSrc as string} alt={imgAlt as string} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 hover:scale-[1.03]"/>
-             </div>
-             <div className="flex flex-1 flex-col p-6">
-               <div className="flex items-center justify-between"><span className="font-mono text-xs font-bold text-[#8A54C5]">ETAPA {n as string}</span><C className="size-5 text-[#753EC9]"/></div>
-               <h3 className="mt-3 font-display text-xl font-bold text-[#2D1A42]">{t as string}</h3>
-               <p className="mt-2.5 text-sm leading-7 text-[#6A5C78]">{d as string}</p>
-             </div>
-           </div>;
-         })}
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 7: ESCALERA DE VALOR COMERCIAL + 3 PERFILES DE ÉXITO DOCENTE */}
-   <section className="border-t border-[#E6DAEF] bg-white px-5 py-24 sm:px-7">
-     <div className="mx-auto max-w-7xl">
-       <Heading
-         eyebrow="De ahorrar tiempo en tu colegio a multiplicar tus ingresos particulares"
-         title="Una habilidad que te devuelve tu vida en casa y duplica lo que cobras por hora."
-         body="Mira cómo cambia la semana laboral para los profesores de matemáticas —especialmente en secundaria, y también en nivel pre y cálculo—:"
-       />
-
-       {/* 3 PERFILES DOCENTES DE IDENTIFICACIÓN INMEDIATA */}
-       <div className="mt-8 grid gap-5 md:grid-cols-3">
-         {teacherProfiles.map(([role,quote,outcome])=>(
-           <div key={role} className="flex flex-col justify-between rounded-2xl border border-[#E3D4F1] bg-[#FCFAFF] p-6 shadow-sm">
-             <div>
-               <span className="inline-block rounded-full bg-[#EFE4FD] px-3 py-1 text-[11px] font-extrabold text-[#6E36C4]">{role}</span>
-               <p className="mt-3.5 text-sm italic leading-7 text-[#534264]">{quote}</p>
-             </div>
-             <p className="mt-4 border-t border-[#EDE3F6] pt-3 text-xs font-extrabold text-[#178568]">✓ {outcome}</p>
-           </div>
-         ))}
-       </div>
-
-       {/* 3 TARJETAS DE RETORNO ECONÓMICO Y PERSONAL */}
-       <div className="mt-6 grid gap-5 md:grid-cols-3">
-         {[
-           ['1. Fin del «Domingo Negro» y Noches en Vela','Apaga tu computadora a las 7:00 PM en vez de quedarte hasta medianoche cuadrando gráficas. Cada visualizador que generas queda guardado en tu biblioteca personal para reutilizarlo año tras año.'],
-           ['2. De S/ 25/h a S/ 60–80+/h en Clases Particulares','Rompe la guerra de precios contra estudiantes universitarios. Cuando el padre de familia ve que tu clase incluye simuladores propios en 2D y 3D que su hijo sí entiende, paga tu tarifa premium sin dudar.'],
-           ['3. Liderazgo en tu Institución y Activos Propios','Brilla en las observaciones de aula frente al director o coordinador académico llevando tus propios simuladores en tu USB, y abre la puerta a comercializar tus recursos digitales a otros colegas.']
-         ].map(([title,desc])=>(
-           <div key={title} className="rounded-2xl border border-[#DFCFEF] bg-[#FAF6FF] p-6">
-             <h3 className="font-display text-lg font-bold text-[#311C47]">{title}</h3>
-             <p className="mt-2.5 text-sm leading-7 text-[#685778]">{desc}</p>
-           </div>
-         ))}
-       </div>
-
-       <div className="mt-10 grid gap-5 md:grid-cols-3">{projects.slice(0,more?6:3).map(p=><ProjectCard key={p.name} project={p}/>)}</div>
-       <div className="mt-7 text-center"><button onClick={()=>setMore(v=>!v)} className="inline-flex items-center gap-2 rounded-xl border border-[#CBB4E2] bg-white px-6 py-3.5 text-sm font-bold text-[#6832BD]">{more?'Ver solo resultados para el aula':'Ver todos los proyectos y oportunidades de monetización'} <ChevronDown className={'size-4 '+(more?'rotate-180':'')}/></button></div>
-     </div>
-   </section>
-
-   {/* BLOQUE 8: PUENTE DE EPIFANÍA DEL INSTRUCTOR (BRUNSON EPIPHANY BRIDGE EN 4 ACTOS) */}
-   <section id="instructor" className="border-y border-[#E6DCEF] bg-[#F7F1FD] px-5 py-24 sm:px-7">
-     <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[.38fr_.62fr]">
-       <InstructorPortrait/>
-       <div>
-         <Heading
-           eyebrow="Por qué hice este cambio (y por qué tú también deberías)"
-           title="Soy Xavier Cabello"
-           body="Voy a serte totalmente sincero: como profesor de matemáticas en el aula, a mí tampoco me interesaba «aprender a crear aplicaciones» por hobby. Yo buscaba una salida al desgaste físico de la pizarra y una forma de hacer valer mejor mi tiempo y mi experiencia docente."
-         />
-         <div className="mt-6 grid gap-3.5 sm:grid-cols-2">
-           {[
-             ['1. El hartazgo en la pizarra','Estaba cansado de perder tiempo y garganta dibujando gráficos que borraba a los 5 minutos en cada sección, lidiando con el desorden del salón y frustrado porque un dibujo plano en 2D no podía moverse.'],
-             ['2. El descubrimiento sin código','Descubrí cómo inyectar plantillas precisas en español dentro de la IA gratuita para que construyera mis visualizadores matemáticos en 60 segundos sin pelear con GeoGebra ni saber programar.'],
-             ['3. El alivio inmediato en clase','Llevé mis herramientas en mi USB sin depender del internet del colegio. Dejé de darle la espalda al salón y mis estudiantes pasaron del bloqueo a decir: «¡Profe, ahora sí lo vi clarito!».'],
-             ['4. El salto económico','Padres de familia, colegas e instituciones vieron la diferencia y empezaron a pagarme mucho mejor por mis clases y por desarrollarles recursos. Hoy te entrego ese mismo atajo por solo US$9.']
-           ].map(([stepTitle,stepBody])=>(
-             <div key={stepTitle} className="rounded-2xl border border-[#E4D6F1] bg-white p-4 shadow-sm">
-               <h3 className="font-display text-sm font-extrabold text-[#38214E]">{stepTitle}</h3>
-               <p className="mt-1.5 text-xs leading-6 text-[#6D5D7C]">{stepBody}</p>
-             </div>
-           ))}
-         </div>
-         <a href="https://xavier.cabellosalirrosas.com/" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-bold text-[#6834C7] hover:underline">Conocer mi portafolio y trayectoria <ExternalLink className="size-4"/></a>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 9: FILTRO DE CALIFICACIÓN DOCENTE (PARA QUIÉN SÍ ES / PARA QUIÉN NO ES) */}
-   <section className="border-b border-[#E7DCF1] bg-white px-5 py-20 sm:px-7">
-     <div className="mx-auto max-w-6xl">
-       <div className="mx-auto max-w-3xl text-center">
-         <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">Transparencia total antes de dar el paso</p>
-         <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.1rem)] font-bold tracking-[-.05em] text-[#291840]">
-           ¿Para quién es (y para quién NO es) este sistema de US$9?
-         </h2>
-       </div>
-       <div className="mt-10 grid gap-6 md:grid-cols-2">
-         <div className="rounded-[26px] border border-[#CBE8DF] bg-[#F5FBF8] p-7">
-           <h3 className="flex items-center gap-2.5 font-display text-xl font-bold text-[#155E4B]">
-             <CheckCircle2 className="size-6 shrink-0 text-[#198768]"/> SÍ es para ti si…
-           </h3>
-           <ul className="mt-5 space-y-3.5 text-sm leading-7 text-[#2D4D43]">
-             {[
-               'Eres profesor de matemáticas —especialmente en secundaria (1.° a 5.° año), preuniversitario o clases particulares— y quieres dejar de desgastar tu hombro y tu garganta dibujando 15 veces lo mismo.',
-               'En tu colegio no hay buen internet y necesitas recursos que puedas llevar en tu memoria USB y abrir sin conexión en cualquier televisor o proyector.',
-               'No te interesa volverte programador ni perder tiempo con comandos de GeoGebra: quieres plantillas copiar-y-pegar y 10 apps ya listas para usar mañana a las 8:00 AM.',
-               'Te motiva recuperar tus noches y domingos libres, brillar en las observaciones de aula y cobrar S/ 60 a S/ 80+ la hora en tus clases particulares.'
-             ].map(item=>(
-               <li key={item} className="flex items-start gap-2.5">
-                 <Check className="mt-1 size-4 shrink-0 text-[#198768]"/>
-                 <span>{item}</span>
-               </li>
-             ))}
-           </ul>
-         </div>
-
-         <div className="rounded-[26px] border border-[#F0D5DF] bg-[#FFF8FA] p-7">
-           <h3 className="flex items-center gap-2.5 font-display text-xl font-bold text-[#7D2847]">
-             <XCircle className="size-6 shrink-0 text-[#C83E6B]"/> NO es para ti si…
-           </h3>
-           <ul className="mt-5 space-y-3.5 text-sm leading-7 text-[#6B4252]">
-             {[
-               'Buscas un curso teórico de programación informática de 6 meses o quieres aprender código desde cero.',
-               'Disfrutas quedarte hasta las 11:30 PM los domingos peleando con ecuaciones y gráficos estáticos que borrarás en 5 minutos.',
-               'Prefieres seguir compitiendo por precio a S/ 20 la hora en clases particulares enseñando exactamente igual que todos.',
-               'No estás dispuesto a invertir 15 minutos copiando y pegando una plantilla en español para ahorrarte cientos de horas en el año.'
-             ].map(item=>(
-               <li key={item} className="flex items-start gap-2.5">
-                 <XCircle className="mt-1 size-4 shrink-0 text-[#C83E6B]"/>
-                 <span>{item}</span>
-               </li>
-             ))}
-           </ul>
-         </div>
-       </div>
-     </div>
-   </section>
-
-   {/* BLOQUE 10: GRAND SLAM OFFER STACK INTENCIONAL (US$197 -> US$9) + 3 ORDER BUMPS EN CHECKOUT */}
-   <section id="inscripcion" className="px-5 py-24 sm:px-7">
-     <div className="mx-auto max-w-6xl">
-       <div className="mx-auto text-center">
-         <p className="inline-flex items-center gap-1.5 rounded-full border border-[#D8C2EF] bg-[#F6EEFF] px-4 py-1.5 text-xs font-extrabold uppercase tracking-[.15em] text-[#7137C2]">
-           <Sparkles className="size-3.5"/> Oferta de Entrada · Valor Real US$197 → Hoy Solo US$9 (Ahorras US$188)
-         </p>
-         <h2 className="mt-4 font-display text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold tracking-[-.06em] text-[#2C1A43]">Con lo que te cuestan 2 cajas de plumones (o 1 sola hora de clase particular), instalas tu fábrica de pizarras vivas 2D y 3D</h2>
-         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-[#6F607C]">Cada entregable y cada bono gratuito han sido diseñados intencionalmente para que tengas todo resuelto en 15 minutos —incluso si en tu aula no hay internet—.</p>
-       </div>
-
-       <div className="mt-10 grid overflow-hidden rounded-[28px] border border-[#E0D0ED] bg-white shadow-[0_25px_70px_rgba(70,35,113,.09)] lg:grid-cols-[1.12fr_.88fr]">
-         <div className="p-7 sm:p-10">
-           <p className="inline-flex items-center gap-2 rounded-full bg-[#EFE4FD] px-4 py-2 text-xs font-bold text-[#7139C6]"><Sparkles className="size-4"/> Stack Intencional · Todo lo que recibes hoy por US$9</p>
-           <h3 className="mt-5 font-display text-2xl font-bold text-[#2D1945] sm:text-3xl">El Kit «Pizarra Viva IA™» + 2 Bonos Destructores de Objeciones</h3>
-
-           <div className="mt-6 space-y-3.5">
-             {valueStack.map(({title,objectionKilled,desc,value,isBonus})=>(
-               <div key={title} className={`rounded-2xl border p-4 ${isBonus?'border-[#DFC6F7] bg-[#FAF5FF]':'border-[#EAE0F3] bg-white'}`}>
-                 <div className="flex flex-wrap items-start justify-between gap-2">
-                   <h4 className="flex items-center gap-2 font-display text-sm font-extrabold text-[#2F1B44]">
-                     {isBonus ? <Gift className="size-4 shrink-0 text-[#9B35C8]"/> : <CheckCircle2 className="size-4 shrink-0 text-[#178568]"/>}
-                     <span>{title}</span>
-                   </h4>
-                   <span className="shrink-0 rounded-full bg-[#F2EAFA] px-2.5 py-0.5 font-mono text-xs font-extrabold text-[#6E37C5]">Valor: {value}</span>
-                 </div>
-                 <p className="mt-1 pl-6 text-[11px] font-bold text-[#7A3EC8]">{objectionKilled}</p>
-                 <p className="mt-1 pl-6 text-xs leading-6 text-[#685877]">{desc}</p>
-               </div>
-             ))}
-           </div>
-
-           <div className="mt-6 overflow-hidden rounded-2xl border border-[#E6D8F1] bg-[#FAF7FD] p-2.5 sm:p-3.5 shadow-sm">
-             <img src="/workshop/bundle-kit-taller-docente.webp" alt="Kit digital completo Pizarra Viva IA para ahorrar tiempo en clases de matemáticas y llevar en USB sin internet" loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-xl object-cover shadow-sm"/>
-             <p className="mt-2.5 flex items-center justify-center gap-1.5 text-center text-[11px] font-bold text-[#7A45C4]">
-               <HardDrive className="size-3.5 shrink-0"/> Incluye: 3 Generadores Maestros + Clonador de Retos + Guía USB Sin Internet + 10 Apps Listas
-             </p>
-           </div>
-
-           <p className="mt-5 border-t border-[#EFE5F4] pt-4 text-xs leading-6 text-[#82738D]">Nota transparente: este acceso inicial de US$9 te entrega el sistema completo de plantillas y tus primeros simuladores listos para el aula. Si deseas exámenes listos en Word o la bóveda de 50 apps pre-creadas, puedes añadirlos abajo en tu orden.</p>
-         </div>
-
-         <div className="flex flex-col justify-between border-t border-[#EDE1F5] bg-gradient-to-br from-[#F6EFFF] to-[#FFF6FA] p-7 sm:p-10 lg:border-l lg:border-t-0">
-           <div>
-             <div className="flex items-center justify-between">
-               <p className="text-xs font-bold uppercase tracking-[.15em] text-[#8754C4]">Paso 1 · Tu Kit Principal Hoy</p>
-               <span className="rounded-full bg-[#E5F7F0] px-3 py-1 text-[11px] font-extrabold text-[#14795D]">AHORRAS 95% HOY</span>
-             </div>
-             <div className="mt-3 rounded-2xl border border-[#E5D5F2] bg-white/95 p-4 shadow-sm">
-               <div className="flex items-center justify-between text-xs font-semibold text-[#7A6889]">
-                 <span>Valor total (3 Módulos + 2 Bonos):</span>
-                 <span className="font-mono text-sm font-bold line-through text-[#B55279]">US$197.00</span>
-               </div>
-               <div className="mt-1.5 flex items-center justify-between text-xs font-semibold text-[#178568]">
-                 <span>Beca de entrada al ecosistema:</span>
-                 <span className="font-mono text-xs font-extrabold">− US$188.00</span>
-               </div>
-               <div className="mt-2.5 flex items-baseline justify-between border-t border-[#EFE6F7] pt-2.5">
-                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#38214E]">Acceso base hoy:</span>
-                 <span className="font-display text-2xl font-extrabold text-[#178568]">US$9.00</span>
-               </div>
-             </div>
-
-             {/* PASO 2: ORDER BUMPS INTENCIONALES EN EL CHECKOUT */}
-             <div className="mt-6">
-               <p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6E36C4]">
-                 Complementos opcionales · En preparación
-               </p>
-               <p className="mt-1 text-[11px] leading-5 text-[#6D5C7E]">
-                 Estos complementos no pueden comprarse todavía: se habilitarán cuando el checkout calcule y confirme sus precios desde el servidor.
-               </p>
-               <div className="mt-3 space-y-2.5">
-                 {orderBumps.map(bump=>{
-                   const checked=selectedBumps.includes(bump.id);
-                   return (
-                     <label
-                       key={bump.id}
-                       className={`block cursor-not-allowed rounded-2xl border-2 border-dashed p-3.5 opacity-65 ${
-                         checked
-                           ? 'border-[#178568] bg-[#F2FBF8] shadow-sm'
-                           : 'border-[#D7C2EC] bg-white/90 hover:border-[#9B63E0]'
-                       }`}
-                     >
-                       <div className="flex items-start gap-2.5">
-                         <input
-                           type="checkbox"
-                           disabled
-                           checked={false}
-                           onChange={()=>toggleBump(bump.id)}
-                           className="mt-1 size-4 shrink-0 accent-[#178568]"
-                         />
-                         <div className="min-w-0 flex-1">
-                           <div className="flex flex-wrap items-center justify-between gap-1">
-                             <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7A3EC8]">{bump.tag}</span>
-                             <span className="rounded-full bg-[#ECFBF5] px-2 py-0.5 font-mono text-xs font-extrabold text-[#14795D]">+US${bump.priceUsd}</span>
-                           </div>
-                           <p className="mt-1 font-display text-xs font-bold leading-5 text-[#2C1942]">{bump.title}</p>
-                           <p className="mt-1 text-[11px] font-semibold text-[#8E3967]">{bump.painSolved}</p>
-                           <p className="mt-1 text-[11px] leading-5 text-[#675776]">{bump.desc}</p>
-                         </div>
-                       </div>
-                     </label>
-                   );
-                 })}
-               </div>
-             </div>
-
-             <div className="mt-6 flex items-baseline justify-between rounded-2xl border border-[#DFC9F2] bg-white px-4 py-3">
-               <div>
-                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Precio base del taller:</span>
-                 <span className="text-[11px] font-semibold text-[#178568]">
-                   {selectedBumps.length===0
-                     ? 'Kit Principal + 2 Bonos (Sin mensualidades)'
-                     : `Kit Principal + ${selectedBumps.length} complemento(s) seleccionado(s)`}
-                 </span>
-               </div>
-               <div className="text-right">
-                 <span className="font-display text-4xl font-extrabold tracking-tight text-[#25173D]">US${totalUsd}</span>
-                 <span className="block text-[11px] font-bold text-[#6E5C7E]">Importe en PEN confirmado antes de pagar</span>
-               </div>
-             </div>
-
-             <div className="mt-5"><PeruCheckoutButton/></div>
-             <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-[11px] font-semibold text-[#6E5C7E]">
-               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Checkout desactivado mientras termina la verificación</span>
-               <span>·</span>
-               <span>Entrega coordinada después de verificar el pago</span>
-             </div>
-           </div>
-
-           {/* CAJA DE GARANTÍA BLINDADA DE 14 DÍAS ANTI-RIESGO */}
-           <div className="mt-6 space-y-3 border-t border-[#E6D8F2] pt-5">
-             <div className="rounded-2xl border border-[#CBE8DF] bg-[#F5FBF8] p-4 text-xs leading-6 text-[#2C4E44] shadow-sm">
-               <div className="flex items-center gap-2 font-display text-sm font-extrabold text-[#145E4B]">
-                 <ShieldCheck className="size-5 shrink-0 text-[#178568]"/>
-                 <span>Política de reembolsos por confirmar</span>
-               </div>
-               <p className="mt-1.5">
-                 Antes de abrir el checkout publicaremos los plazos, el procedimiento de reembolso y las condiciones de acceso y entrega del taller. No se realizará ningún cargo mientras el pago siga desactivado.
-               </p>
-             </div>
-           </div>
-         </div>
-       </div>
-       <div className="mx-auto mt-8 max-w-3xl"><WaitlistForm/></div>
-     </div>
-   </section>
-
-   {/* BLOQUE 11: PREGUNTAS FRECUENTES INTENCIONALES (REBATEN LAS 7 OBJECIONES FORENSES) */}
-   <section id="faq" className="border-t border-[#E8DFF2] bg-[#F8F4FD] px-5 py-24 sm:px-7">
-     <div className="mx-auto max-w-3xl">
-       <Heading eyebrow="Cero dudas · Cero excusas técnicas" title="Respuestas directas a lo que todo profesor de matemáticas pregunta antes de entrar."/>
-       <div className="mt-10 space-y-3">{faq.map(([q,a])=><details key={q} className="group rounded-2xl border border-[#E5D9EF] bg-white p-5 open:border-[#C6A6E7]"><summary className="flex list-none items-center justify-between gap-3 font-bold text-[#332146] [&::-webkit-details-marker]:hidden">{q}<ChevronDown className="size-5 shrink-0 text-[#8D53C5] transition group-open:rotate-180"/></summary><p className="mt-3 text-sm leading-7 text-[#6F617B]">{a}</p></details>)}</div>
-     </div>
-   </section>
-
-   {/* BLOQUE 12: CIERRE DE ENCRUCIJADA (EL LUNES A LAS 8:00 AM) */}
-   <section className="px-5 py-20 text-center sm:px-7">
-     <div className="mx-auto max-w-4xl">
-       <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#763AC5]">El próximo lunes a las 8:00 AM tienes dos caminos frente al salón</p>
-       <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.35rem)] font-bold leading-tight tracking-[-.055em] text-[#29193F]">
-         Menos tiempo escribiendo y dibujando en la pizarra.<br/>
-         <span className="text-[#713BC9]">Más tiempo guiando el aprendizaje, cuidando tu garganta y cotizándote mejor como docente.</span>
-       </h2>
-       <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#695879]">
-         Puedes seguir entrando al aula a darle la espalda al grupo, repetir el mismo dibujo 15 veces por semana y quedarte hasta las 11:30 PM haciendo fichas… o puedes invertir <strong className="text-[#2B1840]">US$9 hoy</strong> (lo que cuestan dos cajas de plumones), llevar tus pizarras vivas en tu USB sin internet y convertirte en el profesor que todos respetan, entienden y recomiendan.
-       </p>
-       <a href="#inscripcion" className="mt-8 inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_15px_32px_rgba(104,50,208,.25)] transition hover:scale-[1.01] hover:opacity-95 sm:text-lg">
-         ¡Sí, quiero ahorrar tiempo en pizarra y elevar mis clases · US$9! <ArrowRight className="size-5"/>
-       </a>
-       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Precio piloto US$9 · Condiciones y entrega antes de habilitar el cobro</p>
-     </div>
-   </section>
-  </main>
-  <footer className="border-t border-[#E4D9EF] bg-white px-5 py-9 pb-24 sm:pb-9"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-xs leading-6 text-[#7D6D8A] sm:flex-row"><p>© 2026 · Matemáticas × IA · Menos pizarra estática, más impacto, tiempo libre y crecimiento para el docente</p><a href="/privacidad" className="font-semibold hover:underline">Privacidad</a><p>Contacto: <a href="mailto:xavier@cabellosalirrosas.com" className="underline">xavier@cabellosalirrosas.com</a></p></div></footer>
-  <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between border-t border-[#E0D2ED] bg-white/95 px-4 py-3 shadow-[0_-8px_25px_rgba(66,33,95,.1)] sm:hidden"><span className="font-display text-sm font-extrabold text-[#352047]">Pizarras Vivas en tu USB <span className="text-[#7640C9]">· US$9</span></span><a href="#inscripcion" className="rounded-lg bg-[#6832D0] px-4 py-3 text-xs font-bold text-white">Empezar hoy</a></div>
- </div>;
+  );
 }
