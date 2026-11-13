@@ -68,7 +68,7 @@ const failedAlternatives:[string,string,string][]=[
 const quickWinTimeline:[string,string,string][]=[
   [
     'Minuto 1 · Eliges tu Plantilla en Español',
-    'Recibes tu acceso inmediato tras el pago de US$9 y abres la plantilla del tema que te toca enseñar mañana (secundaria, preuniversitario o cálculo).',
+    'Cuando se confirme tu inscripción, recibirás las instrucciones para acceder al material correspondiente al taller.',
     'Si sabes usar WhatsApp y Word, ya sabes hacerlo'
   ],
   [
@@ -272,7 +272,7 @@ export default function App(){
         <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-[#66537A]">
           <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago único US$9 (~S/ 33 · Lo que cuestan 2 cajas de plumones)</span>
           <span>·</span>
-          <span>🛡️ Garantía de 14 días</span>
+          <span>Condiciones de inscripción antes de pagar</span>
         </p>
       </div>
 
@@ -737,10 +737,10 @@ export default function App(){
              {/* PASO 2: ORDER BUMPS INTENCIONALES EN EL CHECKOUT */}
              <div className="mt-6">
                <p className="text-xs font-extrabold uppercase tracking-[.14em] text-[#6E36C4]">
-                 ⚡ Paso 2 (Opcional) · Personaliza tu orden con 1 clic:
+                 Complementos opcionales · En preparación
                </p>
                <p className="mt-1 text-[11px] leading-5 text-[#6D5C7E]">
-                 Marca solo si deseas sumar alguno de estos aceleradores exclusivos de lanzamiento a tu pedido:
+                 Estos complementos no pueden comprarse todavía: se habilitarán cuando el checkout calcule y confirme sus precios desde el servidor.
                </p>
                <div className="mt-3 space-y-2.5">
                  {orderBumps.map(bump=>{
@@ -748,7 +748,7 @@ export default function App(){
                    return (
                      <label
                        key={bump.id}
-                       className={`block cursor-pointer rounded-2xl border-2 border-dashed p-3.5 transition ${
+                       className={`block cursor-not-allowed rounded-2xl border-2 border-dashed p-3.5 opacity-65 ${
                          checked
                            ? 'border-[#178568] bg-[#F2FBF8] shadow-sm'
                            : 'border-[#D7C2EC] bg-white/90 hover:border-[#9B63E0]'
@@ -757,7 +757,8 @@ export default function App(){
                        <div className="flex items-start gap-2.5">
                          <input
                            type="checkbox"
-                           checked={checked}
+                           disabled
+                           checked={false}
                            onChange={()=>toggleBump(bump.id)}
                            className="mt-1 size-4 shrink-0 accent-[#178568]"
                          />
@@ -779,7 +780,7 @@ export default function App(){
 
              <div className="mt-6 flex items-baseline justify-between rounded-2xl border border-[#DFC9F2] bg-white px-4 py-3">
                <div>
-                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Total de tu orden hoy:</span>
+                 <span className="block text-[11px] font-bold uppercase tracking-wider text-[#6D5B7F]">Precio base del taller:</span>
                  <span className="text-[11px] font-semibold text-[#178568]">
                    {selectedBumps.length===0
                      ? 'Kit Principal + 2 Bonos (Sin mensualidades)'
@@ -788,15 +789,15 @@ export default function App(){
                </div>
                <div className="text-right">
                  <span className="font-display text-4xl font-extrabold tracking-tight text-[#25173D]">US${totalUsd}</span>
-                 <span className="block text-[11px] font-bold text-[#6E5C7E]">≈ S/ {totalUsd * 3.7} PEN · Pago único</span>
+                 <span className="block text-[11px] font-bold text-[#6E5C7E]">Importe en PEN confirmado antes de pagar</span>
                </div>
              </div>
 
              <div className="mt-5"><PeruCheckoutButton/></div>
              <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-center text-[11px] font-semibold text-[#6E5C7E]">
-               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Pago 100% Seguro (Yape / Tarjetas)</span>
+               <span className="inline-flex items-center gap-1"><Lock className="size-3.5 text-[#178568]"/> Checkout desactivado mientras termina la verificación</span>
                <span>·</span>
-               <span>⚡ Acceso Inmediato 24/7</span>
+               <span>Entrega coordinada después de verificar el pago</span>
              </div>
            </div>
 
@@ -805,10 +806,10 @@ export default function App(){
              <div className="rounded-2xl border border-[#CBE8DF] bg-[#F5FBF8] p-4 text-xs leading-6 text-[#2C4E44] shadow-sm">
                <div className="flex items-center gap-2 font-display text-sm font-extrabold text-[#145E4B]">
                  <ShieldCheck className="size-5 shrink-0 text-[#178568]"/>
-                 <span>Garantía Incondicional de 14 Días «Victoria en 15 Minutos»</span>
+                 <span>Política de reembolsos por confirmar</span>
                </div>
                <p className="mt-1.5">
-                 Entra hoy por US$9, descarga las 10 aplicaciones listas para tu USB y prueba las plantillas copiar-y-pegar durante 14 días. Si no logras tener tu primer visualizador funcionando en 15 minutos o no te ahorra horas de pizarra en tu primera semana, te devolvemos el 100% de tu dinero sin preguntas.
+                 Antes de abrir el checkout publicaremos los plazos, el procedimiento de reembolso y las condiciones de acceso y entrega del taller. No se realizará ningún cargo mientras el pago siga desactivado.
                </p>
              </div>
            </div>
@@ -840,7 +841,7 @@ export default function App(){
        <a href="#inscripcion" className="mt-8 inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#6630CB] to-[#C33FA1] px-8 py-4.5 text-base font-extrabold text-white shadow-[0_15px_32px_rgba(104,50,208,.25)] transition hover:scale-[1.01] hover:opacity-95 sm:text-lg">
          ¡Sí, quiero ahorrar tiempo en pizarra y elevar mis clases · US$9! <ArrowRight className="size-5"/>
        </a>
-       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Pago único de US$9 (Valor real US$197) · Funciona sin internet en tu USB · Garantía de 14 días</p>
+       <p className="mt-3 text-xs font-semibold text-[#7A6889]">Precio piloto US$9 · Condiciones y entrega antes de habilitar el cobro</p>
      </div>
    </section>
   </main>
