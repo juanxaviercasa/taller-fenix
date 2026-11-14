@@ -226,7 +226,7 @@ const FAQ: [string, string][] = [
 function SectionHeading({ label, title, body }: { label: string; title: string; body?: string }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#43685B]">{label}</p>
+      <p className="text-xs font-extrabold uppercase tracking-[.18em] text-[#B45324]">{label}</p>
       <h2 className="mt-4 font-display text-[clamp(1.95rem,3.7vw,3.35rem)] font-bold leading-[1.13] tracking-[-.055em] text-[#18283C]">
         {title}
       </h2>
@@ -238,16 +238,20 @@ function SectionHeading({ label, title, body }: { label: string; title: string; 
 function Brand() {
   return (
     <a href="#inicio" className="inline-flex items-center gap-3" aria-label="Sistema Zénit, ir al inicio">
-      <span className="relative flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#0F6264] font-display text-lg font-black text-white sm:size-9 sm:text-xl">
-        Z
-        <span aria-hidden="true" className="absolute -right-1 -top-1 size-2 rounded-full bg-[#F4B942] ring-2 ring-[#FBFCFA]" />
-      </span>
+      <img
+        src="/brand/zenit-phoenix-icon.png"
+        width="48"
+        height="48"
+        alt=""
+        aria-hidden="true"
+        className="zenit-brand-symbol size-9 shrink-0 object-contain sm:size-12"
+      />
       <span className="flex flex-col leading-none">
-        <strong className="font-display text-[13px] tracking-tight text-[#18283B] sm:text-[15px]">
+        <strong className="zenit-brand-name font-display text-[13px] tracking-tight sm:text-[15px]">
           <span className="sm:hidden">ZÉNIT</span>
           <span className="hidden sm:inline">SISTEMA ZÉNIT</span>
         </strong>
-        <span className="mt-1 hidden text-[9px] font-bold uppercase tracking-[.16em] text-[#5B7268] sm:block">
+        <span className="zenit-brand-tagline mt-1 hidden text-[9px] font-bold uppercase tracking-[.16em] sm:block">
           Educación × Inteligencia Artificial
         </span>
       </span>
@@ -259,7 +263,7 @@ function PurchaseCTA({ compact = false }: { compact?: boolean }) {
   return (
     <a
       href="#comprar"
-      className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#C71D7A] font-bold text-white shadow-[0_10px_25px_rgba(199,29,122,.2)] transition hover:bg-[#A91667] ${
+      className={`zenit-primary-cta inline-flex shrink-0 items-center justify-center gap-2 rounded-xl font-bold ${
         compact ? 'px-2.5 py-2.5 text-[11px] sm:gap-2.5 sm:px-4 sm:text-sm' : 'px-7 py-4 text-sm sm:text-base'
       }`}
     >
@@ -278,7 +282,7 @@ function PurchaseCTA({ compact = false }: { compact?: boolean }) {
 
 function ProjectCard({ project }: { project: ProjectItem }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#DFEAE3] bg-white shadow-[0_14px_38px_rgba(22,54,42,.06)] transition hover:border-[#9BBFAC]">
+    <article className="zenit-glow-card group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#E8DED4] bg-white shadow-[0_14px_38px_rgba(68,43,31,.07)]">
       <div className="aspect-[16/10] overflow-hidden border-b border-[#E5EEE8] bg-[#F2F7F4]">
         <img
           src={`/projects/captures/${project.image}`}
@@ -343,7 +347,7 @@ export default function App() {
   const toolProjects = visibleProjects.filter(project => project.category === 'Automatización y Soluciones');
 
   return (
-    <div id="inicio" className="min-h-screen bg-[#F8F9F7] font-sans text-[#1B2D40]">
+    <div id="inicio" className="min-h-screen bg-[#FBF8F3] font-sans text-[#28212A]">
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3"
@@ -351,30 +355,30 @@ export default function App() {
         Saltar al contenido
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-[#E5E9E7] bg-[#FBFCFA]/95 backdrop-blur">
+      <header className="zenit-header sticky top-0 z-40 border-b backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-8 sm:py-4">
           <Brand />
-          <nav aria-label="Navegación principal" className="hidden items-center gap-7 text-sm font-semibold text-[#4D6072] lg:flex">
-            <a href="#incluye" className="hover:text-[#176655]">
+          <nav aria-label="Navegación principal" className="zenit-header-nav hidden items-center gap-7 text-sm font-semibold lg:flex">
+            <a href="#incluye">
               Qué incluye
             </a>
-            <a href="#metodo" className="hover:text-[#176655]">
+            <a href="#metodo">
               Método real
             </a>
-            <a href="#proyectos" className="hover:text-[#176655]">
+            <a href="#proyectos">
               Apps funcionando
             </a>
-            <a href="#fundador" className="hover:text-[#176655]">
+            <a href="#fundador">
               Mi historia
             </a>
-            <a href="#preguntas" className="hover:text-[#176655]">
+            <a href="#preguntas">
               Preguntas
             </a>
           </nav>
           <PurchaseCTA compact />
           <button
             type="button"
-            className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#C8DCD0] bg-white text-[#214E41] transition hover:bg-[#F3F8F5] lg:hidden"
+            className="zenit-menu-button inline-flex size-10 shrink-0 items-center justify-center rounded-xl border transition lg:hidden"
             aria-label={mobileNavOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
             aria-expanded={mobileNavOpen}
             aria-controls="mobile-navigation"
@@ -384,7 +388,7 @@ export default function App() {
           </button>
         </div>
         {mobileNavOpen && (
-          <nav id="mobile-navigation" aria-label="Navegación móvil" className="border-t border-[#E5E9E7] bg-[#FBFCFA] px-4 py-3 shadow-lg lg:hidden">
+          <nav id="mobile-navigation" aria-label="Navegación móvil" className="zenit-mobile-navigation border-t px-4 py-3 shadow-lg lg:hidden">
             <div className="mx-auto grid max-w-7xl gap-1">
               {[
                 ['Qué incluye', '#incluye'],
@@ -397,7 +401,7 @@ export default function App() {
                   key={href}
                   href={href}
                   onClick={() => setMobileNavOpen(false)}
-                  className="rounded-lg px-3 py-3 text-sm font-semibold text-[#4D6072] hover:bg-[#F0F6F1] hover:text-[#176655]"
+                  className="zenit-mobile-link rounded-lg px-3 py-3 text-sm font-semibold"
                 >
                   {label}
                 </a>
@@ -411,26 +415,26 @@ export default function App() {
         {/* 1. HERO CON ARQUITECTURA VSL CENTRADA (ABOVE THE FOLD) */}
         <section
           id="demostracion"
-          className="relative overflow-hidden border-b border-[#DCE8E6] bg-[radial-gradient(ellipse_75%_55%_at_50%_0%,rgba(91,215,210,.22),transparent_72%),radial-gradient(ellipse_22%_24%_at_92%_8%,rgba(229,68,161,.1),transparent_72%),linear-gradient(180deg,#FAFCFB_0%,#F2F8F7_100%)] px-5 py-12 sm:px-8 sm:py-16"
+          className="zenit-hero relative overflow-hidden border-b px-5 py-12 sm:px-8 sm:py-16"
         >
           <div className="mx-auto max-w-5xl">
             {/* Encabezado VSL centrado */}
             <div className="mx-auto max-w-4xl text-center">
-              <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#CFE0D6] bg-white px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.13em] text-[#285F51] shadow-xs sm:text-xs">
+              <p className="zenit-hero-kicker inline-flex flex-wrap items-center justify-center gap-2 rounded-full border px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.13em] shadow-xs sm:text-xs">
                 <GraduationCap className="size-4" />
                 TALLER PRÁCTICO · IA PARA QUIENES TRABAJAN EN EDUCACIÓN
               </p>
 
-              <h1 className="mt-6 font-display text-[clamp(2.15rem,4.5vw,4.1rem)] font-bold leading-[1.08] tracking-[-.06em] text-[#18283C]">
+              <h1 className="mt-6 font-display text-[clamp(2.15rem,4.5vw,4.1rem)] font-bold leading-[1.08] tracking-[-.06em] text-[#FFF8F0]">
                 Convierte una idea de clase en una{' '}
-                <span className="text-[#147E83]">web interactiva con IA.</span>
+                <span className="zenit-hero-gradient-text">web interactiva con IA.</span>
               </h1>
 
-              <p className="mx-auto mt-4 max-w-3xl font-display text-sm font-bold leading-relaxed text-[#225847] sm:text-lg">
+              <p className="mx-auto mt-4 max-w-3xl font-display text-sm font-bold leading-relaxed text-[#F5E9DD] sm:text-lg">
                 El Método Zénit te guía para aclarar qué necesitas, dirigir a la IA, revisar lo que construye y preparar una primera versión para publicar. Tu experiencia docente pone el criterio; la IA acelera la ejecución.
               </p>
 
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#4F6174] sm:text-base">
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#D8CEC7] sm:text-base">
                 ¿Tienes una idea guardada para tus clases? Explora las etapas del método y prueba proyectos reales. Si partes desde cero, configurar tus herramientas puede tomar alrededor de dos semanas; el ritmo depende de tu experiencia y del tiempo disponible.
               </p>
             </div>
@@ -446,25 +450,25 @@ export default function App() {
                 <PurchaseCTA />
                 <a
                   href="#proyectos"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#C8DCD0] bg-white px-5 py-4 text-sm font-bold text-[#214E41] transition hover:bg-[#F3F8F5]"
+                  className="zenit-secondary-cta inline-flex items-center gap-1.5 rounded-xl border px-5 py-4 text-sm font-bold transition"
                 >
                   Probar las apps reales que construí <ChevronRight className="size-4" />
                 </a>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs font-semibold text-[#3C5852]">
-                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs font-semibold text-[#F0E5DC]">
+                <span className="zenit-hero-proof rounded-full border px-3.5 py-2">
                   ✓ Tres caminos: adaptar un proyecto, partir de GitHub o crear una mini app
                 </span>
-                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+                <span className="zenit-hero-proof rounded-full border px-3.5 py-2">
                   ✓ Puedes empezar con herramientas gratuitas, dentro de sus límites
                 </span>
-                <span className="rounded-full border border-[#C6DFD1] bg-[#EBF6EF] px-3.5 py-2 font-bold text-[#1D5543]">
+                <span className="zenit-hero-proof zenit-hero-price rounded-full border px-3.5 py-2 font-bold">
                   ✓ {OFFICIAL_PRICE} · pago único · acceso por 30 días
                 </span>
               </div>
 
-              <p className="mt-4 text-xs leading-6 text-[#5E7282]">
+              <p className="mt-4 text-xs leading-6 text-[#D6CAC2]">
                 Para profesores de matemáticas, ciencias y de cualquier área, tutores, capacitadores y creadores educativos · Más de 70 web apps construidas con este método.
               </p>
             </div>
@@ -523,8 +527,8 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#CBDED2] bg-[#EAF4ED] p-6 shadow-sm sm:p-8">
-                <div className="overflow-hidden rounded-2xl border border-[#BAD5C4] bg-white">
+              <div className="rounded-[24px] border border-[#E8CBAE] bg-[#FFF3E6] p-6 shadow-sm sm:p-8">
+                <div className="overflow-hidden rounded-2xl border border-[#EBD5BE] bg-white">
                   <img
                     src="/taller/deseo-soberania-aula.webp"
                     width="1280"
@@ -571,8 +575,8 @@ export default function App() {
             </div>
 
             {/* Bloque de la Gran Revelación (Pregunta 94) */}
-            <div className="mt-8 rounded-[24px] border border-[#C6DDD0] bg-[#163832] p-6 text-center text-white shadow-sm sm:p-8">
-              <p className="text-[11px] font-extrabold uppercase tracking-[.15em] text-[#8EE6C2]">
+            <div className="mt-8 rounded-[24px] border border-[#71422E] bg-[#21191B] p-6 text-center text-white shadow-[0_18px_46px_rgba(56,29,20,.18)] sm:p-8">
+              <p className="text-[11px] font-extrabold uppercase tracking-[.15em] text-[#FFD267]">
                 La revelación central del Sistema Zénit
               </p>
               <blockquote className="mx-auto mt-3 max-w-4xl font-display text-lg font-bold leading-relaxed text-white sm:text-2xl">
@@ -659,11 +663,18 @@ export default function App() {
               title="Tres pasos reales: de la idea en tu cabeza a un enlace web funcionando"
               body="Sin jerga en inglés ni copiar código a ciegas. Tú pones tu experiencia docente y el objetivo; la IA ejecuta el trabajo pesado bajo tu dirección."
             />
+            <div className="zenit-method-banner mt-10">
+              <img src="/brand/zenit-method-light.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+              <div className="zenit-method-banner-copy">
+                <span>EL MÉTODO ZÉNIT · IDEA → PLAN MAESTRO → PRUEBA</span>
+                <p>Aclara lo que quieres enseñar. Ordena el trabajo. Prueba una primera versión.</p>
+              </div>
+            </div>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {steps.map(step => (
                 <article
                   key={step.number}
-                  className="group flex flex-col overflow-hidden rounded-[24px] border border-[#DCE7E0] bg-white shadow-[0_12px_34px_rgba(22,54,42,.05)]"
+                  className="zenit-glow-card group flex flex-col overflow-hidden rounded-[24px] border border-[#E8DED4] bg-white shadow-[0_12px_34px_rgba(68,43,31,.06)]"
                 >
                   <div className="aspect-video overflow-hidden border-b border-[#E5EEE8] bg-[#F2F7F4]">
                     <img
@@ -697,10 +708,10 @@ export default function App() {
             />
 
             {/* Destacado del caso viral de Tabla Periódica (+500,000 vistas) */}
-            <div className="mt-10 rounded-[24px] border border-[#C7DFD1] bg-gradient-to-r from-[#173A35] to-[#1F4F46] p-6 text-white shadow-md sm:p-8">
+            <div className="zenit-case-study mt-10 rounded-[24px] p-6 text-white sm:p-8">
               <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
                 <div className="max-w-3xl">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#A8F0D1]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#FFD991]">
                     <Sparkles className="size-3.5" /> Caso real de tracción orgánica · +500,000 visualizaciones en TikTok
                   </span>
                   <h3 className="mt-3 font-display text-2xl font-bold text-white">
@@ -715,7 +726,7 @@ export default function App() {
                     href="https://tablaperiodica.sistemazenit.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#34C08B] px-5 py-3.5 text-xs font-extrabold text-[#0E2923] transition hover:bg-[#4AD39F] sm:text-sm"
+                    className="zenit-primary-cta inline-flex items-center gap-2 rounded-xl px-5 py-3.5 text-xs font-extrabold sm:text-sm"
                   >
                     Abrir Tabla Periódica <ExternalLink className="size-4" />
                   </a>

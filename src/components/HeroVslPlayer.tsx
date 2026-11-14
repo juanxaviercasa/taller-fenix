@@ -113,24 +113,24 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
 
   return (
     <div
-      className="mx-auto w-full max-w-4xl overflow-hidden rounded-[28px] border-2 border-[#C5DBD0] bg-white shadow-[0_28px_80px_rgba(18,48,39,.16)]"
+      className="zenit-vsl-shell mx-auto w-full max-w-4xl overflow-hidden rounded-[28px] border-2 bg-white"
       aria-label="Presentación en video del taller Sistema Zénit"
     >
       {/* Barra superior del reproductor VSL */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#214B43] bg-[#112A26] px-4 py-3 text-white sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#653622] bg-[#21191B] px-4 py-3 text-white sm:px-6">
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex size-2.5 rounded-full bg-[#38D399] shadow-[0_0_10px_#38D399]" />
-            <span className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#D7EFE4]">
+          <span className="inline-flex size-2.5 rounded-full bg-[#FFC14F] shadow-[0_0_10px_#FFC14F]" />
+            <span className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#FFEAD4]">
               Guion de presentación · Sistema Zénit
           </span>
         </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-[#E5F5EC]">
-            <Clock className="size-3.5 text-[#67E2B4]" /> Video pendiente · Juan Xavier Cabello
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-[#FFEAD4]">
+            <Clock className="size-3.5 text-[#FFC664]" /> Video pendiente · Juan Xavier Cabello
         </span>
       </div>
 
       {/* Marco principal 16:9 (aspect-video) para el reproductor de video */}
-      <div className={`relative ${videoUrl ? 'aspect-video' : 'min-h-[320px] sm:aspect-video'} w-full overflow-hidden bg-[#0B1E1B]`}>
+      <div className={`relative ${videoUrl ? 'aspect-video' : 'min-h-[320px] sm:aspect-video'} w-full overflow-hidden bg-[#171316]`}>
         {videoUrl ? (
           isDirectVideoFile(videoUrl) ? (
             <video
@@ -165,12 +165,12 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#081715] via-[#102B26]/90 to-[#0C221E]/85"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#171114] via-[#25191A]/90 to-[#1D1719]/85"
             />
 
             {/* Fila superior dentro del reproductor 16:9 */}
             <div className="relative z-10 flex flex-wrap items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#38D399]/35 bg-[#163D35]/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#9CF0CD] sm:text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#FFC14F]/35 bg-[#382319]/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#FFD991] sm:text-xs">
                 <FileText className="size-3.5" /> El video de presentación aún no está configurado
               </span>
 
@@ -182,7 +182,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                   alt="Juan Xavier Cabello"
                   className="size-6 rounded-full object-cover object-top"
                 />
-                <span className="text-[11px] font-semibold text-[#E2F3EC]">Prof. Juan Xavier Cabello</span>
+                <span className="text-[11px] font-semibold text-[#F5E8DD]">Prof. Juan Xavier Cabello</span>
               </div>
             </div>
 
@@ -193,16 +193,16 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                   onClick={() => setShowScriptDrawer(v => !v)}
                   aria-expanded={showScriptDrawer}
                   aria-label="Leer guion completo de la presentación"
-                className="group relative flex size-16 items-center justify-center rounded-full bg-[#34C08B] text-[#0B231E] shadow-[0_0_45px_rgba(52,192,139,.5)] transition duration-300 hover:scale-105 hover:bg-[#49D6A0] sm:size-20"
+                className="group relative flex size-16 items-center justify-center rounded-full bg-[#F0A33A] text-[#30160D] shadow-[0_0_45px_rgba(240,125,43,.42)] transition duration-300 hover:scale-105 hover:bg-[#FFD067] sm:size-20"
               >
-                <span className="animate-ping-slow pointer-events-none absolute inset-0 rounded-full bg-[#34C08B]/30" />
+                <span className="animate-ping-slow pointer-events-none absolute inset-0 rounded-full bg-[#F0A33A]/30" />
                 <FileText className="size-7 sm:size-9" />
               </button>
 
               <p className="mt-3 max-w-2xl font-display text-sm font-bold leading-snug text-white sm:mt-4 sm:text-xl md:text-2xl">
                 «La inteligencia artificial necesita más de ti y de tu información que tú de ella»
               </p>
-              <p className="mt-1.5 hidden max-w-xl text-xs leading-relaxed text-[#C9E3D8] sm:block sm:text-sm">
+              <p className="mt-1.5 hidden max-w-xl text-xs leading-relaxed text-[#E3D1C3] sm:block sm:text-sm">
                 Cómo convertí necesidades reales del aula en herramientas interactivas y organizo a la IA para construir una primera versión.
               </p>
 
@@ -210,7 +210,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                 <button
                   type="button"
                   onClick={() => setShowScriptDrawer(v => !v)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#56B893]/40 bg-[#173E36]/90 px-3 py-1.5 text-[11px] font-bold text-[#A9F2D4] transition hover:bg-[#205247]"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#FFC14F]/38 bg-[#39241D]/90 px-3 py-1.5 text-[11px] font-bold text-[#FFD991] transition hover:bg-[#59321F]"
                 >
                   <FileText className="size-3.5" />
                   {showScriptDrawer ? 'Ocultar guion de la presentación' : 'Leer el guion de la presentación'}
@@ -225,7 +225,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
             </div>
 
             {/* Barra de controles inferior estilo reproductor VSL 16:9 */}
-            <div className="relative z-10 rounded-xl border border-white/10 bg-black/45 px-3 py-2 backdrop-blur-xs sm:px-4 sm:py-2.5">
+              <div className="relative z-10 rounded-xl border border-white/10 bg-black/45 px-3 py-2 backdrop-blur-xs sm:px-4 sm:py-2.5">
               {/* Navegación de etapas del guion; no es una barra de progreso de video */}
               <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Etapas de la presentación">
                 {VSL_CHAPTERS.map((chapter, index) => {
@@ -241,7 +241,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                     >
                       <span
                         className={`block h-1.5 w-full rounded-full transition ${
-                          isActive ? 'bg-[#E544A1]' : 'bg-white/25 group-hover:bg-white/45'
+                        isActive ? 'bg-[#FFC14F]' : 'bg-white/25 group-hover:bg-white/45'
                         }`}
                       />
                     </button>
@@ -260,13 +260,13 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
 
       {/* Guion desplegable completo del VSL para lectura o grabación */}
       {showScriptDrawer && (
-        <div className="border-t border-[#224B43] bg-[#0E2421] p-5 text-white sm:p-6">
+              <div className="border-t border-[#653622] bg-[#1C1518] p-5 text-white sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#6EE7B7]">
+              <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#FFD267]">
                 Guion íntegro del VSL · Estructura de 5 bloques
               </p>
-              <p className="mt-0.5 text-xs text-[#BFDCD0]">
+              <p className="mt-0.5 text-xs text-[#E2D0C3]">
                 Basado 100% en las 100 respuestas de la entrevista del taller Sistema Zénit.
               </p>
             </div>
@@ -280,12 +280,12 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {VSL_FULL_SCRIPT.map(block => (
-              <div key={block.title} className="rounded-xl border border-white/10 bg-[#13312C] p-3.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#7CE5B9]">
+              <div key={block.title} className="rounded-xl border border-white/10 bg-[#2A1C1B] p-3.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFD267]">
                   {block.time}
                 </span>
                 <h3 className="mt-1 font-display text-sm font-bold text-white">{block.title}</h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-[#D4EAE1]">{block.text}</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-[#EADBD0]">{block.text}</p>
               </div>
             ))}
           </div>
@@ -293,13 +293,13 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
       )}
 
       {/* Selector interactivo de los 4 capítulos debajo del reproductor 16:9 */}
-      <div className="border-t border-[#DCE8E1] bg-[#F6FAF7] p-4 sm:p-6">
+      <div className="border-t border-[#E9D6C6] bg-[#FBF7F1] p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#2B6654]">
+          <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#A84B25]">
             Resumen del guion por etapas (haz clic para explorar)
           </p>
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#567266]">
-            <Sparkles className="size-3.5 text-[#286F5A]" /> 4 capítulos clave
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#735F54]">
+            <Sparkles className="size-3.5 text-[#C0672B]" /> 4 capítulos clave
           </span>
         </div>
 
@@ -319,11 +319,11 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                 onClick={() => setActiveChapterId(chapter.id)}
                 className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition ${
                   active
-                    ? 'border-[#193F39] bg-[#193F39] text-white shadow-sm'
-                    : 'border-[#D5E4DC] bg-white text-[#23443C] hover:border-[#9CC0B0]'
+                    ? 'border-[#8E3D22] bg-[#8E3D22] text-white shadow-sm'
+                    : 'border-[#E7D9CA] bg-white text-[#493229] hover:border-[#D8A46C]'
                 }`}
               >
-                <span className={`text-[10px] font-bold ${active ? 'text-[#9EE6C7]' : 'text-[#5A786B]'}`}>
+                <span className={`text-[10px] font-bold ${active ? 'text-[#FFD891]' : 'text-[#806A5B]'}`}>
                   {chapter.time}
                 </span>
                 <span className="mt-1 text-xs font-bold leading-snug">{chapter.title}</span>
@@ -332,10 +332,10 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
           })}
         </div>
 
-        <div className="mt-3.5 rounded-2xl border border-[#DCE8E1] bg-white p-4">
-          <p className="text-xs leading-6 text-[#4D6171] sm:text-sm">{activeChapter.summary}</p>
-          <p className="mt-2.5 flex items-start gap-2 text-xs font-bold text-[#1D5844]">
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#267754]" />
+        <div className="mt-3.5 rounded-2xl border border-[#E9DCCF] bg-white p-4">
+          <p className="text-xs leading-6 text-[#5E514B] sm:text-sm">{activeChapter.summary}</p>
+          <p className="mt-2.5 flex items-start gap-2 text-xs font-bold text-[#77401F]">
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#C35A24]" />
             <span>{activeChapter.takeaway}</span>
           </p>
         </div>

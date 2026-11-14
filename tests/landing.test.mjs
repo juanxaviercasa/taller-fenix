@@ -75,8 +75,9 @@ test('SEO corresponde a la oferta oficial de US$9 y al dominio vibecoding', () =
   assert.match(html, /Convierte una idea de clase en una web interactiva con IA/);
   assert.match(html, /https:\/\/vibecoding\.sistemazenit\.com\//);
   assert.match(html, /US\$9 por un mes de acceso/);
-  assert.match(html, /og-matematicas-ia\.png/);
-  assert.ok(existsSync(new URL('../public/og-matematicas-ia.png', import.meta.url)));
+  assert.match(html, /brand\/zenit-social-card\.jpg/);
+  assert.match(html, /og:image:width" content="1200/);
+  assert.ok(existsSync(new URL('../public/brand/zenit-social-card.jpg', import.meta.url)));
 });
 
 test('registro legado permanece condicionado a consentimiento y D1', () => {

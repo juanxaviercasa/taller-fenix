@@ -55,9 +55,9 @@ export function WaitlistForm() {
   };
 
   return (
-    <div className="waitlist-shell rounded-[24px] border border-[#D8E2DC] bg-white p-5 shadow-[0_14px_45px_rgba(22,54,42,0.06)] sm:p-7">
-      <div className="mb-3 flex items-center gap-2 font-display text-lg font-bold text-[#193E36]">
-        <Mail className="size-5 text-[#286F5A]" />
+    <div className="waitlist-shell rounded-[24px] border border-[#E9D9C9] bg-white p-5 shadow-[0_14px_45px_rgba(94,51,26,0.07)] sm:p-7">
+      <div className="mb-3 flex items-center gap-2 font-display text-lg font-bold text-[#39261F]">
+        <Mail className="size-5 text-[#C45C28]" />
         ¿Quieres que te avise cuando abran las inscripciones?
       </div>
       {complete ? (
@@ -90,7 +90,7 @@ export function WaitlistForm() {
             />
             <button
               disabled={busy || !consent}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#193F39] px-6 py-3.5 font-bold text-white hover:bg-[#286957] disabled:cursor-not-allowed disabled:opacity-50"
+              className="zenit-primary-cta inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-bold disabled:cursor-not-allowed disabled:opacity-50"
             >
               {busy ? 'Registrando…' : 'Avisarme al abrir inscripciones'}
               <ArrowRight className="size-4" />

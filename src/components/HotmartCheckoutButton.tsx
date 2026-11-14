@@ -23,7 +23,7 @@ export function HotmartCheckoutButton() {
           href={checkoutUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#C71D7A] px-6 py-4 text-sm font-bold text-white shadow-[0_12px_28px_rgba(199,29,122,.2)] transition hover:bg-[#A91667] sm:text-base"
+          className="zenit-primary-cta inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-bold sm:text-base"
         >
           Inscribirme por US$9 <ArrowUpRight className="size-4" />
         </a>
@@ -40,7 +40,7 @@ export function HotmartCheckoutButton() {
         type="button"
         disabled
         aria-disabled="true"
-        className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-dashed border-[#C58AAE] bg-[#F8ECF3] px-6 py-4 text-sm font-bold text-[#74465F] opacity-90 sm:text-base"
+        className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-dashed border-[#D5AE75] bg-[#FBF4E8] px-6 py-4 text-sm font-bold text-[#71502D] opacity-90 sm:text-base"
       >
         <Lock className="size-4 shrink-0" />
         Inscripción en Hotmart aún no habilitada
