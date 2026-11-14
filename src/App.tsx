@@ -143,7 +143,7 @@ const steps = [
     alt: 'Educador construyendo su app con ayuda de la inteligencia artificial',
     title: 'Diriges el diseño y las funciones por partes',
     description:
-      'Usando herramientas gratuitas como Antigravity, ChatGPT, Claude o Visual Studio Code —o partiendo de mis plantillas y repositorios probados de GitHub—, la IA ensambla cada bloque sin que escribas código a mano. Si algo falla, sabes exactamente cómo pedirle que lo corrija.',
+      'Usando herramientas como Antigravity, ChatGPT, Claude o Visual Studio Code —o partiendo de mis plantillas y repositorios de GitHub—, la IA ensambla los bloques. Tú pruebas el resultado, guías el diseño y describes los ajustes que necesitas; algunas herramientas pueden tener límites o funciones de pago.',
   },
   {
     number: '03',
