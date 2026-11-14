@@ -8,12 +8,14 @@ import {
   ChevronRight,
   ExternalLink,
   GraduationCap,
+  Menu,
   ShieldCheck,
   Sparkles,
   Users,
+  X,
 } from 'lucide-react';
 import HeroVslPlayer from './components/HeroVslPlayer';
-import { SkoolCheckoutButton } from './components/SkoolCheckoutButton';
+import { HotmartCheckoutButton } from './components/HotmartCheckoutButton';
 import { WaitlistForm } from './components/WaitlistForm';
 
 const MathStudio = lazy(() => import('./components/MathStudio'));
@@ -147,17 +149,17 @@ const steps = [
     number: '03',
     image: '/taller/ruta-03-automatizacion-tiempo-libre.webp',
     alt: 'Escritorio ordenado con un panel de evaluaciones ya resueltas automáticamente',
-    title: 'Publicas gratis en la web o lo llevas en tu laptop',
+    title: 'Aprendes a publicar una versión sencilla',
     description:
-      'Conectas tu repositorio con GitHub Pages, Cloudflare Pages o Vercel y en minutos tienes un enlace web real sin pagar hosting ni dominio, además de poder exportarlo en archivo HTML para tu computadora o USB e imprimir tus fichas.',
+      'Conectas tu repositorio con un proveedor como GitHub Pages, Cloudflare Pages o Vercel y revisas las opciones gratuitas disponibles, sus límites y el enlace que ofrecen. Un dominio propio es opcional y puede tener costo; también puedes exportar una versión HTML.',
   },
 ];
 
 const included = [
-  'Taller práctico en vivo (3 sesiones paso a paso con bloque de preguntas y respuestas al final de cada clase) + acceso a las grabaciones durante 30 días (con opción de acceso ilimitado y actualizaciones).',
+    'Taller práctico en vivo: 3 sesiones de unas 2 horas, con grabaciones disponibles durante 30 días.',
   '3 proyectos educativos míos ya terminados y funcionando, listos para que los uses en tu aula desde la primera semana o les pongas tu propia marca.',
   'Método de Entrevista Inversa y Plan Maestro: cómo hacer que la IA te pregunte todo lo necesario antes de construir para evitar iterar 100 veces.',
-  'Ruta de publicación $0 en internet: conexión paso a paso con GitHub Pages, Cloudflare Pages y Vercel para obtener tu enlace público gratuito + exportación en archivo .html para tu laptop o USB.',
+    'Guía para publicar con planes gratuitos, dentro de sus límites, y exportar una versión HTML para tu computadora o USB. Un subdominio del proveedor puede ser gratis; un dominio propio es opcional y suele tener costo.',
   'Guía de herramientas y créditos gratuitos: cómo aprovechar las versiones gratuitas de ChatGPT, Claude, Gemini, Antigravity, Visual Studio Code y plataformas con créditos diarios gratuitos como Manus.im (300 créditos diarios) y Genspark.',
 ];
 
@@ -184,16 +186,16 @@ const filterTabs: { id: FilterOption; label: string }[] = [
 
 const FAQ: [string, string][] = [
   [
-    '¿Es solo para profesores de matemáticas?',
+    '¿Es solo para docentes de matemáticas?',
     'No. Aunque yo soy profesor de matemáticas y ciencias, el método sirve para cualquier docente, tutor, coordinador, orientador o creador de cursos (Historia, Idiomas, Biología, Primaria, Inicial o capacitación). Con el mismo flujo puedes crear desde simuladores y juegos educativos hasta tests que se corrigen solos o sistemas gratuitos de calificación y seguimiento.',
   ],
   [
     'Soy pésimo con la tecnología, apenas uso Word, Excel o WhatsApp. ¿Esto es para mí?',
-    'Si sabes encender tu laptop, usar Word y escribir en el teclado, tienes la base necesaria. Al principio lo que toma un poco más de tiempo (unos 7 a 14 días si partes de cero absoluto) es instalar las herramientas iniciales con ayuda de la misma IA, pero una vez que haces tu primera aplicación y ves el flujo completo, la segunda y la tercera salen muchísimo más rápido.',
+    'Necesitas una laptop o PC, internet y manejo básico de computadora. Si empiezas desde cero, instalar y configurar las herramientas puede tomar alrededor de dos semanas; el ritmo depende de tu experiencia y del tiempo que puedas dedicarle.',
   ],
   [
-    'No sé nada de programación ni inglés; si veo código me voy a bloquear. ¿Podré hacerlo?',
-    'Ni siquiera yo, que estudié programación, he tenido que tocar o escribir a mano una sola línea de código en los últimos dos meses para crear más de 60 aplicaciones web. Todo el método se basa en hablarle en español a la IA mediante una entrevista de preguntas y respuestas y dejar que ella escriba y conecte el código por detrás.',
+    'No sé programar y me preocupa encontrarme con errores técnicos. ¿Podré empezar?',
+    'El taller está pensado para avanzar guiando a la IA en español, no para empezar memorizando sintaxis. Necesitas manejo básico de una computadora y disposición para revisar lo que genera: pueden aparecer errores y el proceso requiere comprobar y corregir, no solo aceptar todo lo que diga la herramienta.',
   ],
   [
     'Ya probé ChatGPT y solo me dio texto genérico o un código que dio error. ¿Qué cambia aquí?',
@@ -205,11 +207,11 @@ const FAQ: [string, string][] = [
   ],
   [
     '¿Seguro no necesito pagar US$20 al mes en ChatGPT o Claude ni pagar hosting?',
-    'Con total sinceridad: pagar US$20, US$100 o US$500 al mes en una IA no te garantiza hacer una buena app si no sabes dirigirla. En el taller aprendes a combinar estratégicamente planes gratuitos (ChatGPT, Claude, Gemini, Antigravity y créditos diarios gratuitos de plataformas como Manus.im y Genspark) y a publicar gratis en GitHub Pages, Cloudflare Pages o Vercel. Pagar una suscripción o un dominio propio más adelante es 100% opcional.',
+    'Puedes empezar usando planes gratuitos, dentro de sus límites. No pagar una suscripción mensual no garantiza por sí solo que la aplicación salga bien: también tendrás que dirigir la IA, revisar el resultado y corregirlo. Los dominios propios y las suscripciones de pago son opcionales para empezar, aunque los proveedores pueden cambiar sus condiciones.',
   ],
   [
     '¿Por qué cuesta solo US$9? ¿Es puro relleno para obligarme a comprar algo caro después?',
-    'Cuesta US$9 porque muchos aún no me conocen y sé la desconfianza que hay hoy por culpa de tantos vendehumos; quiero que el precio no sea una traba para ningún docente, pero tampoco lo doy gratis porque lo gratis no se valora ni se implementa. Con los US$9 tienes el taller completo, los 3 caminos de trabajo y mis plantillas para publicar tu primera web app. Nadie te obliga a comprar nada más: solo quienes luego quieran acompañamiento semanal en vivo, soporte técnico grupal y módulos de monetización tienen la opción de entrar a nuestra comunidad en Skool (US$19/mes).',
+    'Es un pago único de US$9 por un mes de acceso al taller y sus grabaciones. Incluye las tres sesiones, guías, plantillas y acceso a tres proyectos educativos para adaptar. El acompañamiento semanal es un paso aparte: la comunidad de Skool está prevista en US$19 al mes; no es obligatorio para tomar el taller.',
   ],
   [
     'La inteligencia artificial cambia cada semana. ¿Lo que aprenda hoy quedará obsoleto en dos meses?',
@@ -217,7 +219,7 @@ const FAQ: [string, string][] = [
   ],
   [
     '¿Qué garantía tengo si me inscribo por US$9?',
-    'El precio oficial de entrada es de US$9 (un solo pago) y cuentas con 7 días de garantía completa para asistir, ver las clases y probar el método; si sientes que no aprendiste nada o que no te aporta valor real, solicitas el 100% de tu reembolso dentro de esos 7 días sin ninguna complicación. Estamos terminando de abrir las inscripciones: déjanos tu correo abajo y te avisamos apenas se habilite el acceso.',
+    'El precio de entrada es US$9 en un solo pago, con acceso por 30 días. La garantía es de 7 días según las condiciones de compra que publique Hotmart. El checkout aún no está conectado; cuando lo esté, podrás revisar allí los términos completos antes de pagar.',
   ],
 ];
 
@@ -236,12 +238,16 @@ function SectionHeading({ label, title, body }: { label: string; title: string; 
 function Brand() {
   return (
     <a href="#inicio" className="inline-flex items-center gap-3" aria-label="Sistema Zénit, ir al inicio">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-[#183F3C] font-display text-xl font-black text-white">
+      <span className="relative flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#0F6264] font-display text-lg font-black text-white sm:size-9 sm:text-xl">
         Z
+        <span aria-hidden="true" className="absolute -right-1 -top-1 size-2 rounded-full bg-[#F4B942] ring-2 ring-[#FBFCFA]" />
       </span>
       <span className="flex flex-col leading-none">
-        <strong className="font-display text-[15px] tracking-tight text-[#18283B]">SISTEMA ZÉNIT</strong>
-        <span className="mt-1 text-[9px] font-bold uppercase tracking-[.16em] text-[#5B7268]">
+        <strong className="font-display text-[13px] tracking-tight text-[#18283B] sm:text-[15px]">
+          <span className="sm:hidden">ZÉNIT</span>
+          <span className="hidden sm:inline">SISTEMA ZÉNIT</span>
+        </strong>
+        <span className="mt-1 hidden text-[9px] font-bold uppercase tracking-[.16em] text-[#5B7268] sm:block">
           Educación × Inteligencia Artificial
         </span>
       </span>
@@ -253,11 +259,19 @@ function PurchaseCTA({ compact = false }: { compact?: boolean }) {
   return (
     <a
       href="#comprar"
-      className={`inline-flex items-center justify-center gap-2.5 rounded-xl bg-[#193F39] font-bold text-white shadow-[0_10px_25px_rgba(25,63,57,.16)] transition hover:bg-[#286957] ${
-        compact ? 'px-4 py-2.5 text-xs sm:text-sm' : 'px-7 py-4 text-sm sm:text-base'
+      className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#C71D7A] font-bold text-white shadow-[0_10px_25px_rgba(199,29,122,.2)] transition hover:bg-[#A91667] ${
+        compact ? 'px-2.5 py-2.5 text-[11px] sm:gap-2.5 sm:px-4 sm:text-sm' : 'px-7 py-4 text-sm sm:text-base'
       }`}
     >
-      Quiero el taller · {OFFICIAL_PRICE} <ArrowRight className="size-5" />
+      {compact ? (
+        <>
+          <span className="sm:hidden">Taller · {OFFICIAL_PRICE}</span>
+          <span className="hidden sm:inline">Ver detalles · {OFFICIAL_PRICE}</span>
+        </>
+      ) : (
+        <>Ver detalles del taller · {OFFICIAL_PRICE}</>
+      )}
+      <ArrowRight className={compact ? 'size-4 sm:size-5' : 'size-5'} />
     </a>
   );
 }
@@ -311,8 +325,8 @@ function InstructorPortrait() {
       />
       <figcaption className="px-3 pb-3 pt-5 text-center">
         <strong className="font-display text-lg text-[#193B38]">Juan Xavier Cabello</strong>
-        <p className="mt-1 text-xs text-[#607A6D]">
-          Profesor de matemáticas (+8 años en aula) · +70 web apps creadas con IA
+              <p className="mt-1 text-xs text-[#607A6D]">
+          Profesor de matemáticas (+8 años en aula) · más de 70 proyectos web con IA
         </p>
       </figcaption>
     </figure>
@@ -321,6 +335,7 @@ function InstructorPortrait() {
 
 export default function App() {
   const [studioOpen, setStudioOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterOption>('Todos');
   const visibleProjects =
     activeFilter === 'Todos' ? projects : projects.filter(project => project.category === activeFilter);
@@ -337,9 +352,9 @@ export default function App() {
       </a>
 
       <header className="sticky top-0 z-40 border-b border-[#E5E9E7] bg-[#FBFCFA]/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-8 sm:py-4">
           <Brand />
-          <nav aria-label="Navegación principal" className="hidden items-center gap-7 text-sm font-semibold text-[#4D6072] md:flex">
+          <nav aria-label="Navegación principal" className="hidden items-center gap-7 text-sm font-semibold text-[#4D6072] lg:flex">
             <a href="#incluye" className="hover:text-[#176655]">
               Qué incluye
             </a>
@@ -357,14 +372,46 @@ export default function App() {
             </a>
           </nav>
           <PurchaseCTA compact />
+          <button
+            type="button"
+            className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#C8DCD0] bg-white text-[#214E41] transition hover:bg-[#F3F8F5] lg:hidden"
+            aria-label={mobileNavOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+            aria-expanded={mobileNavOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMobileNavOpen(open => !open)}
+          >
+            {mobileNavOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
         </div>
+        {mobileNavOpen && (
+          <nav id="mobile-navigation" aria-label="Navegación móvil" className="border-t border-[#E5E9E7] bg-[#FBFCFA] px-4 py-3 shadow-lg lg:hidden">
+            <div className="mx-auto grid max-w-7xl gap-1">
+              {[
+                ['Qué incluye', '#incluye'],
+                ['Método real', '#metodo'],
+                ['Apps funcionando', '#proyectos'],
+                ['Mi historia', '#fundador'],
+                ['Preguntas', '#preguntas'],
+              ].map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileNavOpen(false)}
+                  className="rounded-lg px-3 py-3 text-sm font-semibold text-[#4D6072] hover:bg-[#F0F6F1] hover:text-[#176655]"
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
       </header>
 
       <main id="contenido">
         {/* 1. HERO CON ARQUITECTURA VSL CENTRADA (ABOVE THE FOLD) */}
         <section
           id="demostracion"
-          className="relative overflow-hidden border-b border-[#E5EAE8] bg-[radial-gradient(ellipse_75%_55%_at_50%_0%,rgba(202,235,216,.55),transparent_72%),linear-gradient(180deg,#F9FBFA_0%,#F2F7F4_100%)] px-5 py-12 sm:px-8 sm:py-16"
+          className="relative overflow-hidden border-b border-[#DCE8E6] bg-[radial-gradient(ellipse_75%_55%_at_50%_0%,rgba(91,215,210,.22),transparent_72%),radial-gradient(ellipse_22%_24%_at_92%_8%,rgba(229,68,161,.1),transparent_72%),linear-gradient(180deg,#FAFCFB_0%,#F2F8F7_100%)] px-5 py-12 sm:px-8 sm:py-16"
         >
           <div className="mx-auto max-w-5xl">
             {/* Encabezado VSL centrado */}
@@ -375,16 +422,16 @@ export default function App() {
               </p>
 
               <h1 className="mt-6 font-display text-[clamp(2.15rem,4.5vw,4.1rem)] font-bold leading-[1.08] tracking-[-.06em] text-[#18283C]">
-                Crea tus propias apps educativas con IA,{' '}
-                <span className="text-[#286F5A]">sin saber programar.</span>
+                Convierte una idea de clase en una{' '}
+                <span className="text-[#147E83]">web interactiva con IA.</span>
               </h1>
 
               <p className="mx-auto mt-4 max-w-3xl font-display text-sm font-bold leading-relaxed text-[#225847] sm:text-lg">
-                Genera tu primera web educativa en menos de 7 a 14 días siguiendo la estrategia del Sistema Zénit: ahórrate dolores de cabeza en herramientas que sin buena dirección no sirven de nada y despliega tu aplicación completa en línea sin pagar servidores.
+                El Método Zénit te guía para aclarar qué necesitas, dirigir a la IA, revisar lo que construye y preparar una primera versión para publicar. Tu experiencia docente pone el criterio; la IA acelera la ejecución.
               </p>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#4F6174] sm:text-base">
-                ¿Eres profesor, tutor, coordinador o trabajas en educación y tienes una idea guardada en un cuaderno? Mira este video de 7 minutos para ver cómo construir tu herramienta web sin tocar ni una sola línea de código a mano:
+                ¿Tienes una idea guardada para tus clases? Explora las etapas del método y prueba proyectos reales. Si partes desde cero, configurar tus herramientas puede tomar alrededor de dos semanas; el ritmo depende de tu experiencia y del tiempo disponible.
               </p>
             </div>
 
@@ -407,13 +454,13 @@ export default function App() {
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs font-semibold text-[#3C5852]">
                 <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
-                  ✓ 3 caminos prácticos (personaliza mis apps, clona de GitHub o crea desde cero)
+                  ✓ Tres caminos: adaptar un proyecto, partir de GitHub o crear una mini app
                 </span>
                 <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
-                  ✓ $0 en hosting, dominio y licencias para empezar
+                  ✓ Puedes empezar con herramientas gratuitas, dentro de sus límites
                 </span>
                 <span className="rounded-full border border-[#C6DFD1] bg-[#EBF6EF] px-3.5 py-2 font-bold text-[#1D5543]">
-                  ✓ {OFFICIAL_PRICE} · pago único (7 días de garantía)
+                  ✓ {OFFICIAL_PRICE} · pago único · acceso por 30 días
                 </span>
               </div>
 
@@ -504,19 +551,19 @@ export default function App() {
                   <div className="border-t border-[#D0E3D7] pt-5">
                     <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
                       <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                      Cero código escrito a mano (+60 apps en los últimos 2 meses)
+                      Tu experiencia dirige; la IA acelera el trabajo
                     </h3>
                     <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
-                      Incluso teniendo formación en programación, en los últimos dos meses construí más de 60 aplicaciones web sin tocar ni una sola línea de código a mano: tú pones el criterio docente y la IA escribe y conecta el código por detrás.
+                      En los últimos meses he construido decenas de proyectos con IA. Tú aportas el criterio de tu área; la herramienta ayuda con la construcción y tú revisas que el resultado tenga sentido.
                     </p>
                   </div>
                   <div className="border-t border-[#D0E3D7] pt-5">
                     <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
                       <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                      Publicada gratis en internet y lista para imprimir
+                      Publicación en línea con opciones gratuitas
                     </h3>
                     <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
-                      No pasas meses estudiando lenguajes que se desactualizan ni gastas en servidores: despliegas tu herramienta con enlace propio en GitHub Pages o Cloudflare, la proyectas en el salón e imprimes tus fichas en minutos.
+                      Aprendes a desplegar una versión sencilla con opciones gratuitas como GitHub Pages o Cloudflare Pages, teniendo en cuenta sus límites. Después puedes proyectarla en clase o preparar fichas para imprimir.
                     </p>
                   </div>
                 </div>
@@ -542,8 +589,8 @@ export default function App() {
               <div>
                 <SectionHeading
                   label={`Qué recibes por ${OFFICIAL_PRICE} · Pago único`}
-                  title="Sales con tu primera aplicación web publicada en internet y lista para usar en tu clase o proyecto."
-                  body="Diseñado para que nadie se quede paralizado frente a la pantalla en blanco: trabajas paso a paso con plantillas probadas o sobre tu propia idea."
+                  title="Aprende a construir una primera aplicación web y prepararla para publicar."
+                  body="Diseñado para que no te quedes frente a la pantalla en blanco: sigues pasos guiados con plantillas o trabajas sobre una idea propia."
                 />
                 <ul className="mx-auto mt-9 max-w-2xl space-y-4">
                   {included.map(item => (
@@ -598,7 +645,7 @@ export default function App() {
 
               <div className="mt-6 rounded-2xl border border-[#D4E3DA] bg-white p-4 text-xs leading-6 text-[#4D6370] sm:p-5">
                 <strong className="text-[#193E36]">Lo que incluye y lo que NO incluye este taller de {OFFICIAL_PRICE}:</strong>{' '}
-                En este taller aprendes el método exacto para construir y publicar tu primera web app sin gastar en servidores ni programación. No incluye que yo construya la app por ti ni soporte técnico individual 1 a 1 indefinido. Si al terminar deseas acompañamiento grupal todas las semanas en vivo, soporte técnico revisando tu repositorio y módulos para monetizar tus herramientas con embudos de venta, podrás unirte de forma 100% opcional a nuestra comunidad en Skool (US$19/mes).
+                En este taller aprendes a dirigir la construcción de una mini app educativa y a preparar su publicación; los planes gratuitos tienen límites y un dominio propio puede tener costo. No incluye que yo construya la app por ti ni soporte técnico individual indefinido. El acompañamiento semanal en vivo y la revisión grupal de proyectos se ofrecen por separado en la comunidad de Skool (US$19/mes).
               </div>
             </div>
           </div>
@@ -644,9 +691,9 @@ export default function App() {
         <section id="proyectos" className="border-y border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-7xl">
             <SectionHeading
-              label="Prueba real verificable (+70 apps en repositorio)"
+              label="Proyectos reales · 7 destacados y demos interactivas"
               title="No te enseño teoría suelta: abre y prueba las aplicaciones que ya construí con este flujo."
-              body="En mis repositorios llevo más de 70 aplicaciones funcionales desarrolladas. Aquí puedes abrir 8 de ellas en vivo —incluyendo nuestra Tabla Periódica que superó las 500,000 vistas orgánicas y las herramientas que uso en mis propias clases—."
+              body="Tengo más de 70 proyectos web en mis repositorios, en distintos estados. Aquí puedes abrir siete aplicaciones destacadas, probar la Tabla Periódica Interactiva y explorar Math Studio; entre ellas hay herramientas que utilizo en mis clases."
             />
 
             {/* Destacado del caso viral de Tabla Periódica (+500,000 vistas) */}
@@ -801,7 +848,7 @@ export default function App() {
                 <Users className="size-4" /> Quién te enseña · De docente a docente
               </p>
               <h2 className="mt-5 font-display text-[clamp(1.95rem,3.6vw,3.15rem)] font-bold leading-[1.12] tracking-[-.05em] text-[#1E3938]">
-                Soy Juan Xavier Cabello: profesor de matemáticas (+8 años en aula) y creador de más de 70 aplicaciones web con IA.
+                Soy Juan Xavier Cabello: profesor de matemáticas (+8 años en aula) y creador de más de 70 proyectos web con IA.
               </h2>
               <div className="mt-6 space-y-4 text-base leading-8 text-[#40584F]">
                 <p>
@@ -811,7 +858,7 @@ export default function App() {
                   Antes de llegar a este método pasé por todos los tropiezos posibles: en 2018 me endeudé dos años intentando vender páginas en WordPress; entre 2021 y 2022 dediqué casi un año entero a armar una app de tablas de multiplicar con bloques en MIT App Inventor, gasté en anuncios de Google Ads para conseguir apenas 130 descargas y perdí la aplicación cuando Google Play cerró mi cuenta por políticas de actualización; y en abril de 2023 me volví a endeudar entrando a un bootcamp intensivo de programación full stack de 16 semanas donde iteraba hasta 130 veces con ChatGPT por tarea y comprobé lo frustrante que es escribir código a mano cuando todo se desactualiza cada mes.
                 </p>
                 <p>
-                  Cuando entendí que <strong>la inteligencia artificial no reemplaza al docente, sino que multiplica a quien sabe dirigirla con la información de su propio campo</strong>, todo cambió. Hoy llevo más de 70 proyectos funcionales construidos en mis repositorios, gané tiempo libre, mis alumnos participan con materiales únicos que también puedo imprimir y creé este taller de {OFFICIAL_PRICE} para ahorrarte años de frustración, deudas y prueba y error.
+                  Cuando entendí que <strong>la inteligencia artificial no reemplaza al docente, sino que multiplica a quien sabe dirigirla con la información de su propio campo</strong>, todo cambió. Hoy tengo más de 70 proyectos web en mis repositorios, en distintas etapas de avance. En el aula he utilizado herramientas que construí para explorar conceptos y preparar materiales imprimibles; este taller comparte parte del método detrás de ese trabajo.
                 </p>
               </div>
 
@@ -848,8 +895,8 @@ export default function App() {
           <div className="mx-auto max-w-6xl">
             <SectionHeading
               label="Inscripción al taller"
-              title={`Empieza hoy tu primera aplicación web educativa por ${OFFICIAL_PRICE}.`}
-              body="Un solo pago accesible para que el precio no sea una excusa, respaldado por 7 días de garantía."
+              title={`Aprende a construir y publicar una primera web interactiva por ${OFFICIAL_PRICE}.`}
+              body="Pago único de US$9 por un mes de acceso al taller y sus grabaciones. La garantía de 7 días se tramita según las condiciones de Hotmart."
             />
 
             <div className="mx-auto mt-12 grid max-w-5xl overflow-hidden rounded-[26px] border border-[#D8E2DC] bg-white shadow-[0_20px_65px_rgba(22,54,42,.08)] lg:grid-cols-[1.08fr_.92fr]">
@@ -858,10 +905,10 @@ export default function App() {
                   <BookOpen className="size-4" /> Taller de Entrada · Método Sistema Zénit
                 </div>
                 <h3 className="mt-6 font-display text-[clamp(1.6rem,2.5vw,2.3rem)] font-bold leading-[1.18] text-[#203744]">
-                  Construye y publica tu primera web app educativa con IA, sin escribir código.
+                  Una ruta práctica para definir, construir y revisar una mini app educativa con IA.
                 </h3>
                 <p className="mt-4 text-sm leading-7 text-[#647587]">
-                  Incluye las 3 sesiones prácticas en vivo + acceso a las grabaciones paso a paso durante 30 días, mis 3 aplicaciones educativas listas para personalizar y usar en clase, las plantillas de Entrevista Inversa y Plan Maestro, y la guía de publicación gratuita en GitHub Pages y Cloudflare Pages. Si partes de cero absoluto, en 7 a 14 días tendrás tus herramientas configuradas y tu primera web app publicada con enlace propio.
+                  Incluye 3 sesiones prácticas en vivo de unas 2 horas cada una, grabaciones disponibles durante 30 días, guías y plantillas, y acceso a 3 proyectos educativos para adaptar. La meta es que construyas una primera versión sencilla y aprendas a prepararla para publicar; si partes de cero, configurar tus herramientas puede tomar alrededor de dos semanas.
                 </p>
 
                 <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -872,9 +919,9 @@ export default function App() {
                     </p>
                   </div>
                   <div className="rounded-xl bg-[#F7FAF8] p-4">
-                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Garantía de 7 días sin riesgo</p>
+                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Garantía de 7 días según Hotmart</p>
                     <p className="mt-2 text-sm leading-6 text-[#526675]">
-                      Tienes 7 días completos para asistir, revisar las grabaciones y probar el método. Si sientes que no te aporta valor real, pides el 100% de tu reembolso sin trabas.
+                      La compra incluye una garantía de 7 días, de acuerdo con las condiciones publicadas por Hotmart al momento del pago.
                     </p>
                   </div>
                 </div>
@@ -885,7 +932,7 @@ export default function App() {
               </div>
 
               <div className="border-t border-[#E2E9E3] bg-[#F0F6F1] p-7 sm:p-10 lg:border-l lg:border-t-0">
-                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#537968]">Precio oficial</p>
+                <p className="text-xs font-bold uppercase tracking-[.15em] text-[#537968]">Pago único · acceso por 30 días</p>
                 <div className="mt-3 flex items-end gap-3">
                   <strong className="font-display text-[clamp(3.3rem,6vw,5.1rem)] font-bold leading-none tracking-[-.09em] text-[#193E36]">
                     {OFFICIAL_PRICE}
@@ -899,20 +946,20 @@ export default function App() {
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#286F5A]">Inscripción al taller</p>
                     <span className="rounded-full bg-[#EAF4ED] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#266B56]">
-                      Muy pronto
+                      En preparación
                     </span>
                   </div>
-                  <p className="mt-2 text-xs leading-5 text-[#5D7368]">
-                    Estamos terminando de abrir las inscripciones en Skool y nuestra pasarela oficial.
+                  <p className="mt-2 text-xs leading-6 text-[#4D6370] sm:p-5">
+                    El checkout de Hotmart se habilitará cuando esté conectado el enlace oficial de compra.
                   </p>
                   <div className="mt-4">
-                    <SkoolCheckoutButton />
+                    <HotmartCheckoutButton />
                   </div>
                 </div>
 
                 <p className="mt-5 flex items-start gap-2 text-xs leading-6 text-[#62796C]">
                   <ShieldCheck className="mt-0.5 size-4 shrink-0" />
-                  7 días de garantía completa · Sin gastos obligatorios en servidores ni suscripciones de IA.
+                  Garantía de 7 días según las condiciones de Hotmart · No se requiere una suscripción de IA de pago para empezar.
                 </p>
               </div>
             </div>

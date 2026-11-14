@@ -6,12 +6,15 @@ Landing editorial alojada en **Cloudflare Pages** (`taller-fenix`, rama `main`):
 
 ## Propuesta y oferta oficial
 
-Taller práctico abierto a **profesionales en la industria de la educación** (docentes, capacitadores, coordinadores y creadores educativos) que desean transformar ideas guardadas en **aplicaciones web y herramientas interactivas reales con IA**, sin saber programación ni contratar programadores:
+Taller práctico para **docentes y profesionales de la educación** que quieren convertir una idea de clase en una web interactiva con IA, aportando su criterio y revisando lo que la herramienta construye:
 
-- **Precio oficial único:** **US$9**
-- **Canal de checkout:** botón en placeholder para conectar el checkout dentro de nuestra comunidad en **Skool** (`VITE_SKOOL_CHECKOUT_URL`).
+- **Precio de entrada:** pago único de **US$9**, con acceso al taller y sus grabaciones durante 30 días.
+- **Formato:** tres sesiones en vivo de alrededor de dos horas, guías y plantillas, más acceso a tres proyectos educativos para adaptar.
+- **Canal de checkout:** Hotmart. El botón permanece desactivado hasta configurar `VITE_HOTMART_CHECKOUT_URL` con el enlace oficial `https://pay.hotmart.com/...`.
+- **Acceso de por vida:** no se publica hasta confirmar el precio exacto de esa modalidad.
+- **Comunidad posterior:** Skool es un paso opcional de acompañamiento semanal, previsto en US$19/mes; no es el checkout del taller de entrada.
 - **Alcance práctico:** desde aplicaciones para enseñar matemáticas y ciencias (conservando el graficador en vivo y **Math Studio** de tres niveles académicos) hasta herramientas para automatizar tareas y resolver necesidades reales en la industria educativa.
-- **Respaldo:** ruta condensada desde la experiencia aplicada construyendo soluciones con IA desde **2023**.
+- **Respaldo:** experiencia aplicada construyendo soluciones con IA desde **2023**. La primera versión no promete un plazo fijo ni resultados de aprendizaje o ingresos garantizados.
 
 ## Proyectos reales publicados
 

@@ -1,4 +1,4 @@
 # PLACEHOLDER LOCAL — no contiene credenciales activas.
 WAITLIST_ENABLED="false"
-# Conectar cuando el checkout en la comunidad de Skool esté listo:
-# VITE_SKOOL_CHECKOUT_URL="https://www.skool.com/tu-comunidad"
+# Checkout de pago único de Hotmart (acceso al taller durante 30 días):
+# VITE_HOTMART_CHECKOUT_URL="https://pay.hotmart.com/TU_PRODUCTO"

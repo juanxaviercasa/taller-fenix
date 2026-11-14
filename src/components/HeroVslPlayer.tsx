@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Clock, FileText, Film, Maximize2, Play, Sparkles, Volume2 } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Film, Sparkles } from 'lucide-react';
 
 /**
  * PEGA AQUÍ EL ENLACE DE TU VIDEO VSL (YouTube, Vimeo, PandaVideo, Bunny, Loom o archivo .mp4)
@@ -25,34 +25,34 @@ const VSL_CHAPTERS: VslChapter[] = [
   {
     id: 'revelacion',
     time: '0:00 – 1:45',
-    title: '1. La verdad: Humano × IA',
+    title: '1. La IA no adivina tu contexto',
     summary:
-      'Por qué pedirle una app a la IA con dos líneas de texto siempre termina en material genérico o errores, y por qué la IA necesita más de tu experiencia docente que tú de ella.',
-    takeaway: 'En los últimos 2 meses construí más de 60 web apps sin tocar una sola línea de código a mano.',
+      'Por qué una instrucción vaga puede dejarte con un resultado genérico, y cómo tu experiencia profesional ayuda a orientar y revisar lo que la IA construye.',
+    takeaway: 'Tu criterio aporta el contexto; la IA ayuda a ejecutar.',
   },
   {
     id: 'metodo',
     time: '1:45 – 4:00',
     title: '2. Entrevista Inversa y Plan Maestro',
     summary:
-      'En lugar de adivinar qué instrucción darle, haces que la IA te entreviste primero con preguntas y respuestas sobre tu clase, tus alumnos y tu objetivo antes de construir.',
-    takeaway: 'Pasas de la idea guardada en tu cuaderno a un Plan Maestro claro sin iterar 100 veces.',
+      'Antes de construir, organizas tu idea, el objetivo, las personas que usarán la herramienta y las pantallas o funciones que necesitas.',
+    takeaway: 'Un plan revisado reduce los cambios a ciegas; no elimina toda iteración.',
   },
   {
     id: 'caminos',
     time: '4:00 – 5:45',
-    title: '3. Tus 3 caminos y despliegue $0',
+    title: '3. Elige una ruta y aprende a publicar',
     summary:
-      'Cómo elegir entre personalizar 3 proyectos míos ya listos, clonar repositorios probados de GitHub o crear tu mini app desde cero, publicándola gratis en GitHub Pages o Cloudflare.',
-    takeaway: 'Sales con un enlace web real funcionando y sin pagar servidores ni suscripciones obligatorias.',
+      'Puedes adaptar uno de tres proyectos educativos, partir de un repositorio de GitHub o desarrollar una mini app propia. Luego revisas las opciones de publicación y sus límites.',
+    takeaway: 'Puedes empezar con herramientas gratuitas, dentro de los límites de cada plan.',
   },
   {
     id: 'oferta',
     time: '5:45 – 7:15',
     title: '4. Qué incluye el taller de US$9',
     summary:
-      'Resumen transparente de las 3 sesiones prácticas en vivo + grabaciones, qué incluye, qué no incluye y cómo funciona la garantía completa de 7 días.',
-    takeaway: 'Entrada accesible de US$9 (pago único) para que el precio nunca sea una traba.',
+      'Tres sesiones en vivo de unas dos horas, grabaciones disponibles durante 30 días, guías y plantillas, y acceso a tres proyectos para adaptar.',
+    takeaway: 'US$9 de pago único por un mes de acceso; garantía de 7 días según las condiciones de Hotmart.',
   },
 ];
 
@@ -60,27 +60,27 @@ const VSL_FULL_SCRIPT: VslScriptBlock[] = [
   {
     time: '0:00 – 0:40',
     title: 'Bloque 1 · Gancho: Demoler el mito',
-    text: '«Si eres profesor, tutor, capacitador o trabajas en educación, quiero mostrarte cómo construir tu propia aplicación web en menos de 7 a 14 días y desplegarla en internet sin pagar servidores. En estos últimos dos meses he construido más de 60 aplicaciones web educativas sin escribir a mano ni una sola línea de código. Pero no lo hice abriendo ChatGPT y lanzándole una orden de dos líneas esperando un milagro...»',
+    text: '«Soy Juan Xavier Cabello, profesor de matemáticas en Perú. Si trabajas en educación y tienes una idea de clase que quisieras convertir en una herramienta interactiva, quiero mostrarte el método que uso para organizarla, dirigir a la IA y revisar lo que construye. La IA no adivina tu experiencia ni tu objetivo: eso lo pones tú.»',
   },
   {
     time: '0:40 – 1:45',
     title: 'Bloque 2 · El problema real en el aula y en casa',
-    text: '«En el aula tienes 30 o 40 minutos y si pasas media clase dibujando en la pizarra, los chicos se distraen. Y en casa pasas domingos por la tarde o noches hasta las 11 p. m. armando fichas. Tus mejores ideas se quedan en un cuaderno porque PowerPoint o PDF son planos, GeoGebra toma mucho tiempo y pedir cosas sueltas a la IA te deja en un bucle donde arregla una cosa y rompe otra.»',
+    text: '«En una clase de 30 o 40 minutos, dibujar varias representaciones puede quitarte tiempo para guiar la exploración. A mí me pasó con transformaciones geométricas: por eso construí una herramienta para mostrar los cambios en vivo y preparar fichas imprimibles.»',
   },
   {
     time: '1:45 – 3:00',
-    title: 'Bloque 3 · Historia real sin filtro (de 2018 a +70 apps)',
-    text: '«Soy Juan Xavier Cabello, profesor de matemáticas con más de 8 años en secundaria y preuniversitario en Perú. Me endeudé con WordPress en 2018, pasé casi un año en MIT App Inventor entre 2021 y 2022 hasta que Google Play cerró mi cuenta, y en abril de 2023 me volví a endeudar en un bootcamp full stack donde iteraba hasta 130 veces con ChatGPT. Todo cambió al unir mi criterio docente con este nuevo flujo: hoy llevo más de 70 web apps funcionales y nuestra Tabla Periódica superó las 500,000 vistas orgánicas.»',
+    title: 'Bloque 3 · Historia real sin filtro (más de 70 proyectos web)',
+    text: '«Llevo más de ocho años enseñando matemáticas en colegios, academias y tutorías. Probé WordPress, aplicaciones móviles, estudio de programación y distintos flujos con IA; aprendí por experiencia propia que la herramienta ejecuta rápido, pero hace falta una persona que conozca el tema y compruebe el resultado. Hoy tengo más de 70 proyectos en mis repositorios, en distintos estados de avance.»',
   },
   {
     time: '3:00 – 5:45',
     title: 'Bloques 4, 5 y 6 · Revelación Humano × IA y los 3 pasos',
-    text: '«La IA necesita más de ti y de tu información que tú de ella. Por eso usamos 3 pasos: 1) Entrevista Inversa y Plan Maestro (la IA te pregunta a ti primero); 2) Construcción sin código por 3 caminos (personalizar mis 3 apps listas, clonar de GitHub o crear desde cero); y 3) Publicación con costo $0 en GitHub Pages, Cloudflare Pages o Vercel.»',
+    text: '«La IA necesita más de tu contexto del que mucha gente imagina. Organizamos la idea con una Entrevista Inversa y un Plan Maestro; eliges entre adaptar uno de tres proyectos, partir de un repositorio o crear una mini app, y revisas cómo prepararla para publicar. Los planes gratuitos pueden ser suficientes para comenzar, con sus límites.»',
   },
   {
     time: '5:45 – 7:15',
     title: 'Bloques 7 y 8 · Qué recibes por US$9, transparencia y cierre',
-    text: '«Por un único pago de US$9 recibes las 3 sesiones en vivo + 30 días de grabaciones, mis 3 proyectos educativos listos y las plantillas de Entrevista Inversa, con 7 días de garantía completa. No incluye que yo haga la app por ti ni soporte 1 a 1 indefinido (quienes luego quieran acompañamiento semanal tienen la comunidad opcional en Skool por US$19/mes). Zénit significa llegar a tu punto más alto: haz clic debajo del video y nos vemos adentro.»',
+    text: '«El taller cuesta US$9 en pago único e incluye tres sesiones en vivo de unas dos horas, grabaciones durante 30 días, guías, plantillas y acceso a tres proyectos educativos para adaptar. Hotmart ofrece una garantía de 7 días según sus condiciones. No es soporte individual indefinido ni promete ingresos o un plazo fijo para publicar. Quienes quieran acompañamiento semanal pueden sumarse por separado a la comunidad de Skool, prevista en US$19 al mes.»',
   },
 ];
 
@@ -120,17 +120,17 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#214B43] bg-[#112A26] px-4 py-3 text-white sm:px-6">
         <div className="flex items-center gap-2.5">
           <span className="inline-flex size-2.5 rounded-full bg-[#38D399] shadow-[0_0_10px_#38D399]" />
-          <span className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#D7EFE4]">
-            Video de Presentación (VSL) · Sistema Zénit
+            <span className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#D7EFE4]">
+              Guion de presentación · Sistema Zénit
           </span>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-[#E5F5EC]">
-          <Clock className="size-3.5 text-[#67E2B4]" /> 7:15 min · Por Juan Xavier Cabello
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-[#E5F5EC]">
+            <Clock className="size-3.5 text-[#67E2B4]" /> Video pendiente · Juan Xavier Cabello
         </span>
       </div>
 
       {/* Marco principal 16:9 (aspect-video) para el reproductor de video */}
-      <div className="relative aspect-video w-full overflow-hidden bg-[#0B1E1B]">
+      <div className={`relative ${videoUrl ? 'aspect-video' : 'min-h-[320px] sm:aspect-video'} w-full overflow-hidden bg-[#0B1E1B]`}>
         {videoUrl ? (
           isDirectVideoFile(videoUrl) ? (
             <video
@@ -152,7 +152,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
             />
           )
         ) : (
-          /* Estado visual 16:9 listo para insertar el reproductor VSL */
+          /* Portada legible del guion mientras se prepara el video real */
           <div className="relative flex h-full w-full flex-col justify-between p-4 text-white sm:p-7 md:p-9">
             {/* Imagen de fondo sutil + gradiente cinematográfico */}
             <img
@@ -171,7 +171,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
             {/* Fila superior dentro del reproductor 16:9 */}
             <div className="relative z-10 flex flex-wrap items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#38D399]/35 bg-[#163D35]/90 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#9CF0CD] sm:text-xs">
-                <Volume2 className="size-3.5" /> Activa tu sonido · Presentación paso a paso
+                <FileText className="size-3.5" /> El video de presentación aún no está configurado
               </span>
 
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-2.5 py-1 backdrop-blur-xs">
@@ -186,24 +186,24 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
               </div>
             </div>
 
-            {/* Centro del reproductor 16:9: Botón Play grande + Mensaje central */}
+            {/* Portada de la presentación: el botón abre el guion, no finge reproducir un video */}
             <div className="relative z-10 my-auto flex flex-col items-center text-center">
-              <button
-                type="button"
-                onClick={() => setShowScriptDrawer(v => !v)}
-                aria-expanded={showScriptDrawer}
-                aria-label="Ver avance y guion completo del video de presentación"
+                <button
+                  type="button"
+                  onClick={() => setShowScriptDrawer(v => !v)}
+                  aria-expanded={showScriptDrawer}
+                  aria-label="Leer guion completo de la presentación"
                 className="group relative flex size-16 items-center justify-center rounded-full bg-[#34C08B] text-[#0B231E] shadow-[0_0_45px_rgba(52,192,139,.5)] transition duration-300 hover:scale-105 hover:bg-[#49D6A0] sm:size-20"
               >
                 <span className="animate-ping-slow pointer-events-none absolute inset-0 rounded-full bg-[#34C08B]/30" />
-                <Play className="ml-1 size-7 fill-current sm:size-9" />
+                <FileText className="size-7 sm:size-9" />
               </button>
 
               <p className="mt-3 max-w-2xl font-display text-sm font-bold leading-snug text-white sm:mt-4 sm:text-xl md:text-2xl">
                 «La inteligencia artificial necesita más de ti y de tu información que tú de ella»
               </p>
               <p className="mt-1.5 hidden max-w-xl text-xs leading-relaxed text-[#C9E3D8] sm:block sm:text-sm">
-                Cómo pasé de endeudarme estudiando programación tradicional a crear +70 web apps educativas con Entrevista Inversa y publicarlas gratis en internet.
+                Cómo convertí necesidades reales del aula en herramientas interactivas y organizo a la IA para construir una primera versión.
               </p>
 
               <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
@@ -213,23 +213,23 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                   className="inline-flex items-center gap-1.5 rounded-lg border border-[#56B893]/40 bg-[#173E36]/90 px-3 py-1.5 text-[11px] font-bold text-[#A9F2D4] transition hover:bg-[#205247]"
                 >
                   <FileText className="size-3.5" />
-                  {showScriptDrawer ? 'Ocultar guion completo del VSL' : 'Leer guion completo del VSL (7 min)'}
+                  {showScriptDrawer ? 'Ocultar guion de la presentación' : 'Leer el guion de la presentación'}
                 </button>
                 <a
                   href="#proyectos"
                   className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-white/20"
                 >
-                  <Film className="size-3.5" /> Ver las 7 apps en vivo
+                  <Film className="size-3.5" /> Probar proyectos reales
                 </a>
               </div>
             </div>
 
             {/* Barra de controles inferior estilo reproductor VSL 16:9 */}
             <div className="relative z-10 rounded-xl border border-white/10 bg-black/45 px-3 py-2 backdrop-blur-xs sm:px-4 sm:py-2.5">
-              {/* Línea de progreso dividida en los 4 capítulos */}
-              <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Línea de tiempo del video por capítulos">
+              {/* Navegación de etapas del guion; no es una barra de progreso de video */}
+              <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Etapas de la presentación">
                 {VSL_CHAPTERS.map((chapter, index) => {
-                  const completedOrActive = index <= activeChapterIndex;
+                  const isActive = index === activeChapterIndex;
                   return (
                     <button
                       key={chapter.id}
@@ -241,7 +241,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
                     >
                       <span
                         className={`block h-1.5 w-full rounded-full transition ${
-                          completedOrActive ? 'bg-[#38D399]' : 'bg-white/25 group-hover:bg-white/45'
+                          isActive ? 'bg-[#E544A1]' : 'bg-white/25 group-hover:bg-white/45'
                         }`}
                       />
                     </button>
@@ -250,23 +250,8 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
               </div>
 
               <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] font-semibold text-[#D6EBE2]">
-                <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setShowScriptDrawer(v => !v)}
-                    className="inline-flex items-center gap-1 text-white hover:text-[#6EE7B7]"
-                  >
-                    <Play className="size-3.5 fill-current" />
-                    <span>{activeChapter.time}</span>
-                  </button>
-                  <span className="hidden text-white/40 sm:inline">|</span>
-                  <span className="hidden truncate text-[#9EE6C7] sm:inline">{activeChapter.title}</span>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-[10px] text-[#B8D8CA]">
-                  <span className="rounded bg-white/15 px-1.5 py-0.5 font-bold text-white">16:9 HD</span>
-                  <Maximize2 className="size-3.5 opacity-80" />
-                </div>
+                <span className="truncate text-[10px] text-[#B8D8CA]">{activeChapter.title}</span>
+                <span className="text-[10px] text-[#B8D8CA]">Etapa {activeChapterIndex + 1} de {VSL_CHAPTERS.length}</span>
               </div>
             </div>
           </div>
@@ -279,7 +264,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div>
               <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#6EE7B7]">
-                Guion íntegro del VSL · Estructura de 8 bloques
+                Guion íntegro del VSL · Estructura de 5 bloques
               </p>
               <p className="mt-0.5 text-xs text-[#BFDCD0]">
                 Basado 100% en las 100 respuestas de la entrevista del taller Sistema Zénit.
@@ -311,7 +296,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
       <div className="border-t border-[#DCE8E1] bg-[#F6FAF7] p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#2B6654]">
-            Resumen del video por etapas (haz clic para explorar)
+            Resumen del guion por etapas (haz clic para explorar)
           </p>
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#567266]">
             <Sparkles className="size-3.5 text-[#286F5A]" /> 4 capítulos clave
@@ -320,7 +305,7 @@ export default function HeroVslPlayer({ customVideoUrl }: { customVideoUrl?: str
 
         <div
           role="tablist"
-          aria-label="Etapas del video de presentación"
+          aria-label="Etapas del guion de presentación"
           className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4"
         >
           {VSL_CHAPTERS.map(chapter => {

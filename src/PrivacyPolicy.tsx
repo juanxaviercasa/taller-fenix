@@ -21,14 +21,14 @@ export default function PrivacyPolicy() {
           Explorar esta página y probar el graficador no solicita datos personales. Si te registras en la lista de aviso cuando esté activa, únicamente solicitamos tu correo electrónico y consentimiento expreso. Si nos escribes por correo, recibiremos la información que incluyas en tu mensaje.
         </p>
 
-        <h2 className="mt-7 text-xl font-bold">Inscripción y comunidad en Skool</h2>
+        <h2 className="mt-7 text-xl font-bold">Pago del taller y comunidad</h2>
         <p className="mt-2 leading-7">
-          Cuando conectemos el acceso oficial del taller (precio oficial US$9) en nuestra comunidad de Skool, el proceso de registro y cobro se gestionará dentro de la plataforma de Skool bajo sus propias condiciones de privacidad y seguridad. Esta landing no solicita ni almacena datos de tarjetas bancarias.
+          El taller de entrada está previsto en Hotmart por un pago único de US$9, con acceso durante 30 días. El checkout todavía no está conectado. Cuando se habilite, el registro y el pago se procesarán directamente en Hotmart bajo sus propias condiciones de privacidad y seguridad. Esta landing no solicita ni almacena datos de tarjetas bancarias. La comunidad opcional de acompañamiento semanal se ofrecerá por separado en Skool; su alta y cobro estarán sujetos a las condiciones de esa plataforma.
         </p>
 
         <h2 className="mt-7 text-xl font-bold">Para qué usamos tus datos y dónde se almacenan</h2>
         <p className="mt-2 leading-7">
-          Los datos de contacto o lista de aviso se usan exclusivamente para responder consultas, compartir información del taller y avisar cuando el acceso en Skool quede conectado. No vendemos tu información. Si el formulario de lista de aviso está habilitado, se almacena en Cloudflare D1; mientras no esté configurado, el formulario no recopila correos.
+          Los datos de contacto o lista de aviso se usan exclusivamente para responder consultas, compartir información del taller y avisar cuando se habilite la inscripción. No vendemos tu información. Si el formulario de lista de aviso está habilitado, se almacena en Cloudflare D1; mientras no esté configurado, el formulario no recopila correos.
         </p>
 
         <h2 className="mt-7 text-xl font-bold">Tus opciones</h2>

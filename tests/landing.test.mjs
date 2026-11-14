@@ -22,13 +22,15 @@ test('estructura editorial completa abierta a profesionales en la industria de l
     assert.ok(app.includes('id="' + id + '"'), 'Falta el bloque ' + id);
   }
   assert.match(app, /TALLER PRÁCTICO · IA PARA QUIENES TRABAJAN EN EDUCACIÓN/);
-  assert.match(app, /Crea tus propias apps educativas con IA/);
-  assert.match(app, /sin saber programar/);
-  assert.match(app, /profesor, tutor, coordinador o trabajas en educación/);
-  assert.match(app, /¿Es solo para profesores de matemáticas\?/);
+  assert.match(app, /Convierte una idea de clase en una/);
+  assert.match(app, /web interactiva con IA/);
+  assert.match(app, /docente, tutor, coordinador, orientador/);
+  assert.match(app, /¿Es solo para docentes de matemáticas\?/);
   assert.match(app, /US\$9/);
-  assert.match(app, /SkoolCheckoutButton/);
+  assert.match(app, /HotmartCheckoutButton/);
   assert.match(app, /WaitlistForm/);
+  assert.match(app, /id="mobile-navigation"/);
+  assert.match(app, /aria-expanded=\{mobileNavOpen\}/);
   assert.doesNotMatch(app, /Microagencia|AbTestingBar|82% plazas ocupadas/i);
 });
 
@@ -39,13 +41,14 @@ test('el copy usa lenguaje sencillo y evita la jerga y las repeticiones de la ve
   assert.ok((app.match(/pruebas? y error/gi) || []).length <= 2);
 });
 
-test('reproductor VSL en el hero presenta las 4 etapas clave del método Sistema Zénit', () => {
+test('el panel del VSL presenta con honestidad las 4 etapas y distingue guion de video', () => {
   assert.match(app, /HeroVslPlayer/);
   for (const stage of ['revelacion', 'metodo', 'caminos', 'oferta']) {
     assert.match(vsl, new RegExp(stage));
   }
   assert.match(vsl, /Entrevista Inversa/);
   assert.match(vsl, /VITE_VSL_VIDEO_URL/);
+  assert.match(vsl, /El video de presentación aún no está configurado/);
 });
 
 test('el graficador avanzado Math Studio se conserva intacto con sus tres niveles académicos', () => {
@@ -69,9 +72,9 @@ test('autoridad del fundador respaldada con fotografía y trayectoria real desde
 });
 
 test('SEO corresponde a la oferta oficial de US$9 y al dominio vibecoding', () => {
-  assert.match(html, /Crea tus propias apps educativas con IA, sin saber programar/);
+  assert.match(html, /Convierte una idea de clase en una web interactiva con IA/);
   assert.match(html, /https:\/\/vibecoding\.sistemazenit\.com\//);
-  assert.match(html, /Precio oficial: US\$9/);
+  assert.match(html, /US\$9 por un mes de acceso/);
   assert.match(html, /og-matematicas-ia\.png/);
   assert.ok(existsSync(new URL('../public/og-matematicas-ia.png', import.meta.url)));
 });

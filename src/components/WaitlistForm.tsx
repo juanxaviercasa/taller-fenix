@@ -63,7 +63,7 @@ export function WaitlistForm() {
       {complete ? (
         <p role="status" className="flex items-center gap-2 text-sm font-semibold text-[#1E6B52]">
           <CheckCircle2 className="size-5 shrink-0" />
-          ¡Listo! Te avisaremos cuando abran las inscripciones en Skool. Esto no es una compra ni genera ningún cobro.
+          ¡Listo! Te avisaremos cuando se habilite la inscripción al taller. Esto no es una compra ni genera ningún cobro.
         </p>
       ) : available ? (
         <form onSubmit={submit} className="grid gap-3">
