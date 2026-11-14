@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const app = read('src/App.tsx');
 const html = read('index.html');
-const demo = read('src/components/HeroMathPreview.tsx');
+const vsl = read('src/components/HeroVslPlayer.tsx');
 
 test('estructura editorial completa abierta a profesionales en la industria de la educación', () => {
   for (const id of [
@@ -39,15 +39,13 @@ test('el copy usa lenguaje sencillo y evita la jerga y las repeticiones de la ve
   assert.ok((app.match(/pruebas? y error/gi) || []).length <= 2);
 });
 
-test('demo hero real tiene tres modos y dos sliders por modo', () => {
-  assert.match(app, /HeroMathPreview/);
-  for (const mode of ['conicas', 'trigonometria', 'vectores']) {
-    assert.match(demo, new RegExp(mode));
+test('reproductor VSL en el hero presenta las 4 etapas clave del método Sistema Zénit', () => {
+  assert.match(app, /HeroVslPlayer/);
+  for (const stage of ['revelacion', 'metodo', 'caminos', 'oferta']) {
+    assert.match(vsl, new RegExp(stage));
   }
-  assert.match(demo, /type="range"/);
-  assert.match(demo, /parabolaFacts/);
-  assert.match(demo, /trigPeriod/);
-  assert.match(demo, /vectorComponents/);
+  assert.match(vsl, /Entrevista Inversa/);
+  assert.match(vsl, /VITE_VSL_VIDEO_URL/);
 });
 
 test('el graficador avanzado Math Studio se conserva intacto con sus tres niveles académicos', () => {

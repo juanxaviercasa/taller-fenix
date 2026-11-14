@@ -12,7 +12,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import HeroMathPreview from './components/HeroMathPreview';
+import HeroVslPlayer from './components/HeroVslPlayer';
 import { SkoolCheckoutButton } from './components/SkoolCheckoutButton';
 import { WaitlistForm } from './components/WaitlistForm';
 
@@ -27,71 +27,102 @@ interface ProjectItem {
   image: string;
   category: ProjectCategory;
   highlight: string;
+  buildTime: string;
   description: string;
   url: string;
 }
 
 const projects: ProjectItem[] = [
   {
-    name: 'Funciones Lab',
-    image: 'funciones-lab.webp',
-    category: 'Matemáticas y Ciencias',
-    highlight: 'Gráficas que se mueven en vivo',
-    description:
-      'Cambias los valores y la gráfica responde al instante. Tus alumnos ven qué le pasa a la función sin que tengas que dibujarla y borrarla en la pizarra.',
-    url: 'https://funciones.sistemazenit.com/',
-  },
-  {
     name: 'Transformaciones Geométricas',
     image: 'transformaciones-geometricas.webp',
     category: 'Matemáticas y Ciencias',
-    highlight: 'Geometría en movimiento + fichas',
+    highlight: 'Geometría en vivo + fichas para imprimir',
+    buildTime: 'Hecha en 5 días · Probada en aula',
     description:
-      'Traslaciones, rotaciones y simetrías paso a paso, listas para proyectar en clase y con material para imprimir.',
+      'La aplicación que uso directamente en mi colegio: muestra traslaciones, rotaciones y simetrías en el plano cartesiano con sus ecuaciones completas, incluye teoría, retos y permite imprimir las fichas listas para repartir a los estudiantes.',
     url: 'https://transformacionesgeometricas.sistemazenit.com/',
   },
   {
     name: 'Sólidos Geométricos',
     image: 'solidos-geometricos.webp',
     category: 'Matemáticas y Ciencias',
-    highlight: 'Cuerpos en 3D y sus desarrollos',
+    highlight: 'Cuerpos 3D y plantillas en A4/A3/A2',
+    buildTime: 'Hecha en 3 a 4 días',
     description:
-      'Giras cada sólido en 3D y abres su desarrollo plano con un clic. Incluye teoría y retos para trabajar en clase.',
+      'Giras cada sólido en 3D, abres su desarrollo plano con un clic, practicas con evaluaciones automáticas e imprimes las plantillas exactas en A4, A3 o A2 para que los alumnos armen sus sólidos en físico.',
     url: 'https://solidosgeometricos.sistemazenit.com/',
+  },
+  {
+    name: 'Funciones Lab',
+    image: 'funciones-lab.webp',
+    category: 'Matemáticas y Ciencias',
+    highlight: 'Gráficas que responden al instante',
+    buildTime: 'En mejora continua',
+    description:
+      'Nació para destrabar uno de los temas donde más sufren los alumnos en álgebra y cálculo: cambias los parámetros y la función responde en tiempo real sin perder media clase dibujando y borrando en la pizarra.',
+    url: 'https://funciones.sistemazenit.com/',
   },
   {
     name: 'Mundos Simulados',
     image: 'mundos-simulados.webp',
     category: 'Matemáticas y Ciencias',
-    highlight: 'Simulaciones de física',
+    highlight: 'Escenarios científicos en línea',
+    buildTime: 'Hecha en 1 semana',
     description:
-      'Simulaciones para explicar fenómenos físicos y sistemas que cambian en el tiempo, listas para proyectar.',
+      'Explora con datos científicos reales qué pasaría si un día desapareciera la gravedad o se fuera la electricidad en el planeta, transformado de un antiguo blog a código web limpio.',
     url: 'https://mundossimulados.online/',
   },
   {
     name: 'Test vocacional RALE',
     image: 'rale-test-vocacional.webp',
     category: 'Automatización y Soluciones',
-    highlight: 'Un test que se corrige solo',
+    highlight: 'Evalúa y calcula resultados solo',
+    buildTime: 'Hecha en 3 días · Cero corrección manual',
     description:
-      'Los estudiantes responden en línea y los resultados salen automáticamente, sin corregir nada a mano.',
+      'Creado para postulantes a escuelas militares y policiales («Rumbo a las Escuelas»): el alumno ingresa sus datos físicos, académicos, psicológicos y vocacionales y recibe su puntaje al instante sin corregir nada a mano.',
     url: 'https://raletest.sistemazenit.com/',
   },
   {
     name: 'Herramientas para Pymes',
     image: 'herramientas-pymes.webp',
     category: 'Automatización y Soluciones',
-    highlight: 'Calculadoras y utilidades',
-    description: 'Herramientas web prácticas para el trabajo diario de pequeños negocios.',
+    highlight: '26 calculadoras y utilidades de gestión',
+    buildTime: 'Migrada de WordPress a código en 1 mes',
+    description:
+      'Conjunto de 26 calculadoras prácticas de gestión y finanzas para que pequeños y medianos negocios hagan sus cálculos rápido y con seguridad. Demuestra que el mismo método sirve para crear software útil fuera del aula.',
     url: 'https://nubeparapymes.online/herramientas/',
   },
   {
     name: 'Todo Lima',
     image: 'todo-lima.webp',
     category: 'Automatización y Soluciones',
-    highlight: 'Directorio web en funcionamiento',
-    description: 'Un directorio digital de Lima, publicado y funcionando. Lo mismo que aprendes sirve también fuera del aula.',
+    highlight: 'Directorio web + publicación automática',
+    buildTime: 'Hecha en 1 semana',
+    description:
+      'Plataforma local en funcionamiento con flujos automatizados que publican tres contenidos diarios para impulsar negocios en Lima, mostrando el alcance del método en proyectos reales.',
     url: 'https://todolima.com/',
+  },
+];
+
+const workshopPaths = [
+  {
+    badge: 'Camino 1 · Ideal si empiezas de cero',
+    title: 'Personalizar mis proyectos ya terminados',
+    description:
+      'Recibes 3 aplicaciones educativas mías ya terminadas y funcionales para que simplemente les cambies el nombre, tus colores, tu marca y tus enlaces a redes sociales.',
+  },
+  {
+    badge: 'Camino 2 · Sobre base probada',
+    title: 'Modelar y clonar un repositorio de GitHub',
+    description:
+      'Aprendes a pedirle a la IA los proyectos de código abierto con más estrellas y funciones verificadas para clonarlos y adaptarlos a tu curso sin que se rompan.',
+  },
+  {
+    badge: 'Camino 3 · Tu idea propia',
+    title: 'Construir tu propia mini app desde cero',
+    description:
+      'Sigues la ruta completa de Entrevista Inversa y Plan Maestro para transformar esa idea que tienes guardada en tu cuaderno en una web app funcional paso a paso.',
   },
 ];
 
@@ -100,31 +131,49 @@ const steps = [
     number: '01',
     image: '/taller/ruta-01-idea-guardada-a-app.webp',
     alt: 'Cuaderno con el boceto de una app educativa junto a la misma app funcionando en pantalla',
-    title: 'Eliges tu idea',
-    description: 'Defines qué problema quieres resolver, para quién es y qué tiene que hacer tu app.',
+    title: 'La IA te entrevista antes de construir',
+    description:
+      'La IA nunca va a adivinar lo que tienes en la cabeza. En vez de lanzar una instrucción suelta de dos líneas, le das tu contexto y haces que ella te pregunte todo sobre tu tema, tus alumnos y las pantallas que necesitas para armar un Plan Maestro sin huecos.',
   },
   {
     number: '02',
     image: '/taller/ruta-02-construccion-ia-sin-codigo.webp',
     alt: 'Educador construyendo su app con ayuda de la inteligencia artificial',
-    title: 'La construyes con IA',
-    description: 'Le pides a la IA cada parte, revisas lo que te entrega y lo ajustas hasta que quede como quieres.',
+    title: 'Diriges el diseño y las funciones por partes',
+    description:
+      'Usando herramientas gratuitas como Antigravity, ChatGPT, Claude o Visual Studio Code —o partiendo de mis plantillas y repositorios probados de GitHub—, la IA ensambla cada bloque sin que escribas código a mano. Si algo falla, sabes exactamente cómo pedirle que lo corrija.',
   },
   {
     number: '03',
     image: '/taller/ruta-03-automatizacion-tiempo-libre.webp',
     alt: 'Escritorio ordenado con un panel de evaluaciones ya resueltas automáticamente',
-    title: 'La usas en tu clase o en tu trabajo',
+    title: 'Publicas gratis en la web o lo llevas en tu laptop',
     description:
-      'La llevas a tus alumnos, la compartes con tu equipo o la usas para dejar de hacer a mano lo que hoy te quita horas.',
+      'Conectas tu repositorio con GitHub Pages, Cloudflare Pages o Vercel y en minutos tienes un enlace web real sin pagar hosting ni dominio, además de poder exportarlo en archivo HTML para tu computadora o USB e imprimir tus fichas.',
   },
 ];
 
 const included = [
-  'El paso a paso para pasar de tu idea a una app que funciona, aunque nunca hayas programado.',
-  'Cómo usar la inteligencia artificial para construir tu app, revisarla y corregirla.',
-  'Cómo elegir qué proyecto hacer primero y hasta dónde llegar con la primera versión.',
-  'Ideas que sí sirven: desde apps para enseñar matemáticas y ciencias hasta herramientas que automatizan tareas de tu trabajo.',
+  'Taller práctico en vivo (3 sesiones paso a paso con bloque de preguntas y respuestas al final de cada clase) + acceso a las grabaciones durante 30 días (con opción de acceso ilimitado y actualizaciones).',
+  '3 proyectos educativos míos ya terminados y funcionando, listos para que los uses en tu aula desde la primera semana o les pongas tu propia marca.',
+  'Método de Entrevista Inversa y Plan Maestro: cómo hacer que la IA te pregunte todo lo necesario antes de construir para evitar iterar 100 veces.',
+  'Ruta de publicación $0 en internet: conexión paso a paso con GitHub Pages, Cloudflare Pages y Vercel para obtener tu enlace público gratuito + exportación en archivo .html para tu laptop o USB.',
+  'Guía de herramientas y créditos gratuitos: cómo aprovechar las versiones gratuitas de ChatGPT, Claude, Gemini, Antigravity, Visual Studio Code y plataformas con créditos diarios gratuitos como Manus.im (300 créditos diarios) y Genspark.',
+];
+
+const otherAreasExamples = [
+  {
+    area: 'Historia, Ciencias Sociales y Biología',
+    ideas: 'Generadores de escenas hiperrealistas, líneas de tiempo, mapas y atlas explorables en clase.',
+  },
+  {
+    area: 'Idiomas, Comunicación y Primaria / Inicial',
+    ideas: 'Traductores contextuales, juegos con personajes, cuentos visuales y retos de comprensión con retroalimentación inmediata donde los chicos aprenden jugando.',
+  },
+  {
+    area: 'Coordinación, Tutoría y Gestión Docente',
+    ideas: 'Evaluadores y tests vocacionales que se corrigen solos sin pagar licencias, tu propio sistema gratuito de seguimiento y calificación de alumnos (sin pagar un CRM) y flujos automáticos para redes o WhatsApp.',
+  },
 ];
 
 const filterTabs: { id: FilterOption; label: string }[] = [
@@ -136,23 +185,39 @@ const filterTabs: { id: FilterOption; label: string }[] = [
 const FAQ: [string, string][] = [
   [
     '¿Es solo para profesores de matemáticas?',
-    'No. Muestro varias apps de matemáticas y ciencias porque son parte de mis proyectos, pero el método sirve para cualquier curso y para cualquier persona que trabaje en educación: tutores, coordinadores, directivos o capacitadores. Puedes hacer simuladores, tests, calculadoras o herramientas para tu día a día.',
+    'No. Aunque yo soy profesor de matemáticas y ciencias, el método sirve para cualquier docente, tutor, coordinador, orientador o creador de cursos (Historia, Idiomas, Biología, Primaria, Inicial o capacitación). Con el mismo flujo puedes crear desde simuladores y juegos educativos hasta tests que se corrigen solos o sistemas gratuitos de calificación y seguimiento.',
   ],
   [
-    '¿Necesito saber programar?',
-    'No. Empiezas desde cero. Lo que sí necesitas es tu idea y lo que ya sabes de tu curso o de tu trabajo. La IA escribe el código; tú aprendes a dirigirla.',
+    'Soy pésimo con la tecnología, apenas uso Word, Excel o WhatsApp. ¿Esto es para mí?',
+    'Si sabes encender tu laptop, usar Word y escribir en el teclado, tienes la base necesaria. Al principio lo que toma un poco más de tiempo (unos 7 a 14 días si partes de cero absoluto) es instalar las herramientas iniciales con ayuda de la misma IA, pero una vez que haces tu primera aplicación y ves el flujo completo, la segunda y la tercera salen muchísimo más rápido.',
   ],
   [
-    '¿Qué tipo de apps puedo hacer?',
-    'Por ejemplo: simuladores para explicar un tema, tests que se corrigen solos, calculadoras o herramientas que te quitan tareas repetitivas. Más arriba tienes 7 ejemplos reales que puedes abrir.',
+    'No sé nada de programación ni inglés; si veo código me voy a bloquear. ¿Podré hacerlo?',
+    'Ni siquiera yo, que estudié programación, he tenido que tocar o escribir a mano una sola línea de código en los últimos dos meses para crear más de 60 aplicaciones web. Todo el método se basa en hablarle en español a la IA mediante una entrevista de preguntas y respuestas y dejar que ella escriba y conecte el código por detrás.',
   ],
   [
-    '¿Cuánto cuesta y cómo me inscribo?',
-    'US$9, un solo pago. La inscripción será dentro de nuestra comunidad de Skool. Estamos terminando de abrirla: déjanos tu correo o escríbenos y te avisamos.',
+    'Ya probé ChatGPT y solo me dio texto genérico o un código que dio error. ¿Qué cambia aquí?',
+    'Cambian dos cosas: primero, no le pedimos código a ciegas en el chat suelto, sino que usamos el método de Entrevista Inversa y Plan Maestro; y segundo, hoy usamos entornos como Antigravity, ChatGPT Desktop o Visual Studio Code que se conectan directamente a las carpetas de tu computadora y a GitHub para crear los archivos, probarlos y corregirlos sin que tú tengas que copiar y pegar bloques rotos.',
   ],
   [
-    '¿Por qué aprender contigo?',
-    'Porque llevo desde 2023 haciendo esto y tengo apps funcionando que puedes probar ahora mismo. En el taller te ahorro la parte de prueba y error que a mí me tomó años.',
+    'No tengo tiempo, termino agotado después de dictar clases todo el día.',
+    'Justamente por eso el método parte de planificar bien desde el comienzo o de usar uno de mis 3 proyectos ya terminados para que solo le cambies tu nombre y tus datos. Muchos docentes avanzan el sábado por la mañana o el domingo por la tarde, y la herramienta que construyes hoy es la que luego te ahorra horas todas las semanas en el colegio.',
+  ],
+  [
+    '¿Seguro no necesito pagar US$20 al mes en ChatGPT o Claude ni pagar hosting?',
+    'Con total sinceridad: pagar US$20, US$100 o US$500 al mes en una IA no te garantiza hacer una buena app si no sabes dirigirla. En el taller aprendes a combinar estratégicamente planes gratuitos (ChatGPT, Claude, Gemini, Antigravity y créditos diarios gratuitos de plataformas como Manus.im y Genspark) y a publicar gratis en GitHub Pages, Cloudflare Pages o Vercel. Pagar una suscripción o un dominio propio más adelante es 100% opcional.',
+  ],
+  [
+    '¿Por qué cuesta solo US$9? ¿Es puro relleno para obligarme a comprar algo caro después?',
+    'Cuesta US$9 porque muchos aún no me conocen y sé la desconfianza que hay hoy por culpa de tantos vendehumos; quiero que el precio no sea una traba para ningún docente, pero tampoco lo doy gratis porque lo gratis no se valora ni se implementa. Con los US$9 tienes el taller completo, los 3 caminos de trabajo y mis plantillas para publicar tu primera web app. Nadie te obliga a comprar nada más: solo quienes luego quieran acompañamiento semanal en vivo, soporte técnico grupal y módulos de monetización tienen la opción de entrar a nuestra comunidad en Skool (US$19/mes).',
+  ],
+  [
+    'La inteligencia artificial cambia cada semana. ¿Lo que aprenda hoy quedará obsoleto en dos meses?',
+    'Eso pasaba cuando aprendías un lenguaje de programación tradicional: salía una actualización y tu código quedaba obsoleto. Pero aquí no memorizas botones ni sintaxis: aprendes a pensar, estructurar un Plan Maestro y dirigir a la IA con tu experiencia profesional. Si mañana sale un modelo de IA mejor, este mismo método hará que tus aplicaciones salgan todavía más rápido.',
+  ],
+  [
+    '¿Qué garantía tengo si me inscribo por US$9?',
+    'El precio oficial de entrada es de US$9 (un solo pago) y cuentas con 7 días de garantía completa para asistir, ver las clases y probar el método; si sientes que no aprendiste nada o que no te aporta valor real, solicitas el 100% de tu reembolso dentro de esos 7 días sin ninguna complicación. Estamos terminando de abrir las inscripciones: déjanos tu correo abajo y te avisamos apenas se habilite el acceso.',
   ],
 ];
 
@@ -214,9 +279,10 @@ function ProjectCard({ project }: { project: ProjectItem }) {
           <span className="rounded-full bg-[#EAF4ED] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.1em] text-[#24634F]">
             {project.category}
           </span>
-          <span className="text-[11px] font-semibold text-[#5E7469]">{project.highlight}</span>
+          <span className="text-[11px] font-semibold text-[#5E7469]">{project.buildTime}</span>
         </div>
         <h3 className="mt-3 font-display text-xl font-bold leading-snug text-[#1C3442]">{project.name}</h3>
+        <p className="mt-1 text-xs font-bold text-[#286F5A]">{project.highlight}</p>
         <p className="mt-2.5 flex-1 text-sm leading-7 text-[#5A6C78]">{project.description}</p>
         <a
           href={project.url}
@@ -224,7 +290,7 @@ function ProjectCard({ project }: { project: ProjectItem }) {
           rel="noopener noreferrer"
           className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-[#193F39] underline-offset-4 hover:text-[#286F5A] hover:underline"
         >
-          Abrir la app <ExternalLink className="size-4" />
+          Abrir la app en vivo <ExternalLink className="size-4" />
         </a>
       </div>
     </article>
@@ -240,12 +306,14 @@ function InstructorPortrait() {
         height="540"
         loading="lazy"
         decoding="async"
-        alt="Juan Xavier Cabello, maestro que crea apps educativas con inteligencia artificial"
+        alt="Juan Xavier Cabello, profesor de matemáticas y creador de aplicaciones educativas con inteligencia artificial"
         className="aspect-[4/5] w-full rounded-[18px] object-cover object-top"
       />
       <figcaption className="px-3 pb-3 pt-5 text-center">
         <strong className="font-display text-lg text-[#193B38]">Juan Xavier Cabello</strong>
-        <p className="mt-1 text-xs text-[#607A6D]">Maestro · Creando apps con IA desde 2023</p>
+        <p className="mt-1 text-xs text-[#607A6D]">
+          Profesor de matemáticas (+8 años en aula) · +70 web apps creadas con IA
+        </p>
       </figcaption>
     </figure>
   );
@@ -273,13 +341,16 @@ export default function App() {
           <Brand />
           <nav aria-label="Navegación principal" className="hidden items-center gap-7 text-sm font-semibold text-[#4D6072] md:flex">
             <a href="#incluye" className="hover:text-[#176655]">
-              Qué aprendes
-            </a>
-            <a href="#proyectos" className="hover:text-[#176655]">
-              Apps reales
+              Qué incluye
             </a>
             <a href="#metodo" className="hover:text-[#176655]">
-              Cómo funciona
+              Método real
+            </a>
+            <a href="#proyectos" className="hover:text-[#176655]">
+              Apps funcionando
+            </a>
+            <a href="#fundador" className="hover:text-[#176655]">
+              Mi historia
             </a>
             <a href="#preguntas" className="hover:text-[#176655]">
               Preguntas
@@ -290,58 +361,76 @@ export default function App() {
       </header>
 
       <main id="contenido">
-        {/* 1. HERO */}
+        {/* 1. HERO CON ARQUITECTURA VSL CENTRADA (ABOVE THE FOLD) */}
         <section
           id="demostracion"
-          className="relative overflow-hidden border-b border-[#E5EAE8] bg-[radial-gradient(ellipse_65%_55%_at_92%_0%,rgba(202,235,216,.48),transparent_70%),linear-gradient(180deg,#F9FBFA_0%,#F4F8F5_100%)] px-5 py-14 sm:px-8 sm:py-20"
+          className="relative overflow-hidden border-b border-[#E5EAE8] bg-[radial-gradient(ellipse_75%_55%_at_50%_0%,rgba(202,235,216,.55),transparent_72%),linear-gradient(180deg,#F9FBFA_0%,#F2F7F4_100%)] px-5 py-12 sm:px-8 sm:py-16"
         >
-          <div className="mx-auto grid max-w-7xl items-center gap-10 xl:grid-cols-[.94fr_1.06fr] xl:gap-14">
-            <div className="max-w-2xl">
-              <p className="inline-flex flex-wrap items-center gap-2 rounded-full border border-[#DDE9E1] bg-white px-3.5 py-2 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#285F51] sm:text-xs">
+          <div className="mx-auto max-w-5xl">
+            {/* Encabezado VSL centrado */}
+            <div className="mx-auto max-w-4xl text-center">
+              <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#CFE0D6] bg-white px-4 py-2 text-[10px] font-extrabold uppercase tracking-[.13em] text-[#285F51] shadow-xs sm:text-xs">
                 <GraduationCap className="size-4" />
                 TALLER PRÁCTICO · IA PARA QUIENES TRABAJAN EN EDUCACIÓN
               </p>
-              <h1 className="mt-7 font-display text-[clamp(2.2rem,3.95vw,4rem)] font-bold leading-[1.09] tracking-[-.06em] text-[#18283C]">
-                Crea tus propias apps educativas con IA, <span className="text-[#286F5A]">sin saber programar.</span>
+
+              <h1 className="mt-6 font-display text-[clamp(2.15rem,4.5vw,4.1rem)] font-bold leading-[1.08] tracking-[-.06em] text-[#18283C]">
+                Crea tus propias apps educativas con IA,{' '}
+                <span className="text-[#286F5A]">sin saber programar.</span>
               </h1>
-              <p className="mt-6 text-base leading-8 text-[#4F6174] sm:text-lg">
-                ¿Eres profesor, tutor, coordinador o trabajas en educación y tienes una idea guardada? Un simulador para tu clase, un test para tus alumnos o una herramienta que te ahorre trabajo. Te enseño el paso a paso para hacerla tú mismo con inteligencia artificial, sin pagarle a un programador.
+
+              <p className="mx-auto mt-4 max-w-3xl font-display text-sm font-bold leading-relaxed text-[#225847] sm:text-lg">
+                Genera tu primera web educativa en menos de 7 a 14 días siguiendo la estrategia del Sistema Zénit: ahórrate dolores de cabeza en herramientas que sin buena dirección no sirven de nada y despliega tu aplicación completa en línea sin pagar servidores.
               </p>
-              <div className="mt-7 flex flex-wrap items-center gap-2.5 text-xs font-semibold text-[#3C5852]">
-                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">No necesitas saber programar</span>
-                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">Para cualquier curso o área</span>
-                <span className="rounded-full border border-[#C6DFD1] bg-[#EBF6EF] px-3.5 py-2 font-bold text-[#1D5543]">
-                  {OFFICIAL_PRICE} · pago único
-                </span>
-              </div>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
+
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#4F6174] sm:text-base">
+                ¿Eres profesor, tutor, coordinador o trabajas en educación y tienes una idea guardada en un cuaderno? Mira este video de 7 minutos para ver cómo construir tu herramienta web sin tocar ni una sola línea de código a mano:
+              </p>
+            </div>
+
+            {/* Centro de gravedad de la página: Reproductor VSL 16:9 */}
+            <div className="mt-8 sm:mt-10">
+              <HeroVslPlayer />
+            </div>
+
+            {/* Bloque de llamada a la acción y confianza debajo del reproductor VSL */}
+            <div className="mx-auto mt-8 max-w-3xl text-center sm:mt-10">
+              <div className="flex flex-wrap items-center justify-center gap-4">
                 <PurchaseCTA />
                 <a
                   href="#proyectos"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2B665A] underline-offset-4 hover:underline"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#C8DCD0] bg-white px-5 py-4 text-sm font-bold text-[#214E41] transition hover:bg-[#F3F8F5]"
                 >
-                  Ver las 7 apps que hice <ChevronRight className="size-4" />
+                  Probar las apps reales que construí <ChevronRight className="size-4" />
                 </a>
               </div>
-              <p className="mt-4 text-xs leading-6 text-[#5E7282]">Las inscripciones abrirán en nuestra comunidad de Skool.</p>
-            </div>
 
-            <div className="min-w-0">
-              <HeroMathPreview />
-              <p className="mt-3 text-center text-xs leading-6 text-[#607384]">
-                Este graficador lo hice con el mismo método que enseño. Pruébalo: mueve los controles y mira cómo cambia la gráfica.
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 text-xs font-semibold text-[#3C5852]">
+                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+                  ✓ 3 caminos prácticos (personaliza mis apps, clona de GitHub o crea desde cero)
+                </span>
+                <span className="rounded-full border border-[#D4E4DB] bg-white px-3.5 py-2">
+                  ✓ $0 en hosting, dominio y licencias para empezar
+                </span>
+                <span className="rounded-full border border-[#C6DFD1] bg-[#EBF6EF] px-3.5 py-2 font-bold text-[#1D5543]">
+                  ✓ {OFFICIAL_PRICE} · pago único (7 días de garantía)
+                </span>
+              </div>
+
+              <p className="mt-4 text-xs leading-6 text-[#5E7282]">
+                Para profesores de matemáticas, ciencias y de cualquier área, tutores, capacitadores y creadores educativos · Más de 70 web apps construidas con este método.
               </p>
             </div>
           </div>
         </section>
 
-        {/* 2. EL PROBLEMA Y EL CAMBIO */}
+        {/* 2. EL PROBLEMA Y LA REVELACIÓN HUMANO × IA */}
         <section id="problema" className="px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeading
-              label="¿Te suena?"
-              title="Sabes exactamente qué herramienta necesitan tus alumnos. Lo que no sabes es cómo hacerla."
-              body="Puede ser un simulador para explicar un tema difícil, un examen que se corrija solo o un formato que hoy llenas a mano cada semana. La idea es buena, pero se queda en el cuaderno porque crees que necesitas aprender a programar o contratar a alguien."
+              label="La verdad sin filtro"
+              title="Por qué tus mejores ideas siguen guardadas en un cuaderno (aunque ya hayas probado usar IA)."
+              body="La inteligencia artificial no adivina tu pensamiento ni conoce tu experiencia en el aula. Si solo le lanzas una instrucción suelta de dos líneas, te devuelve material genérico o código que se rompe."
             />
             <div className="mt-11 grid gap-5 lg:grid-cols-2">
               <div className="rounded-[24px] border border-[#E1E6EB] bg-white p-6 shadow-sm sm:p-8">
@@ -356,24 +445,32 @@ export default function App() {
                     className="aspect-video w-full object-cover"
                   />
                 </div>
-                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#657489]">Lo que pasa hoy</p>
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#657489]">
+                  Lo que pasa cuando intentas hacerlo a la antigua o a ciegas
+                </p>
                 <div className="mt-6 space-y-6">
                   <div>
-                    <h3 className="font-display text-lg font-bold text-[#26374B]">La idea se queda guardada</h3>
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      Domingos por la tarde y madrugadas preparando material
+                    </h3>
                     <p className="mt-2 text-sm leading-7 text-[#69798C]">
-                      Pasan los meses, a veces los años, y la herramienta sigue en tu cabeza porque no sabes por dónde empezar.
+                      Pasas horas armando fichas, presentaciones o exámenes a mano que te quitan el descanso con tu familia, y en el aula los 30 o 40 minutos se van dibujando en la pizarra mientras los estudiantes se distraen con el celular.
                     </p>
                   </div>
                   <div className="border-t border-[#EBEFF1] pt-5">
-                    <h3 className="font-display text-lg font-bold text-[#26374B]">Contratar a un programador sale caro</h3>
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      Las herramientas tradicionales chocan con pared
+                    </h3>
                     <p className="mt-2 text-sm leading-7 text-[#69798C]">
-                      Cotizas, explicas tu idea, esperas semanas y cada cambio vuelve a costar.
+                      PowerPoint, Canva y los PDF son planos y no responden; GeoGebra o Genially consumen demasiado tiempo; y encargar tu idea a un programador o agencia cuesta caro y te deja dependiendo de otros para cada cambio.
                     </p>
                   </div>
                   <div className="border-t border-[#EBEFF1] pt-5">
-                    <h3 className="font-display text-lg font-bold text-[#26374B]">Pruebas la IA, pero no terminas nada</h3>
+                    <h3 className="font-display text-lg font-bold text-[#26374B]">
+                      El bucle de frustración con la IA suelta
+                    </h3>
                     <p className="mt-2 text-sm leading-7 text-[#69798C]">
-                      Sacas pedazos sueltos por tu cuenta y te quedas a medio camino, sin una app que puedas usar.
+                      Abres ChatGPT, le pides una herramienta y, cuando le dices «corrige esto», arregla una parte y malogra otra, dejándote a las 11 de la noche con diez pestañas abiertas y nada publicado.
                     </p>
                   </div>
                 </div>
@@ -391,87 +488,129 @@ export default function App() {
                     className="aspect-video w-full object-cover"
                   />
                 </div>
-                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#2B6E5D]">Lo que cambia con el taller</p>
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-[.17em] text-[#2B6E5D]">
+                  Lo que cambia con el método Humano × IA (Sistema Zénit)
+                </p>
                 <div className="mt-6 space-y-6">
                   <div>
                     <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
                       <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                      Haces tu app tú mismo
+                      La IA necesita más de tu información que tú de ella
                     </h3>
                     <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
-                      Aprendes a pedirle a la IA lo que necesitas, revisar lo que te da y corregirlo hasta que funcione como quieres.
+                      La IA es un acelerador brutal para ejecutar, pero el criterio pedagógico lo pones tú. Aprendes a sacarle las cosas «por cucharitas» entrenándola primero con tus datos reales mediante Entrevista Inversa antes de generar una sola pantalla.
                     </p>
                   </div>
                   <div className="border-t border-[#D0E3D7] pt-5">
                     <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
                       <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                      Sigues un camino claro
+                      Cero código escrito a mano (+60 apps en los últimos 2 meses)
                     </h3>
                     <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
-                      Ya no adivinas qué hacer después: avanzas en orden, de la idea a la app funcionando.
+                      Incluso teniendo formación en programación, en los últimos dos meses construí más de 60 aplicaciones web sin tocar ni una sola línea de código a mano: tú pones el criterio docente y la IA escribe y conecta el código por detrás.
                     </p>
                   </div>
                   <div className="border-t border-[#D0E3D7] pt-5">
                     <h3 className="flex items-start gap-2 font-display text-lg font-bold text-[#193C35]">
                       <CheckCircle2 className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                      Te ahorras mis años de prueba y error
+                      Publicada gratis en internet y lista para imprimir
                     </h3>
                     <p className="mt-2 pl-7 text-sm leading-7 text-[#466458]">
-                      Aprendo esto desde 2023. En el taller te paso lo que funciona para que no empieces de cero.
+                      No pasas meses estudiando lenguajes que se desactualizan ni gastas en servidores: despliegas tu herramienta con enlace propio en GitHub Pages o Cloudflare, la proyectas en el salón e imprimes tus fichas en minutos.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Bloque de la Gran Revelación (Pregunta 94) */}
+            <div className="mt-8 rounded-[24px] border border-[#C6DDD0] bg-[#163832] p-6 text-center text-white shadow-sm sm:p-8">
+              <p className="text-[11px] font-extrabold uppercase tracking-[.15em] text-[#8EE6C2]">
+                La revelación central del Sistema Zénit
+              </p>
+              <blockquote className="mx-auto mt-3 max-w-4xl font-display text-lg font-bold leading-relaxed text-white sm:text-2xl">
+                «La inteligencia artificial no es nada sin un ser humano detrás que la dirija. Dicho en simple: la IA necesita más de ti y de tu información que tú de ella. La IA no viene a reemplazarte; es una extensión de ti mismo.»
+              </blockquote>
+            </div>
           </div>
         </section>
 
-        {/* 3. QUÉ APRENDES */}
+        {/* 3. QUÉ INCLUYE EL TALLER + 3 CAMINOS + TRANSPARENCIA */}
         <section id="incluye" className="border-y border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
-          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
-            <div>
-              <SectionHeading
-                label={`Qué aprendes en el taller · ${OFFICIAL_PRICE}`}
-                title="Sales sabiendo cómo hacer esa app que vienes postergando."
-                body="Es un taller práctico: trabajas sobre tu propia idea, no sobre ejemplos que no te sirven."
-              />
-              <ul className="mx-auto mt-9 max-w-2xl space-y-4">
-                {included.map(item => (
-                  <li key={item} className="flex gap-3 text-sm leading-7 text-[#4E6473]">
-                    <Check className="mt-1 size-5 shrink-0 rounded-full bg-[#E4F1E8] p-1 text-[#267754]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-9 text-center lg:text-left">
-                <PurchaseCTA />
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-10 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
+              <div>
+                <SectionHeading
+                  label={`Qué recibes por ${OFFICIAL_PRICE} · Pago único`}
+                  title="Sales con tu primera aplicación web publicada en internet y lista para usar en tu clase o proyecto."
+                  body="Diseñado para que nadie se quede paralizado frente a la pantalla en blanco: trabajas paso a paso con plantillas probadas o sobre tu propia idea."
+                />
+                <ul className="mx-auto mt-9 max-w-2xl space-y-4">
+                  {included.map(item => (
+                    <li key={item} className="flex gap-3 text-sm leading-7 text-[#4E6473]">
+                      <Check className="mt-1 size-5 shrink-0 rounded-full bg-[#E4F1E8] p-1 text-[#267754]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-9 text-center lg:text-left">
+                  <PurchaseCTA />
+                </div>
               </div>
+
+              <figure className="overflow-hidden rounded-[26px] border border-[#DAE7DF] bg-[#F6FAF7] p-3 shadow-[0_18px_50px_rgba(22,54,42,.08)]">
+                <img
+                  src="/taller/taller-ruta-2023-mockup.webp"
+                  width="1280"
+                  height="720"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Laptop con apps educativas funcionando junto a un cuaderno con el plan del taller"
+                  className="aspect-video w-full rounded-2xl object-cover"
+                />
+                <figcaption className="px-2 pb-2 pt-3 text-center text-xs font-semibold text-[#3B5F52]">
+                  De la idea en tu cuaderno a una aplicación web publicada en internet y exportable en HTML.
+                </figcaption>
+              </figure>
             </div>
 
-            <figure className="overflow-hidden rounded-[26px] border border-[#DAE7DF] bg-[#F6FAF7] p-3 shadow-[0_18px_50px_rgba(22,54,42,.08)]">
-              <img
-                src="/taller/taller-ruta-2023-mockup.webp"
-                width="1280"
-                height="720"
-                loading="lazy"
-                decoding="async"
-                alt="Laptop con apps educativas funcionando junto a un cuaderno con el plan del taller"
-                className="aspect-video w-full rounded-2xl object-cover"
-              />
-              <figcaption className="px-2 pb-2 pt-3 text-center text-xs font-semibold text-[#3B5F52]">
-                De la idea en el cuaderno a la app funcionando.
-              </figcaption>
-            </figure>
+            {/* Los 3 caminos prácticos dentro del taller (Pregunta 45) */}
+            <div className="mt-14 rounded-[24px] border border-[#D8E5DD] bg-[#F4F9F6] p-6 sm:p-8">
+              <div className="max-w-3xl">
+                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
+                  Cero bloqueo al empezar · Tus 3 opciones de salida
+                </p>
+                <h3 className="mt-2 font-display text-2xl font-bold text-[#193B36]">
+                  Elige cualquiera de estos 3 caminos prácticos dentro del taller según tu punto de partida
+                </h3>
+              </div>
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {workshopPaths.map(path => (
+                  <div key={path.title} className="rounded-2xl border border-[#DCE8E0] bg-white p-5 shadow-xs">
+                    <span className="inline-block rounded-full bg-[#E8F4EC] px-3 py-1 text-[11px] font-bold text-[#21614B]">
+                      {path.badge}
+                    </span>
+                    <h4 className="mt-3 font-display text-lg font-bold text-[#1D3542]">{path.title}</h4>
+                    <p className="mt-2 text-sm leading-6 text-[#5B6D7A]">{path.description}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-[#D4E3DA] bg-white p-4 text-xs leading-6 text-[#4D6370] sm:p-5">
+                <strong className="text-[#193E36]">Lo que incluye y lo que NO incluye este taller de {OFFICIAL_PRICE}:</strong>{' '}
+                En este taller aprendes el método exacto para construir y publicar tu primera web app sin gastar en servidores ni programación. No incluye que yo construya la app por ti ni soporte técnico individual 1 a 1 indefinido. Si al terminar deseas acompañamiento grupal todas las semanas en vivo, soporte técnico revisando tu repositorio y módulos para monetizar tus herramientas con embudos de venta, podrás unirte de forma 100% opcional a nuestra comunidad en Skool (US$19/mes).
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* 4. CÓMO FUNCIONA */}
+        {/* 4. CÓMO FUNCIONA EL MÉTODO */}
         <section id="metodo" className="px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeading
-              label="Cómo funciona"
-              title="Tres pasos, de la idea a la app"
-              body="No empiezas aprendiendo código. Empiezas por un problema real de tu clase o de tu trabajo."
+              label="Cómo funciona el método"
+              title="Tres pasos reales: de la idea en tu cabeza a un enlace web funcionando"
+              body="Sin jerga en inglés ni copiar código a ciegas. Tú pones tu experiencia docente y el objetivo; la IA ejecuta el trabajo pesado bajo tu dirección."
             />
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {steps.map(step => (
@@ -501,14 +640,49 @@ export default function App() {
           </div>
         </section>
 
-        {/* 5. APPS REALES + MATH STUDIO */}
+        {/* 5. APPS REALES + TABLA PERIÓDICA (+500K VISTAS) + MATH STUDIO */}
         <section id="proyectos" className="border-y border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-7xl">
             <SectionHeading
-              label="No te lo cuento, te lo muestro"
-              title="7 apps que ya hice y están funcionando. Ábrelas y pruébalas."
-              body="Unas son para enseñar matemáticas y ciencias; otras automatizan tareas o resuelven problemas fuera del aula. Son el tipo de proyectos que aprenderás a hacer."
+              label="Prueba real verificable (+70 apps en repositorio)"
+              title="No te enseño teoría suelta: abre y prueba las aplicaciones que ya construí con este flujo."
+              body="En mis repositorios llevo más de 70 aplicaciones funcionales desarrolladas. Aquí puedes abrir 8 de ellas en vivo —incluyendo nuestra Tabla Periódica que superó las 500,000 vistas orgánicas y las herramientas que uso en mis propias clases—."
             />
+
+            {/* Destacado del caso viral de Tabla Periódica (+500,000 vistas) */}
+            <div className="mt-10 rounded-[24px] border border-[#C7DFD1] bg-gradient-to-r from-[#173A35] to-[#1F4F46] p-6 text-white shadow-md sm:p-8">
+              <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+                <div className="max-w-3xl">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#A8F0D1]">
+                    <Sparkles className="size-3.5" /> Caso real de tracción orgánica · +500,000 visualizaciones en TikTok
+                  </span>
+                  <h3 className="mt-3 font-display text-2xl font-bold text-white">
+                    Tabla Periódica Interactiva (tablaperiodica.sistemazenit.com)
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-[#D9EDE4]">
+                    Nacida de un video viral que ya superó el medio millón de visualizaciones orgánicas: permite a miles de estudiantes descargar láminas de estudio y hacer clic en cada elemento químico para explorar sus propiedades y configuración electrónica en tiempo real.
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-3">
+                  <a
+                    href="https://tablaperiodica.sistemazenit.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#34C08B] px-5 py-3.5 text-xs font-extrabold text-[#0E2923] transition hover:bg-[#4AD39F] sm:text-sm"
+                  >
+                    Abrir Tabla Periódica <ExternalLink className="size-4" />
+                  </a>
+                  <a
+                    href="https://xavier.cabellosalirrosas.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-3.5 text-xs font-bold text-white transition hover:bg-white/20 sm:text-sm"
+                  >
+                    Ver portafolio general <ExternalLink className="size-4" />
+                  </a>
+                </div>
+              </div>
+            </div>
 
             <div role="tablist" aria-label="Filtrar apps por tipo" className="mt-9 flex flex-wrap justify-center gap-2.5">
               {filterTabs.map(tab => (
@@ -531,7 +705,9 @@ export default function App() {
 
             {eduProjects.length > 0 && (
               <div className="mt-11">
-                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">Para enseñar matemáticas y ciencias</p>
+                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
+                  Para enseñar matemáticas y ciencias
+                </p>
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                   {eduProjects.map(project => (
                     <ProjectCard key={project.name} project={project} />
@@ -543,7 +719,7 @@ export default function App() {
             {toolProjects.length > 0 && (
               <div className="mt-11">
                 <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
-                  Para automatizar tareas y resolver problemas
+                  Para automatizar evaluaciones, gestiones y negocios
                 </p>
                 <div className="mt-5 grid gap-5 md:grid-cols-3">
                   {toolProjects.map(project => (
@@ -553,7 +729,25 @@ export default function App() {
               </div>
             )}
 
-            <div className="mt-12 rounded-[24px] border border-[#CFE0D6] bg-[#F5FAF7] p-6 sm:p-8">
+            {/* Ejemplos concretos para docentes de otras áreas (Pregunta 60) */}
+            <div className="mt-12 rounded-[24px] border border-[#DCE7E0] bg-[#F8FAF8] p-6 sm:p-8">
+              <p className="text-xs font-extrabold uppercase tracking-[.15em] text-[#286F5A]">
+                ¿Y si enseñas otro curso o trabajas en otra área educativa?
+              </p>
+              <h3 className="mt-2 font-display text-xl font-bold text-[#1C3442] sm:text-2xl">
+                Lo que puedes construir aunque no seas profesor de matemáticas
+              </h3>
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {otherAreasExamples.map(item => (
+                  <div key={item.area} className="rounded-2xl border border-[#E1ECE5] bg-white p-5">
+                    <h4 className="font-display text-base font-bold text-[#193E36]">{item.area}</h4>
+                    <p className="mt-2 text-sm leading-6 text-[#5B6D7A]">{item.ideas}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10 rounded-[24px] border border-[#CFE0D6] bg-[#F5FAF7] p-6 sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div className="max-w-2xl">
                   <div className="flex flex-wrap items-center gap-2">
@@ -564,9 +758,11 @@ export default function App() {
                       Secundaria · Preuniversitario · Universidad
                     </span>
                   </div>
-                  <h3 className="mt-3 font-display text-2xl font-bold text-[#193B36]">Math Studio: mi laboratorio de gráficas</h3>
+                  <h3 className="mt-3 font-display text-2xl font-bold text-[#193B36]">
+                    Math Studio: mi laboratorio de gráficas
+                  </h3>
                   <p className="mt-2 text-sm leading-7 text-[#536B63]">
-                    9 tipos de funciones, las 6 razones trigonométricas y sus inversas, derivadas y sumas de Riemann. Elige el nivel y explora.
+                    9 tipos de funciones, las 6 razones trigonométricas y sus inversas, derivadas y sumas de Riemann. Elige el nivel y explora cómo funciona por dentro una herramienta hecha con este método.
                   </p>
                 </div>
                 <button
@@ -596,20 +792,35 @@ export default function App() {
           </div>
         </section>
 
-        {/* 6. QUIÉN TE ENSEÑA */}
+        {/* 6. QUIÉN TE ENSEÑA — HISTORIA REAL + FILOSOFÍA SISTEMA ZÉNIT */}
         <section id="fundador" className="border-y border-[#DDE6E0] bg-[#EDF4EE] px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[.75fr_1.25fr]">
             <InstructorPortrait />
             <div>
               <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.17em] text-[#366F5C]">
-                <Users className="size-4" /> Quién te enseña
+                <Users className="size-4" /> Quién te enseña · De docente a docente
               </p>
-              <h2 className="mt-5 font-display text-[clamp(2rem,3.8vw,3.35rem)] font-bold leading-[1.12] tracking-[-.05em] text-[#1E3938]">
-                Un maestro que empezó con la IA en 2023, cuando todo recién comenzaba.
+              <h2 className="mt-5 font-display text-[clamp(1.95rem,3.6vw,3.15rem)] font-bold leading-[1.12] tracking-[-.05em] text-[#1E3938]">
+                Soy Juan Xavier Cabello: profesor de matemáticas (+8 años en aula) y creador de más de 70 aplicaciones web con IA.
               </h2>
-              <p className="mt-7 text-lg leading-9 text-[#40584F]">
-                Soy Juan Xavier Cabello. Desde entonces estudio y practico cómo crear apps con inteligencia artificial, y así hice los proyectos que viste arriba. En el camino me equivoqué mucho. Este taller es el atajo: te enseño lo que funciona para que tú no pierdas ese tiempo ni ese dinero.
-              </p>
+              <div className="mt-6 space-y-4 text-base leading-8 text-[#40584F]">
+                <p>
+                  Enseño matemáticas en secundaria y nivel preuniversitario en Perú desde hace más de ocho años, entre colegios, academias y tutorías particulares.
+                </p>
+                <p>
+                  Antes de llegar a este método pasé por todos los tropiezos posibles: en 2018 me endeudé dos años intentando vender páginas en WordPress; entre 2021 y 2022 dediqué casi un año entero a armar una app de tablas de multiplicar con bloques en MIT App Inventor, gasté en anuncios de Google Ads para conseguir apenas 130 descargas y perdí la aplicación cuando Google Play cerró mi cuenta por políticas de actualización; y en abril de 2023 me volví a endeudar entrando a un bootcamp intensivo de programación full stack de 16 semanas donde iteraba hasta 130 veces con ChatGPT por tarea y comprobé lo frustrante que es escribir código a mano cuando todo se desactualiza cada mes.
+                </p>
+                <p>
+                  Cuando entendí que <strong>la inteligencia artificial no reemplaza al docente, sino que multiplica a quien sabe dirigirla con la información de su propio campo</strong>, todo cambió. Hoy llevo más de 70 proyectos funcionales construidos en mis repositorios, gané tiempo libre, mis alumnos participan con materiales únicos que también puedo imprimir y creé este taller de {OFFICIAL_PRICE} para ahorrarte años de frustración, deudas y prueba y error.
+                </p>
+              </div>
+
+              {/* Filosofía Sistema Zénit (Pregunta 100) */}
+              <div className="mt-6 rounded-2xl border border-[#C5DBD0] bg-white p-5 text-sm leading-7 text-[#355248] shadow-xs">
+                <strong className="font-display text-base text-[#193B36]">Por qué se llama Sistema Zénit:</strong>{' '}
+                <em>Zénit</em> significa llegar a tu punto más alto. Las buenas intenciones o las ideas guardadas en un cuaderno no cambian tu realidad si no tienes un sistema ordenado que te lleve a ejecutarlas.
+              </div>
+
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   className="inline-flex items-center gap-2 rounded-xl border border-[#BED6C7] bg-white px-4 py-3 text-xs font-bold text-[#2B6654] transition hover:bg-[#F6FAF6]"
@@ -617,59 +828,59 @@ export default function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Ver mi portafolio <ExternalLink className="size-4" />
+                  Ver mi portafolio completo <ExternalLink className="size-4" />
                 </a>
                 <a
                   className="inline-flex items-center gap-2 rounded-xl border border-[#BED6C7] bg-white px-4 py-3 text-xs font-bold text-[#2B6654] transition hover:bg-[#F6FAF6]"
-                  href="https://funciones.sistemazenit.com/"
+                  href="https://transformacionesgeometricas.sistemazenit.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Probar Funciones Lab <ExternalLink className="size-4" />
+                  Probar Transformaciones Geométricas <ExternalLink className="size-4" />
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 7. INSCRIPCIÓN */}
+        {/* 7. INSCRIPCIÓN, GARANTÍA DE 7 DÍAS Y ESCALERA TRANSPARENTE */}
         <section id="comprar" className="bg-[#F8F9F7] px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeading
-              label="Inscripción"
-              title={`Todo el taller por ${OFFICIAL_PRICE}.`}
-              body="Un solo pago. Te inscribes en nuestra comunidad de Skool."
+              label="Inscripción al taller"
+              title={`Empieza hoy tu primera aplicación web educativa por ${OFFICIAL_PRICE}.`}
+              body="Un solo pago accesible para que el precio no sea una excusa, respaldado por 7 días de garantía."
             />
 
             <div className="mx-auto mt-12 grid max-w-5xl overflow-hidden rounded-[26px] border border-[#D8E2DC] bg-white shadow-[0_20px_65px_rgba(22,54,42,.08)] lg:grid-cols-[1.08fr_.92fr]">
               <div className="p-7 sm:p-10">
                 <div className="inline-flex items-center gap-2 rounded-full bg-[#EDF6F0] px-3 py-2 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#2D7358]">
-                  <BookOpen className="size-4" /> Taller práctico de IA para educación
+                  <BookOpen className="size-4" /> Taller de Entrada · Método Sistema Zénit
                 </div>
                 <h3 className="mt-6 font-display text-[clamp(1.6rem,2.5vw,2.3rem)] font-bold leading-[1.18] text-[#203744]">
-                  Haz tu primera app educativa con IA, aunque nunca hayas programado.
+                  Construye y publica tu primera web app educativa con IA, sin escribir código.
                 </h3>
                 <p className="mt-4 text-sm leading-7 text-[#647587]">
-                  Para profesores de cualquier curso, tutores, coordinadores, directivos y capacitadores.
+                  Incluye las 3 sesiones prácticas en vivo + acceso a las grabaciones paso a paso durante 30 días, mis 3 aplicaciones educativas listas para personalizar y usar en clase, las plantillas de Entrevista Inversa y Plan Maestro, y la guía de publicación gratuita en GitHub Pages y Cloudflare Pages. Si partes de cero absoluto, en 7 a 14 días tendrás tus herramientas configuradas y tu primera web app publicada con enlace propio.
                 </p>
 
                 <div className="mt-8 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-[#F7FAF8] p-4">
-                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Qué aprendes</p>
+                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Requisitos mínimos</p>
                     <p className="mt-2 text-sm leading-6 text-[#526675]">
-                      El paso a paso, cómo usar la IA para construir tu app y cómo elegir tu primer proyecto.
+                      Una laptop o PC, conexión a internet, manejo básico de computadora (Word/teclado) y una cuenta gratuita de Gmail.
                     </p>
                   </div>
                   <div className="rounded-xl bg-[#F7FAF8] p-4">
-                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Para quién</p>
+                    <p className="text-xs font-bold uppercase tracking-[.12em] text-[#537968]">Garantía de 7 días sin riesgo</p>
                     <p className="mt-2 text-sm leading-6 text-[#526675]">
-                      Cualquier persona que trabaje en educación y tenga una idea por hacer.
+                      Tienes 7 días completos para asistir, revisar las grabaciones y probar el método. Si sientes que no te aporta valor real, pides el 100% de tu reembolso sin trabas.
                     </p>
                   </div>
                 </div>
 
                 <p className="mt-7 rounded-xl border border-[#E5EBE7] bg-[#F8FAF8] p-4 text-xs leading-6 text-[#5E7280]">
-                  Aquí aprendes a hacerla tú. No es un servicio donde yo hago la app por ti.
+                  <strong>Siguiente escalón opcional:</strong> En este taller de {OFFICIAL_PRICE} aprendes a construir tu app tú mismo. Una vez dentro, quienes deseen seguimiento continuo cada semana, llamadas en vivo, soporte técnico revisando su repositorio y módulos de monetización y embudos de venta podrán sumarse opcionalmente a nuestra comunidad en Skool (US$19/mes).
                 </p>
               </div>
 
@@ -686,12 +897,14 @@ export default function App() {
 
                 <div className="rounded-2xl border border-[#D4E3D9] bg-white p-5">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#286F5A]">Inscripción en Skool</p>
+                    <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#286F5A]">Inscripción al taller</p>
                     <span className="rounded-full bg-[#EAF4ED] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#266B56]">
                       Muy pronto
                     </span>
                   </div>
-                  <p className="mt-2 text-xs leading-5 text-[#5D7368]">Estamos terminando de abrir las inscripciones en Skool.</p>
+                  <p className="mt-2 text-xs leading-5 text-[#5D7368]">
+                    Estamos terminando de abrir las inscripciones en Skool y nuestra pasarela oficial.
+                  </p>
                   <div className="mt-4">
                     <SkoolCheckoutButton />
                   </div>
@@ -699,7 +912,7 @@ export default function App() {
 
                 <p className="mt-5 flex items-start gap-2 text-xs leading-6 text-[#62796C]">
                   <ShieldCheck className="mt-0.5 size-4 shrink-0" />
-                  Antes de pagar en Skool verás todas las condiciones del taller.
+                  7 días de garantía completa · Sin gastos obligatorios en servidores ni suscripciones de IA.
                 </p>
               </div>
             </div>
@@ -710,7 +923,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 8. PARA QUIÉN */}
+        {/* 8. FILTRO HONESTO: PARA QUIÉN ES Y PARA QUIÉN NO */}
         <section id="para-quien" className="px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
             <div className="rounded-[24px] border border-[#CBDED2] bg-[#EAF4ED] p-7 sm:p-9">
@@ -718,15 +931,19 @@ export default function App() {
               <ul className="mt-6 space-y-4 text-sm leading-7 text-[#466458]">
                 <li className="flex gap-3">
                   <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                  Trabajas en educación: das clases, haces tutorías, coordinas o capacitas.
+                  Eres profesor de matemáticas, ciencias (Física, Química, Biología) o de cualquier área, tutor particular, coordinador, capacitador o creador educativo.
                 </li>
                 <li className="flex gap-3">
                   <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                  Tienes una idea de app o herramienta que nunca pudiste hacer porque no sabes programar.
+                  Tienes ideas guardadas en un cuaderno o celular y quieres convertirlas en herramientas web reales para tus clases, tu institución o tu marca personal.
                 </li>
                 <li className="flex gap-3">
                   <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
-                  Quieres aprender a hacerla tú, en vez de depender de un programador.
+                  Cuentas con lo mínimo indispensable: una laptop o PC, conexión a internet, manejo básico de computadora (Word/teclado) y una cuenta gratuita de Gmail.
+                </li>
+                <li className="flex gap-3">
+                  <Check className="mt-1 size-5 shrink-0 text-[#27775D]" />
+                  Quieres aprender un sistema práctico y honesto para dirigir a la IA sin depender de programadores ni gastar en servidores mensuales.
                 </li>
               </ul>
             </div>
@@ -736,25 +953,28 @@ export default function App() {
               <ul className="mt-6 space-y-4 text-sm leading-7 text-[#69798C]">
                 <li className="flex gap-3">
                   <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
-                  Quieres que otra persona haga la app por ti.
+                  Buscas promesas mágicas de hacerte rico de la noche a la mañana sin trabajar ni aprender.
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
-                  Buscas un curso largo de programación desde cero.
+                  Quieres que otra persona construya la aplicación por ti en lugar de aprender a dirigirla tú mismo.
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-2 size-2 shrink-0 rounded-full bg-[#9AA8B5]" />
-                  Esperas resultados sin dedicarle tiempo a tu proyecto.
+                  No estás dispuesto a dedicarle unas horas de enfoque durante una o dos semanas para configurar tus herramientas y publicar tu primer proyecto.
                 </li>
               </ul>
             </div>
           </div>
         </section>
 
-        {/* 9. PREGUNTAS */}
+        {/* 9. PREGUNTAS FRECUENTES — LAS OBJECIONES REALES RESPONDIDAS */}
         <section id="preguntas" className="border-t border-[#E0E8E4] bg-white px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-4xl">
-            <SectionHeading label="Preguntas frecuentes" title="Lo que más nos preguntan" />
+            <SectionHeading
+              label="Preguntas frecuentes"
+              title="Respuestas directas y sin rodeos antes de entrar"
+            />
             <div className="mt-10 divide-y divide-[#E4EBE6] rounded-2xl border border-[#DDE7E0] bg-white">
               {FAQ.map(([question, answer]) => (
                 <details key={question} className="group p-5 sm:p-6">
